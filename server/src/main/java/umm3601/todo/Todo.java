@@ -13,5 +13,5 @@ public class Todo {
     public String name;
     public String userName;
     public String email;
-    
+
 }

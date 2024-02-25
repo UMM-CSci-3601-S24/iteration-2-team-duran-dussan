@@ -11,7 +11,7 @@ public class Hunt {
     @ObjectId @Id
     @SuppressWarnings({"MemberName"})
     public String _id;
-    
+
     public String todoId;
 
     public String name;

@@ -11,7 +11,6 @@ import static com.mongodb.client.model.Filters.eq;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.bson.UuidRepresentation;

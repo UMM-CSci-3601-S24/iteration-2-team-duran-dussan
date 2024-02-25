@@ -5,7 +5,13 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import umm3601.Controller;
 
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -19,7 +25,7 @@ public class TodoController implements Controller {
 
   private static final String API_TODOS = "/api/todos";
   private static final String API_TODO_BY_ID = "/api/todos/{id}";
-  private final String Todo_Key = "todoId";
+  static final String TODO_KEY = "todoId";
   private static final String API_HUNTS = "/api/hunts";
 
   private final JacksonMongoCollection<Todo> todoCollection;
@@ -47,18 +53,29 @@ public class TodoController implements Controller {
       .sort(sortingOrder)
       .into(new ArrayList<>());
 
-      ctx.json(matchingHunts);
-      ctx.status(HttpStatus.OK);
-  }
+    ctx.json(matchingHunts);
 
-  private Bson constructSortingOrder(Context ctx) {
-    Bson sortingOrder = Sorts.ascending("name");
-    return sortingOrder;
+    ctx.status(HttpStatus.OK);
   }
 
   private Bson constructFilter(Context ctx) {
-    Bson filter = new Document();
-    return filter;
+    List<Bson> filters = new ArrayList<>();
+
+    if (ctx.queryParamMap().containsKey(TODO_KEY)) {
+      String targetTodo = ctx.queryParamAsClass(TODO_KEY, String.class).get();
+      filters.add(eq(TODO_KEY, targetTodo));
+    }
+
+    Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
+
+    return combinedFilter;
+  }
+
+  private Bson constructSortingOrder(Context ctx) {
+    String sortBy = Objects.requireNonNullElse(ctx.queryParam("sortby"), "name");
+    String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
+    Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
+    return sortingOrder;
   }
 
   @Override

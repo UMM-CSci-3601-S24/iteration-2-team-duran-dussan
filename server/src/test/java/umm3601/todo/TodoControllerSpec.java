@@ -45,6 +45,7 @@ public class TodoControllerSpec {
   private TodoController todoController;
 
   private ObjectId frysId;
+  private ObjectId huntId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -133,7 +134,22 @@ public class TodoControllerSpec {
           new ObjectId(),
           new ObjectId()
         )));
+
+        huntId = new ObjectId();
+    Document hunt = new Document()
+      .append("_id", huntId)
+      .append("todoId", "frysId")
+      .append("name", "Best Hunt")
+      .append("description", "This is the best hunt")
+      .append("est", 20)
+      .append("tasks", Arrays.asList(
+        new ObjectId(),
+        new ObjectId(),
+        new ObjectId()
+      ));
+
     huntDocuments.insertMany(testHunts);
+    huntDocuments.insertOne(hunt);
 
     todoController = new TodoController(db);
   }
@@ -173,9 +189,10 @@ public class TodoControllerSpec {
     verify(ctx).json(huntArrayListCaptor.capture());
     verify(ctx).status(HttpStatus.OK);
 
-    assertEquals(3, huntArrayListCaptor.getValue().size());
+    assertEquals(4, huntArrayListCaptor.getValue().size());
     for (Hunt hunt : huntArrayListCaptor.getValue()) {
       assertEquals("frysId", hunt.todoId);
     }
   }
+
 }

@@ -37,6 +37,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
+import io.javalin.validation.Validator;
 
 @SuppressWarnings({ "MagicNumber" })
 public class TodoControllerSpec {
@@ -101,7 +102,7 @@ public class TodoControllerSpec {
     List<Document> testHunts = new ArrayList<>();
     testHunts.add(
       new Document()
-        .append("todoId", frysId)
+        .append("todoId", "frysId")
         .append("name", "Fry's Hunt")
         .append("description", "Fry's hunt for the seven leaf clover")
         .append("est", 20)
@@ -112,7 +113,7 @@ public class TodoControllerSpec {
         )));
     testHunts.add(
       new Document()
-        .append("todoId", frysId)
+        .append("todoId", "frysId")
         .append("name", "Fry's Hunt 2")
         .append("description", "Fry's hunt for Morris")
         .append("est", 30)
@@ -123,7 +124,7 @@ public class TodoControllerSpec {
         )));
     testHunts.add(
       new Document()
-        .append("todoId", frysId)
+        .append("todoId", "frysId")
         .append("name", "Fry's Hunt 3")
         .append("description", "Fry's hunt for money")
         .append("est", 40)
@@ -157,5 +158,24 @@ public class TodoControllerSpec {
     assertEquals(
         db.getCollection("hunts").countDocuments(),
         huntArrayListCaptor.getValue().size());
+  }
+
+  @Test
+  void getTodosWithCategorySoftwareDesign() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("todoId", Collections.singletonList("frysId"));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+    when(ctx.queryParamAsClass("todoId", String.class))
+    .thenReturn(Validator.create(String.class, "frysId", "todoId"));
+
+    todoController.getHunts(ctx);
+
+    verify(ctx).json(huntArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(3, huntArrayListCaptor.getValue().size());
+    for (Hunt hunt : huntArrayListCaptor.getValue()) {
+      assertEquals("frysId", hunt.todoId);
+    }
   }
 }

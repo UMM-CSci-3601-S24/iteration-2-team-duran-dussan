@@ -1,8 +1,13 @@
 package umm3601.todo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +16,7 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -24,6 +30,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
 
 @SuppressWarnings({ "MagicNumber" })
@@ -120,5 +127,19 @@ public class TodoControllerSpec {
     huntDocuments.insertMany(testHunts);
 
     todoController = new TodoController(db);
+  }
+
+  @Test
+  void canGetAllHunts() throws IOException {
+    when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
+
+    todoController.getHunts(ctx);
+
+    verify(ctx).json(todoArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(
+      db.getCollection("hunts").countDocuments(),
+      todoArrayListCaptor.getValue().size());
   }
 }

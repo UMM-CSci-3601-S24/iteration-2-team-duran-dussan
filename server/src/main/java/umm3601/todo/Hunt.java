@@ -15,6 +15,6 @@ public class Hunt {
 
     public String name;
     public String description;
-    public String est;
-    public List<Task> tasks;
+    public int est;
+    public List<ObjectId> tasks;
 }

@@ -1,7 +1,11 @@
 package umm3601.todo;
 
+import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +41,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
+import io.javalin.validation.BodyValidator;
 import io.javalin.validation.Validator;
+import umm3601.user.UserController;
 
 @SuppressWarnings({ "MagicNumber" })
 public class TodoControllerSpec {
@@ -210,5 +216,42 @@ public class TodoControllerSpec {
 
     assertEquals("Best Hunt", huntCaptor.getValue().name);
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
+  }
+
+  @Test
+  void addHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "todoId": "frysId",
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 45,
+          "tasks": [
+            "5f4f4f4f4f4f4f4f4f4f4f5f",
+            "5f4f4f4f4f4f4f4f4f4f4f6f",
+            "5f4f4f4f4f4f4f4f4f4f4f7f"
+          ]
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    todoController.addNewHunt(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    // Verify that the user was added to the database with the correct ID
+    Document addedHunt = db.getCollection("hunts")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    // Successfully adding the user should return the newly generated, non-empty
+    // MongoDB ID for that user.
+    assertNotEquals("", addedHunt.get("_id"));
+    assertEquals("Test Hunt", addedHunt.get("name"));
+    assertEquals("frysId", addedHunt.get(TodoController.TODO_KEY));
+    assertEquals("Newly made hunt", addedHunt.get("description"));
+    assertEquals(45, addedHunt.get("est"));
+    assertEquals(3, addedHunt.get("tasks", List.class).size());
   }
 }

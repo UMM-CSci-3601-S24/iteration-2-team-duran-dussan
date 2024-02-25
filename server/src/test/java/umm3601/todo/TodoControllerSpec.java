@@ -3,9 +3,7 @@ package umm3601.todo;
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,10 +41,9 @@ import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.BodyValidator;
 import io.javalin.validation.Validator;
-import umm3601.user.UserController;
 
 @SuppressWarnings({ "MagicNumber" })
-public class TodoControllerSpec {
+class TodoControllerSpec {
 
   private TodoController todoController;
 
@@ -248,7 +245,7 @@ public class TodoControllerSpec {
     // Successfully adding the user should return the newly generated, non-empty
     // MongoDB ID for that user.
     assertNotEquals("", addedHunt.get("_id"));
-    assertEquals("Test Hunt", addedHunt.get("name"));
+    assertEquals("New Hunt", addedHunt.get("name"));
     assertEquals("frysId", addedHunt.get(TodoController.TODO_KEY));
     assertEquals("Newly made hunt", addedHunt.get("description"));
     assertEquals(45, addedHunt.get("est"));

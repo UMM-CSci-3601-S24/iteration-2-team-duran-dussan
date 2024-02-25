@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,9 @@ public class TodoControllerSpec {
 
   @Captor
   private ArgumentCaptor<ArrayList<Todo>> todoArrayListCaptor;
+
+  @Captor
+  private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
   private ArgumentCaptor<Todo> todoCaptor;
@@ -142,15 +146,16 @@ public class TodoControllerSpec {
 
   @Test
   void canGetAllHunts() throws IOException {
+
     when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
 
     todoController.getHunts(ctx);
 
-    verify(ctx).json(todoArrayListCaptor.capture());
+    verify(ctx).json(huntArrayListCaptor.capture());
     verify(ctx).status(HttpStatus.OK);
 
     assertEquals(
-      db.getCollection("hunts").countDocuments(),
-      todoArrayListCaptor.getValue().size());
+        db.getCollection("hunts").countDocuments(),
+        huntArrayListCaptor.getValue().size());
   }
 }

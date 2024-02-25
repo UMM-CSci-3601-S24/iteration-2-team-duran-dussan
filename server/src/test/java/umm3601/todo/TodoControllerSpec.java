@@ -64,6 +64,9 @@ public class TodoControllerSpec {
   private ArgumentCaptor<Todo> todoCaptor;
 
   @Captor
+  private ArgumentCaptor<Hunt> huntCaptor;
+
+  @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
 
   @BeforeAll
@@ -195,4 +198,17 @@ public class TodoControllerSpec {
     }
   }
 
+  @Test
+  void getHuntById() throws IOException {
+    String id = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    todoController.getHunt(ctx);
+
+    verify(ctx).json(huntCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals("Best Hunt", huntCaptor.getValue().name);
+    assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
+  }
 }

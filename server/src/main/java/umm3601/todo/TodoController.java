@@ -1,6 +1,7 @@
 package umm3601.todo;
 
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import umm3601.Controller;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.mongojack.JacksonMongoCollection;
 
 import com.mongodb.client.MongoDatabase;
@@ -41,6 +43,23 @@ public class TodoController implements Controller {
       "hunts",
       Hunt.class,
        UuidRepresentation.STANDARD);
+  }
+
+  public void getHunt(Context cts) {
+    String id = cts.pathParam("id");
+    Hunt hunt;
+
+    try {
+      hunt = huntCollection.find(eq("_id", new ObjectId(id))).first();
+    } catch (IllegalArgumentException e) {
+      throw new BadRequestResponse("The requested hunt id wasn't a legal Mongo Object ID.");
+    }
+    if (hunt == null) {
+      throw new BadRequestResponse("The requested hunt was not found");
+    } else {
+      cts.json(hunt);
+      cts.status(HttpStatus.OK);
+    }
   }
 
   public void getHunts(Context ctx) {

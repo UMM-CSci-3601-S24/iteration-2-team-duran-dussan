@@ -1,4 +1,4 @@
-package umm3601.todo;
+package umm3601.host;
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
@@ -11,7 +11,6 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.bson.Document;
@@ -23,24 +22,21 @@ import org.mongojack.JacksonMongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 
-public class TodoController implements Controller {
+public class HostController implements Controller {
 
-  private static final String API_TODOS = "/api/todos";
-  private static final String API_TODO_BY_ID = "/api/todos/{id}";
-  static final String TODO_KEY = "todoId";
+  private static final String API_HOSTS = "/api/hosts";
+  private static final String API_HOST_BY_ID = "/api/hosts/{id}";
+  static final String HOST_KEY = "hostId";
   private static final String API_HUNTS = "/api/hunts";
 
-  private static final int REASONABLE_NAME_LENGTH = 50;
-  private static final int REASONABLE_DESCRIPTION_LENGTH = 200;
-
-  private final JacksonMongoCollection<Todo> todoCollection;
+  private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
 
-  public TodoController(MongoDatabase database) {
-    todoCollection = JacksonMongoCollection.builder().build(
+  public HostController(MongoDatabase database) {
+    hostCollection = JacksonMongoCollection.builder().build(
       database,
-      "todos",
-      Todo.class,
+      "hosts",
+      Host.class,
        UuidRepresentation.STANDARD);
     huntCollection = JacksonMongoCollection.builder().build(
       database,
@@ -83,9 +79,9 @@ public class TodoController implements Controller {
   private Bson constructFilter(Context ctx) {
     List<Bson> filters = new ArrayList<>();
 
-    if (ctx.queryParamMap().containsKey(TODO_KEY)) {
-      String targetTodo = ctx.queryParamAsClass(TODO_KEY, String.class).get();
-      filters.add(eq(TODO_KEY, targetTodo));
+    if (ctx.queryParamMap().containsKey(HOST_KEY)) {
+      String targetHost = ctx.queryParamAsClass(HOST_KEY, String.class).get();
+      filters.add(eq(HOST_KEY, targetHost));
     }
 
     Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
@@ -98,23 +94,6 @@ public class TodoController implements Controller {
     String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
     Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
     return sortingOrder;
-  }
-
-  public void addNewHunt(Context ctx) {
-    Hunt newHunt = ctx.bodyValidator(Hunt.class)
-    .check(hunt -> hunt.todoId != null && hunt.todoId.length() > 0, "Invalid todoId")
-    .check(hunt -> hunt.name.length() < REASONABLE_NAME_LENGTH, "Name must be less than 50 characters")
-    .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
-    .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH,
-     "Description must be less than 200 characters")
-    .check(hunt -> hunt.description.length() > 0, "Description must be at least 1 character")
-    .check(hunt -> hunt.est > 0, "Estimated time must be greater than 0")
-    .check(hunt -> hunt.tasks.size() > 0, "Hunt must have at least 1 task")
-    .get();
-
-    huntCollection.insertOne(newHunt);
-    ctx.json(Map.of("id", newHunt._id));
-    ctx.status(HttpStatus.CREATED);
   }
 
   @Override

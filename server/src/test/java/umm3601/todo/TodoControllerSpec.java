@@ -38,11 +38,14 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.Validator;
+import umm3601.host.Hunt;
+import umm3601.host.Host;
+import umm3601.host.HostController;
 
 @SuppressWarnings({ "MagicNumber" })
 public class TodoControllerSpec {
 
-  private TodoController todoController;
+  private HostController todoController;
 
   private ObjectId frysId;
   private ObjectId huntId;
@@ -55,13 +58,13 @@ public class TodoControllerSpec {
   private Context ctx;
 
   @Captor
-  private ArgumentCaptor<ArrayList<Todo>> todoArrayListCaptor;
+  private ArgumentCaptor<ArrayList<Host>> todoArrayListCaptor;
 
   @Captor
   private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
-  private ArgumentCaptor<Todo> todoCaptor;
+  private ArgumentCaptor<Host> todoCaptor;
 
   @Captor
   private ArgumentCaptor<Hunt> huntCaptor;
@@ -154,7 +157,7 @@ public class TodoControllerSpec {
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
 
-    todoController = new TodoController(db);
+    todoController = new HostController(db);
   }
 
   @Test

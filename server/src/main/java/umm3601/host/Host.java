@@ -1,10 +1,10 @@
-package umm3601.todo;
+package umm3601.host;
 
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 @SuppressWarnings({"VisibilityModifier"})
-public class Todo {
+public class Host {
 
     @ObjectId @Id
     @SuppressWarnings({"MemberName"})

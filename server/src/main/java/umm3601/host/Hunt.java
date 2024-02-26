@@ -1,15 +1,21 @@
-package umm3601.todo;
+package umm3601.host;
+
+import java.util.List;
 
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
 @SuppressWarnings({"VisibilityModifier"})
-public class Task {
+public class Hunt {
 
     @ObjectId @Id
     @SuppressWarnings({"MemberName"})
     public String _id;
 
+    public String hostId;
+
     public String name;
-    public boolean status;
+    public String description;
+    public int est;
+    public List<String> tasks;
 }

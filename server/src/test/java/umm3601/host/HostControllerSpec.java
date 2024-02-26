@@ -1,4 +1,4 @@
-package umm3601.todo;
+package umm3601.host;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,9 +40,9 @@ import io.javalin.json.JavalinJackson;
 import io.javalin.validation.Validator;
 
 @SuppressWarnings({ "MagicNumber" })
-public class TodoControllerSpec {
+public class HostControllerSpec {
 
-  private TodoController todoController;
+  private HostController hostController;
 
   private ObjectId frysId;
   private ObjectId huntId;
@@ -55,13 +55,13 @@ public class TodoControllerSpec {
   private Context ctx;
 
   @Captor
-  private ArgumentCaptor<ArrayList<Todo>> todoArrayListCaptor;
+  private ArgumentCaptor<ArrayList<Host>> hostArrayListCaptor;
 
   @Captor
   private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
-  private ArgumentCaptor<Todo> todoCaptor;
+  private ArgumentCaptor<Host> hostCaptor;
 
   @Captor
   private ArgumentCaptor<Hunt> huntCaptor;
@@ -90,8 +90,8 @@ public class TodoControllerSpec {
   void setupEach() throws IOException {
     MockitoAnnotations.openMocks(this);
 
-    MongoCollection<Document> todoDocuments = db.getCollection("todos");
-    todoDocuments.drop();
+    MongoCollection<Document> hostDocuments = db.getCollection("hosts");
+    hostDocuments.drop();
     frysId = new ObjectId();
     Document fry = new Document()
       .append("_id", frysId)
@@ -99,14 +99,14 @@ public class TodoControllerSpec {
       .append("userName", "fry")
       .append("email", "fry@email");
 
-    todoDocuments.insertOne(fry);
+    hostDocuments.insertOne(fry);
 
     MongoCollection<Document> huntDocuments = db.getCollection("hunts");
     huntDocuments.drop();
     List<Document> testHunts = new ArrayList<>();
     testHunts.add(
       new Document()
-        .append("todoId", "frysId")
+        .append("hostId", "frysId")
         .append("name", "Fry's Hunt")
         .append("description", "Fry's hunt for the seven leaf clover")
         .append("est", 20)
@@ -117,7 +117,7 @@ public class TodoControllerSpec {
         )));
     testHunts.add(
       new Document()
-        .append("todoId", "frysId")
+        .append("hostId", "frysId")
         .append("name", "Fry's Hunt 2")
         .append("description", "Fry's hunt for Morris")
         .append("est", 30)
@@ -128,7 +128,7 @@ public class TodoControllerSpec {
         )));
     testHunts.add(
       new Document()
-        .append("todoId", "frysId")
+        .append("hostId", "frysId")
         .append("name", "Fry's Hunt 3")
         .append("description", "Fry's hunt for money")
         .append("est", 40)
@@ -141,7 +141,7 @@ public class TodoControllerSpec {
         huntId = new ObjectId();
     Document hunt = new Document()
       .append("_id", huntId)
-      .append("todoId", "frysId")
+      .append("hostId", "frysId")
       .append("name", "Best Hunt")
       .append("description", "This is the best hunt")
       .append("est", 20)
@@ -154,13 +154,13 @@ public class TodoControllerSpec {
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
 
-    todoController = new TodoController(db);
+    hostController = new HostController(db);
   }
 
   @Test
   void addRoutes() {
     Javalin mockServer = mock(Javalin.class);
-    todoController.addRoutes(mockServer);
+    hostController.addRoutes(mockServer);
     verify(mockServer, Mockito.atLeast(1)).get(any(), any());
   }
 
@@ -169,7 +169,7 @@ public class TodoControllerSpec {
 
     when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
 
-    todoController.getHunts(ctx);
+    hostController.getHunts(ctx);
 
     verify(ctx).json(huntArrayListCaptor.capture());
     verify(ctx).status(HttpStatus.OK);
@@ -180,21 +180,21 @@ public class TodoControllerSpec {
   }
 
   @Test
-  void getTodosWithCategorySoftwareDesign() throws IOException {
+  void getHostsWithCategorySoftwareDesign() throws IOException {
     Map<String, List<String>> queryParams = new HashMap<>();
-    queryParams.put("todoId", Collections.singletonList("frysId"));
+    queryParams.put("hostId", Collections.singletonList("frysId"));
     when(ctx.queryParamMap()).thenReturn(queryParams);
-    when(ctx.queryParamAsClass("todoId", String.class))
-    .thenReturn(Validator.create(String.class, "frysId", "todoId"));
+    when(ctx.queryParamAsClass("hostId", String.class))
+    .thenReturn(Validator.create(String.class, "frysId", "hostId"));
 
-    todoController.getHunts(ctx);
+    hostController.getHunts(ctx);
 
     verify(ctx).json(huntArrayListCaptor.capture());
     verify(ctx).status(HttpStatus.OK);
 
     assertEquals(4, huntArrayListCaptor.getValue().size());
     for (Hunt hunt : huntArrayListCaptor.getValue()) {
-      assertEquals("frysId", hunt.todoId);
+      assertEquals("frysId", hunt.hostId);
     }
   }
 
@@ -203,7 +203,7 @@ public class TodoControllerSpec {
     String id = huntId.toHexString();
     when(ctx.pathParam("id")).thenReturn(id);
 
-    todoController.getHunt(ctx);
+    hostController.getHunt(ctx);
 
     verify(ctx).json(huntCaptor.capture());
     verify(ctx).status(HttpStatus.OK);

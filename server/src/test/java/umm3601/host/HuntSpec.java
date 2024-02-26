@@ -1,4 +1,4 @@
-package umm3601.todo;
+package umm3601.host;
 
 public class HuntSpec {
 

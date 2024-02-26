@@ -1,4 +1,4 @@
-package umm3601.todo;
+package umm3601.host;
 
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
@@ -22,21 +22,21 @@ import org.mongojack.JacksonMongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 
-public class TodoController implements Controller {
+public class HostController implements Controller {
 
-  private static final String API_TODOS = "/api/todos";
-  private static final String API_TODO_BY_ID = "/api/todos/{id}";
-  static final String TODO_KEY = "todoId";
+  private static final String API_HOSTS = "/api/hosts";
+  private static final String API_HOST_BY_ID = "/api/hosts/{id}";
+  static final String HOST_KEY = "hostId";
   private static final String API_HUNTS = "/api/hunts";
 
-  private final JacksonMongoCollection<Todo> todoCollection;
+  private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
 
-  public TodoController(MongoDatabase database) {
-    todoCollection = JacksonMongoCollection.builder().build(
+  public HostController(MongoDatabase database) {
+    hostCollection = JacksonMongoCollection.builder().build(
       database,
-      "todos",
-      Todo.class,
+      "hosts",
+      Host.class,
        UuidRepresentation.STANDARD);
     huntCollection = JacksonMongoCollection.builder().build(
       database,
@@ -79,9 +79,9 @@ public class TodoController implements Controller {
   private Bson constructFilter(Context ctx) {
     List<Bson> filters = new ArrayList<>();
 
-    if (ctx.queryParamMap().containsKey(TODO_KEY)) {
-      String targetTodo = ctx.queryParamAsClass(TODO_KEY, String.class).get();
-      filters.add(eq(TODO_KEY, targetTodo));
+    if (ctx.queryParamMap().containsKey(HOST_KEY)) {
+      String targetHost = ctx.queryParamAsClass(HOST_KEY, String.class).get();
+      filters.add(eq(HOST_KEY, targetHost));
     }
 
     Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);

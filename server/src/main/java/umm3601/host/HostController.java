@@ -119,7 +119,7 @@ public class HostController implements Controller {
 
   @Override
   public void addRoutes(Javalin server) {
-    
+
     server.get(API_HUNTS, this::getHunts);
 
     server.post(API_HUNTS, this::addNewHunt);

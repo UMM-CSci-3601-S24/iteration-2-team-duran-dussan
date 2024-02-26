@@ -32,6 +32,7 @@ public class HostController implements Controller {
 
   private static final int REASONABLE_NAME_LENGTH = 50;
   private static final int REASONABLE_DESCRIPTION_LENGTH = 200;
+  private static final int REASONABLE_EST_LENGTH = 240;
 
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
@@ -108,8 +109,7 @@ public class HostController implements Controller {
     .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH,
      "Description must be less than 200 characters")
     .check(hunt -> hunt.description.length() > 0, "Description must be at least 1 character")
-    .check(hunt -> hunt.est > 0, "Estimated time must be greater than 0")
-    .check(hunt -> hunt.tasks.size() > 0, "Hunt must have at least 1 task")
+    .check(hunt -> hunt.est < REASONABLE_EST_LENGTH, "Estimated time must be less than 4 hours")
     .get();
 
     huntCollection.insertOne(newHunt);
@@ -119,7 +119,10 @@ public class HostController implements Controller {
 
   @Override
   public void addRoutes(Javalin server) {
+    
     server.get(API_HUNTS, this::getHunts);
+
+    server.post(API_HUNTS, this::addNewHunt);
   }
 
 }

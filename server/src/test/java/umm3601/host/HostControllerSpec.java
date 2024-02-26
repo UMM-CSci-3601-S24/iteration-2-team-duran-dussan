@@ -1,6 +1,8 @@
 package umm3601.host;
 
+import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -37,6 +39,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
+import io.javalin.validation.BodyValidator;
 import io.javalin.validation.Validator;
 
 @SuppressWarnings({ "MagicNumber" })
@@ -210,5 +213,39 @@ public class HostControllerSpec {
 
     assertEquals("Best Hunt", huntCaptor.getValue().name);
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
+  }
+
+   @Test
+  void addHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 45,
+          "tasks": [
+            "5f4f4f4f4f4f4f4f4f4f4f5f",
+            "5f4f4f4f4f4f4f4f4f4f4f6f",
+            "5f4f4f4f4f4f4f4f4f4f4f7f"
+          ]
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    hostController.addNewHunt(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    Document addedHunt = db.getCollection("hunts")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    assertNotEquals("", addedHunt.get("_id"));
+    assertEquals("New Hunt", addedHunt.get("name"));
+    assertEquals("frysId", addedHunt.get(HostController.HOST_KEY));
+    assertEquals("Newly made hunt", addedHunt.get("description"));
+    assertEquals(45, addedHunt.get("est"));
+    assertEquals(3, addedHunt.get("tasks", List.class).size());
   }
 }

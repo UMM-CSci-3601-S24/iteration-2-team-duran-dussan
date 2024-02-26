@@ -11,6 +11,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.bson.Document;
@@ -28,6 +29,9 @@ public class HostController implements Controller {
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   static final String HOST_KEY = "hostId";
   private static final String API_HUNTS = "/api/hunts";
+
+  private static final int REASONABLE_NAME_LENGTH = 50;
+  private static final int REASONABLE_DESCRIPTION_LENGTH = 200;
 
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
@@ -94,6 +98,23 @@ public class HostController implements Controller {
     String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
     Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
     return sortingOrder;
+  }
+
+  public void addNewHunt(Context ctx) {
+    Hunt newHunt = ctx.bodyValidator(Hunt.class)
+    .check(hunt -> hunt.hostId != null && hunt.hostId.length() > 0, "Invalid hostId")
+    .check(hunt -> hunt.name.length() < REASONABLE_NAME_LENGTH, "Name must be less than 50 characters")
+    .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
+    .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH,
+     "Description must be less than 200 characters")
+    .check(hunt -> hunt.description.length() > 0, "Description must be at least 1 character")
+    .check(hunt -> hunt.est > 0, "Estimated time must be greater than 0")
+    .check(hunt -> hunt.tasks.size() > 0, "Hunt must have at least 1 task")
+    .get();
+
+    huntCollection.insertOne(newHunt);
+    ctx.json(Map.of("id", newHunt._id));
+    ctx.status(HttpStatus.CREATED);
   }
 
   @Override

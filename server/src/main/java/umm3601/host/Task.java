@@ -9,6 +9,7 @@ public class Task {
     @ObjectId @Id
     @SuppressWarnings({"MemberName"})
     public String _id;
+    public String huntId;
 
     public String name;
     public boolean status;

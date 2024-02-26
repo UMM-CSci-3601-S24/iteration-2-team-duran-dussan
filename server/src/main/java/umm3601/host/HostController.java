@@ -108,7 +108,6 @@ public class HostController implements Controller {
     .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
     .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH,
      "Description must be less than 200 characters")
-    .check(hunt -> hunt.description.length() > 0, "Description must be at least 1 character")
     .check(hunt -> hunt.est < REASONABLE_EST_LENGTH, "Estimated time must be less than 4 hours")
     .get();
 

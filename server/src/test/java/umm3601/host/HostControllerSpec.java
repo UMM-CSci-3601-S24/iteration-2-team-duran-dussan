@@ -289,6 +289,25 @@ public class HostControllerSpec {
   }
 
   @Test
+  void addInvalidHostNullIdHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": null,
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
   void addInvalidDescriptionHunt() throws IOException {
     String testNewHunt = """
         {

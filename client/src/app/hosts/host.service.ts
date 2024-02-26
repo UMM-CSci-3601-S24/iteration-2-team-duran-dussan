@@ -9,7 +9,7 @@ import { Host } from './host';
   providedIn: 'root'
 })
 export class HostService {
-  readonly hostURL: string = `${environment.apiUrl}hosts`;
+  readonly hostUrl: string = `${environment.apiUrl}hosts`;
 
   private readonly nameKey = 'name';
   private readonly userNameKey = 'username';
@@ -28,7 +28,7 @@ export class HostService {
       }
     }
 
-    return this.httpClient.get<Host[]>(this.hostURL, {
+    return this.httpClient.get<Host[]>(this.hostUrl, {
       params: httpParams,
     });
 

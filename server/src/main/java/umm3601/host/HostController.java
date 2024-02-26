@@ -11,6 +11,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.bson.Document;
@@ -28,6 +29,10 @@ public class HostController implements Controller {
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   static final String HOST_KEY = "hostId";
   private static final String API_HUNTS = "/api/hunts";
+
+  private static final int REASONABLE_NAME_LENGTH = 50;
+  private static final int REASONABLE_DESCRIPTION_LENGTH = 200;
+  private static final int REASONABLE_EST_LENGTH = 240;
 
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
@@ -96,9 +101,27 @@ public class HostController implements Controller {
     return sortingOrder;
   }
 
+  public void addNewHunt(Context ctx) {
+    Hunt newHunt = ctx.bodyValidator(Hunt.class)
+    .check(hunt -> hunt.hostId != null && hunt.hostId.length() > 0, "Invalid hostId")
+    .check(hunt -> hunt.name.length() < REASONABLE_NAME_LENGTH, "Name must be less than 50 characters")
+    .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
+    .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH,
+     "Description must be less than 200 characters")
+    .check(hunt -> hunt.est < REASONABLE_EST_LENGTH, "Estimated time must be less than 4 hours")
+    .get();
+
+    huntCollection.insertOne(newHunt);
+    ctx.json(Map.of("id", newHunt._id));
+    ctx.status(HttpStatus.CREATED);
+  }
+
   @Override
   public void addRoutes(Javalin server) {
+
     server.get(API_HUNTS, this::getHunts);
+
+    server.post(API_HUNTS, this::addNewHunt);
   }
 
 }

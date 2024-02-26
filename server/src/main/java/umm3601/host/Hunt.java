@@ -1,7 +1,5 @@
 package umm3601.host;
 
-import java.util.List;
-
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 
@@ -17,5 +15,5 @@ public class Hunt {
     public String name;
     public String description;
     public int est;
-    public List<String> tasks;
+    public int numberOfTasks;
 }

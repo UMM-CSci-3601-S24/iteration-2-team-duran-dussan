@@ -38,9 +38,6 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.Validator;
-import umm3601.host.Hunt;
-import umm3601.host.Host;
-import umm3601.host.HostController;
 
 @SuppressWarnings({ "MagicNumber" })
 public class HostControllerSpec {

@@ -34,6 +34,11 @@ export class HostService {
 
   }
 
+  getHostByUserName(userName: string): Observable<Host> {
+    // The input to get could also be written as (this.userUrl + '/' + id)
+    return this.httpClient.get<Host>(`${this.hostURL}/${userName}`);
+  }
+
   filterHosts(hosts: Host[], filters: { name?: string; userName?: string }): Host[] {
     let filteredHosts = hosts;
 

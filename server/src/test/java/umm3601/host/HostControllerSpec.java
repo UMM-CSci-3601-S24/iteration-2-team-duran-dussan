@@ -167,6 +167,11 @@ public class HostControllerSpec {
         .append("huntId", "huntId")
         .append("name", "Take a picture of a park")
         .append("status", true));
+    testTasks.add(
+      new Document()
+        .append("huntId", "differentId")
+        .append("name", "Take a picture of a moose")
+        .append("status", true));
 
     taskDocuments.insertMany(testTasks);
 
@@ -406,5 +411,24 @@ public class HostControllerSpec {
     assertEquals(
         db.getCollection("tasks").countDocuments(),
         taskArrayListCaptor.getValue().size());
+  }
+
+  @Test
+  void getTasksByHuntId() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("huntId", Collections.singletonList("huntId"));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+    when(ctx.queryParamAsClass("huntId", String.class))
+    .thenReturn(Validator.create(String.class, "huntId", "huntId"));
+
+    hostController.getTasks(ctx);
+
+    verify(ctx).json(taskArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(3, taskArrayListCaptor.getValue().size());
+    for (Task task : taskArrayListCaptor.getValue()) {
+      assertEquals("huntId", task.huntId);
+    }
   }
 }

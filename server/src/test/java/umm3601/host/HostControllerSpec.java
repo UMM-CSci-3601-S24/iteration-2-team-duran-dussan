@@ -40,6 +40,7 @@ import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.BodyValidator;
 import io.javalin.validation.ValidationException;
@@ -250,6 +251,18 @@ public class HostControllerSpec {
     });
 
     assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
+  }
+
+    @Test
+  void getHuntWithNonexistentId() throws IOException {
+    String id = "588935f5c668650dc77df581";
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Throwable exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.getHunt(ctx);
+    });
+
+    assertEquals("The requested hunt was not found", exception.getMessage());
   }
 
   @Test

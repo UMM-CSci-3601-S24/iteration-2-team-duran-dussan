@@ -66,10 +66,16 @@ public class HostControllerSpec {
   private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
+  private ArgumentCaptor<ArrayList<Task>> taskArrayListCaptor;
+
+  @Captor
   private ArgumentCaptor<Host> hostCaptor;
 
   @Captor
   private ArgumentCaptor<Hunt> huntCaptor;
+
+  @Captor
+  private ArgumentCaptor<Task> taskCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -142,6 +148,27 @@ public class HostControllerSpec {
 
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
+
+    MongoCollection<Document> todoDocuments = db.getCollection("todos");
+    huntDocuments.drop();
+    List<Document> testTodos = new ArrayList<>();
+    testTodos.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a cat")
+        .append("status", false));
+    testTodos.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a dog")
+        .append("status", false));
+    testTodos.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a park")
+        .append("status", true));
+
+    todoDocuments.insertMany(testTodos);
 
     hostController = new HostController(db);
   }

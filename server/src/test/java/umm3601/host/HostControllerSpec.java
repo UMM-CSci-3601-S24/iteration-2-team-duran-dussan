@@ -37,6 +37,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
@@ -238,6 +239,17 @@ public class HostControllerSpec {
 
     assertEquals("Best Hunt", huntCaptor.getValue().name);
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
+  }
+
+  @Test
+  void getHuntWithBadId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getHunt(ctx);
+    });
+
+    assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
   }
 
   @Test
@@ -541,7 +553,7 @@ public class HostControllerSpec {
         {
           "huntId": "bestHuntId",
           "name": "",
-          "status": "complete"
+          "status": null
         }
         """;
     when(ctx.bodyValidator(Task.class))

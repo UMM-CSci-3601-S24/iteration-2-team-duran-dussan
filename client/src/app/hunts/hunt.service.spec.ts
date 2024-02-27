@@ -73,6 +73,91 @@ describe('When getHunts() is called with no parameters', () => {
    }));
  });
 
+ describe('When getHunts() is called with parameters, it correctly forms the HTTP request (Javalin/Server filtering)', () => {
+
+  it('correctly calls api/hunts with filter parameter \'name\'', () => {
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
+
+      huntService.getHunts({ name: 'Ann' }).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(huntService.huntUrl, { params: new HttpParams().set('name', 'Ann') });
+      });
+  });
+
+  it('correctly calls api/users with filter parameter \'est\'', () => {
+    const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
+
+    huntService.getHunts({ est: 30 }).subscribe(() => {
+      expect(mockedMethod)
+        .withContext('one call')
+        .toHaveBeenCalledTimes(1);
+      expect(mockedMethod)
+        .withContext('talks to the correct endpoint')
+        .toHaveBeenCalledWith(huntService.huntUrl, { params: new HttpParams().set('est', '30') });
+    });
+  });
+
+  it('correctly calls api/users with filter parameter \'numberOfTasks\'', () => {
+    const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
+
+    huntService.getHunts({ numberOfTasks: 10 }).subscribe(() => {
+      expect(mockedMethod)
+        .withContext('one call')
+        .toHaveBeenCalledTimes(1);
+      expect(mockedMethod)
+        .withContext('talks to the correct endpoint')
+        .toHaveBeenCalledWith(huntService.huntUrl, { params: new HttpParams().set('numberOfTasks', '10') });
+    });
+  });
+
+  it('correctly calls api/users with filter parameter \'description\'', () => {
+    const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
+
+    huntService.getHunts({ description: 'exciting hunt' }).subscribe(() => {
+      expect(mockedMethod)
+        .withContext('one call')
+        .toHaveBeenCalledTimes(1);
+      expect(mockedMethod)
+        .withContext('talks to the correct endpoint')
+        .toHaveBeenCalledWith(huntService.huntUrl, { params: new HttpParams().set('description', 'exciting hunt') });
+    });
+  });
+
+  it('correctly calls api/users with multiple filter parameters', () => {
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
+
+      huntService.getHunts({ name: 'Fran', est: 45, numberOfTasks: 13 }).subscribe(() => {
+
+        const [url, options] = mockedMethod.calls.argsFor(0);
+
+        const calledHttpParams: HttpParams = (options.params) as HttpParams;
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(url)
+          .withContext('talks to the correct endpoint')
+          .toEqual(huntService.huntUrl);
+        expect(calledHttpParams.keys().length)
+          .withContext('should have 3 params')
+          .toEqual(3);
+        expect(calledHttpParams.get('name'))
+          .withContext('name of hunt')
+          .toEqual('Fran');
+        expect(calledHttpParams.get('est'))
+          .withContext('estimated time')
+          .toEqual('45');
+        expect(calledHttpParams.get('numberOfTasks'))
+          .withContext('numberOfTasks being 13')
+          .toEqual('13');
+      });
+  });
+});
+
 
 
 })

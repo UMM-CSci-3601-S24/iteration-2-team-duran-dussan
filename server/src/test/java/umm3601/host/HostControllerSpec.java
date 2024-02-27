@@ -464,4 +464,91 @@ public class HostControllerSpec {
     assertEquals("bestHuntId", addedTask.get("huntId"));
     assertEquals(false, addedTask.get("status"));
   }
+
+  @Test
+  void addInvalidHuntIdTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "",
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidHuntIdNullTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": null,
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidNoNameTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidLongNameTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "This description has to be longer than two hundred characters so that it is invalid
+          when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
+          Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidStatusTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "",
+          "status": "complete"
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
 }

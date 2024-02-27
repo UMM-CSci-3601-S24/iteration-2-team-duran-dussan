@@ -365,8 +365,8 @@ public class HostControllerSpec {
           "hostId": "frysId",
           "name": "New Hunt",
           "description": "This description has to be longer than two hundred characters so that it is invalid
-          when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
-          Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+           when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
+           Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
           "est": 45,
           "numberOfTasks": 3
         }
@@ -530,15 +530,14 @@ public class HostControllerSpec {
 
   @Test
   void addInvalidLongNameTask() throws IOException {
-    String testNewTask = """
+    String tooLong = "t".repeat(HostController.REASONABLE_NAME_LENGTH_TASK + 1);
+    String testNewTask = String.format("""
         {
           "huntId": "bestHuntId",
-          "name": "This description has to be longer than two hundred characters so that it is invalid
-          when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
-          Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+          "name": %s,
           "status": false
         }
-        """;
+        """, tooLong);
     when(ctx.bodyValidator(Task.class))
         .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
 

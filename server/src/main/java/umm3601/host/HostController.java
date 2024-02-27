@@ -33,11 +33,11 @@ public class HostController implements Controller {
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
 
-  private static final int REASONABLE_NAME_LENGTH_HUNT = 50;
-  private static final int REASONABLE_DESCRIPTION_LENGTH_HUNT = 200;
+  static final int REASONABLE_NAME_LENGTH_HUNT = 50;
+  static final int REASONABLE_DESCRIPTION_LENGTH_HUNT = 200;
   private static final int REASONABLE_EST_LENGTH_HUNT = 240;
 
-  private static final int REASONABLE_NAME_LENGTH_TASK = 150;
+  static final int REASONABLE_NAME_LENGTH_TASK = 150;
 
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
@@ -166,7 +166,6 @@ public class HostController implements Controller {
     .check(task -> task.huntId != null && task.huntId.length() > 0, "Invalid huntId")
     .check(task -> task.name.length() < REASONABLE_NAME_LENGTH_TASK, "Name must be less than 150 characters")
     .check(task -> task.name.length() > 0, "Name must be at least 1 character")
-    .check(task -> task.status || !task.status, "Task must have a boolean status")
     .get();
 
     taskCollection.insertOne(newTask);

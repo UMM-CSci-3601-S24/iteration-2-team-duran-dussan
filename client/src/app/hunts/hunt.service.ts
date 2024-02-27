@@ -18,7 +18,7 @@ export class HuntService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getHunts(filters?: { name?: string; numberOfTasks?: number; est?: number; description?: string; }): Observable<Hunt[]> {
+  getHunts(filters?: { name?: string; numberOfTasks?: number; est?: number; description?: string; hostId?: string }): Observable<Hunt[]> {
     let httpParams: HttpParams = new HttpParams();
     if(filters) {
       if (filters.name){

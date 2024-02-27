@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     imports: [MatCardModule, MatButtonModule, MatListModule, MatIconModule, RouterLink]
 })
 export class HuntCardComponent implements OnInit, OnDestroy  {
-  // These are public so that tests can reference them (.spec.ts)
+
   public serverFilteredHunts: Hunt[];
   public filteredHunts: Hunt[];
 

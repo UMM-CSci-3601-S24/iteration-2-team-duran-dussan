@@ -10,7 +10,7 @@ const testHunts: Hunt[] = [
   {
     _id: "ann_id",
   hostId: "ann_hid",
-  name: "Ann",
+  name: "Anns Hunt",
   description: "exciting hunt",
   est: 30,
   numberOfTasks: 10,
@@ -18,7 +18,7 @@ const testHunts: Hunt[] = [
   {
     _id: "fran_id",
   hostId: "fran_hid",
-  name: "Fran",
+  name: "Frans Hunt",
   description: "super exciting hunt",
   est: 45,
   numberOfTasks: 13,
@@ -26,7 +26,7 @@ const testHunts: Hunt[] = [
   {
     _id: "jan_id",
   hostId: "jan_hid",
-  name: "Jan",
+  name: "Jans Hunt",
   description: "super fun and exciting hunt",
   est: 60,
   numberOfTasks: 18,
@@ -78,14 +78,14 @@ describe('When getHunts() is called with no parameters', () => {
   it('correctly calls api/hunts with filter parameter \'name\'', () => {
       const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
 
-      huntService.getHunts({ name: 'Ann' }).subscribe(() => {
+      huntService.getHunts({ name: 'Anns Hunt' }).subscribe(() => {
         expect(mockedMethod)
           .withContext('one call')
           .toHaveBeenCalledTimes(1);
 
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith(huntService.huntUrl, { params: new HttpParams().set('name', 'Ann') });
+          .toHaveBeenCalledWith(huntService.huntUrl, { params: new HttpParams().set('name', 'Anns Hunt') });
       });
   });
 
@@ -131,7 +131,7 @@ describe('When getHunts() is called with no parameters', () => {
   it('correctly calls api/users with multiple filter parameters', () => {
       const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
 
-      huntService.getHunts({ name: 'Fran', est: 45, numberOfTasks: 13 }).subscribe(() => {
+      huntService.getHunts({ name: 'Frans Hunt', est: 45, numberOfTasks: 13 }).subscribe(() => {
 
         const [url, options] = mockedMethod.calls.argsFor(0);
 
@@ -147,7 +147,7 @@ describe('When getHunts() is called with no parameters', () => {
           .toEqual(3);
         expect(calledHttpParams.get('name'))
           .withContext('name of hunt')
-          .toEqual('Fran');
+          .toEqual('Frans Hunt');
         expect(calledHttpParams.get('est'))
           .withContext('estimated time')
           .toEqual('45');

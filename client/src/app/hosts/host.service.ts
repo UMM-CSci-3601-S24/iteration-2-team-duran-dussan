@@ -39,22 +39,4 @@ export class HostService {
     return this.httpClient.get<Host>(`${this.hostUrl}/${userName}`);
   }
 
-  filterHosts(hosts: Host[], filters: { name?: string; userName?: string }): Host[] {
-    let filteredHosts = hosts;
-
-    // Filter by name
-    if (filters.name) {
-      filters.name = filters.name.toLowerCase();
-      filteredHosts = filteredHosts.filter(host => host.name.toLowerCase().indexOf(filters.name) !== -1);
-    }
-
-    // Filter by userName
-    if (filters.userName) {
-      filters.userName = filters.userName.toLowerCase();
-      filteredHosts = filteredHosts.filter(host => host.userName.toLowerCase().indexOf(filters.userName) !== -1);
-    }
-
-    return filteredHosts;
-  }
-
 }

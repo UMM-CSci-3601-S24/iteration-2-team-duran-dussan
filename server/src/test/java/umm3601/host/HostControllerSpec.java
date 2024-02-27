@@ -240,7 +240,7 @@ public class HostControllerSpec {
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
   }
 
-   @Test
+  @Test
   void addHunt() throws IOException {
     String testNewHunt = """
         {
@@ -437,5 +437,31 @@ public class HostControllerSpec {
     for (Task task : taskArrayListCaptor.getValue()) {
       assertEquals("huntId", task.huntId);
     }
+  }
+
+  @Test
+  void addTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "huntId",
+          "name": "New Task",
+          "status": false,
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    hostController.addNewTask(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    Document addedTask = db.getCollection("Tasks")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    assertNotEquals("", addedTask.get("_id"));
+    assertEquals("New Task", addedTask.get("name"));
+    assertEquals("huntId", addedTask.get("huntId"));
+    assertEquals(false, addedTask.get("status"));
   }
 }

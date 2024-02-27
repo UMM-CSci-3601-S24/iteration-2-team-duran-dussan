@@ -58,6 +58,23 @@ public class HostController implements Controller {
        UuidRepresentation.STANDARD);
   }
 
+  public void getHost(Context cts) {
+    String id = cts.pathParam("id");
+    Host host;
+
+    try {
+      host = hostCollection.find(eq("_id", new ObjectId(id))).first();
+    } catch (IllegalArgumentException e) {
+      throw new BadRequestResponse("The requested host id wasn't a legal Mongo Object ID.");
+    }
+    if (host == null) {
+      throw new BadRequestResponse("The requested host was not found");
+    } else {
+      cts.json(host);
+      cts.status(HttpStatus.OK);
+    }
+  }
+
   public void getHunt(Context cts) {
     String id = cts.pathParam("id");
     Hunt hunt;

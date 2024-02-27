@@ -149,26 +149,26 @@ public class HostControllerSpec {
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
 
-    MongoCollection<Document> todoDocuments = db.getCollection("todos");
-    huntDocuments.drop();
-    List<Document> testTodos = new ArrayList<>();
-    testTodos.add(
+    MongoCollection<Document> taskDocuments = db.getCollection("tasks");
+    taskDocuments.drop();
+    List<Document> testTasks = new ArrayList<>();
+    testTasks.add(
       new Document()
         .append("huntId", "huntId")
         .append("name", "Take a picture of a cat")
         .append("status", false));
-    testTodos.add(
+    testTasks.add(
       new Document()
         .append("huntId", "huntId")
         .append("name", "Take a picture of a dog")
         .append("status", false));
-    testTodos.add(
+    testTasks.add(
       new Document()
         .append("huntId", "huntId")
         .append("name", "Take a picture of a park")
         .append("status", true));
 
-    todoDocuments.insertMany(testTodos);
+    taskDocuments.insertMany(testTasks);
 
     hostController = new HostController(db);
   }

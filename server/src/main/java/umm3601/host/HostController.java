@@ -111,12 +111,12 @@ public class HostController implements Controller {
     Bson combinedFilter = constructFilterTasks(ctx);
     Bson sortingOrder = constructSortingOrderTasks(ctx);
 
-    ArrayList<Hunt> matchingHunts = huntCollection
+    ArrayList<Task> matchingTasks = taskCollection
       .find(combinedFilter)
       .sort(sortingOrder)
       .into(new ArrayList<>());
 
-    ctx.json(matchingHunts);
+    ctx.json(matchingTasks);
 
     ctx.status(HttpStatus.OK);
   }

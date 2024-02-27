@@ -27,8 +27,10 @@ public class HostController implements Controller {
 
   private static final String API_HOSTS = "/api/hosts";
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
-  static final String HOST_KEY = "hostId";
   private static final String API_HUNTS = "/api/hunts";
+
+  static final String HOST_KEY = "hostId";
+  static final String HUNT_KEY = "huntId";
 
   private static final int REASONABLE_NAME_LENGTH = 50;
   private static final int REASONABLE_DESCRIPTION_LENGTH = 200;
@@ -124,9 +126,9 @@ public class HostController implements Controller {
   private Bson constructFilterTasks(Context ctx) {
     List<Bson> filters = new ArrayList<>();
 
-    if (ctx.queryParamMap().containsKey(HOST_KEY)) {
-      String targetHost = ctx.queryParamAsClass(HOST_KEY, String.class).get();
-      filters.add(eq(HOST_KEY, targetHost));
+    if (ctx.queryParamMap().containsKey(HUNT_KEY)) {
+      String targetHunt = ctx.queryParamAsClass(HUNT_KEY, String.class).get();
+      filters.add(eq(HUNT_KEY, targetHunt));
     }
 
     Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);

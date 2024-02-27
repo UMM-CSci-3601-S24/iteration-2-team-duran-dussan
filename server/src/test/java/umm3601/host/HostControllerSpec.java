@@ -443,9 +443,9 @@ public class HostControllerSpec {
   void addTask() throws IOException {
     String testNewTask = """
         {
-          "huntId": "huntId",
+          "huntId": "bestHuntId",
           "name": "New Task",
-          "status": false,
+          "status": false
         }
         """;
     when(ctx.bodyValidator(Task.class))
@@ -456,12 +456,12 @@ public class HostControllerSpec {
 
     verify(ctx).status(HttpStatus.CREATED);
 
-    Document addedTask = db.getCollection("Tasks")
+    Document addedTask = db.getCollection("tasks")
         .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
 
     assertNotEquals("", addedTask.get("_id"));
     assertEquals("New Task", addedTask.get("name"));
-    assertEquals("huntId", addedTask.get("huntId"));
+    assertEquals("bestHuntId", addedTask.get("huntId"));
     assertEquals(false, addedTask.get("status"));
   }
 }

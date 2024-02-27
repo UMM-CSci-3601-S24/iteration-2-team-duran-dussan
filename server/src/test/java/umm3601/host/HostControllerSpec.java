@@ -360,17 +360,16 @@ public class HostControllerSpec {
 
   @Test
   void addInvalidDescriptionHunt() throws IOException {
-    String testNewHunt = """
+    String tooLong = "t".repeat(HostController.REASONABLE_DESCRIPTION_LENGTH_HUNT + 1);
+    String testNewHunt = String.format("""
         {
           "hostId": "frysId",
           "name": "New Hunt",
-          "description": "This description has to be longer than two hundred characters so that it is invalid
-           when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
-           Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+          "description": "%s",
           "est": 45,
           "numberOfTasks": 3
         }
-        """;
+        """, tooLong);
     when(ctx.bodyValidator(Hunt.class))
         .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
 
@@ -534,7 +533,7 @@ public class HostControllerSpec {
     String testNewTask = String.format("""
         {
           "huntId": "bestHuntId",
-          "name": %s,
+          "name": "%s",
           "status": false
         }
         """, tooLong);

@@ -136,6 +136,13 @@ public class HostControllerSpec {
         .append("description", "Fry's hunt for money")
         .append("est", 40)
         .append("numberOfTasks", 1));
+    testHunts.add(
+      new Document()
+        .append("hostId", "differentId")
+        .append("name", "Different's Hunt")
+        .append("description", "Different's hunt for money")
+        .append("est", 60)
+        .append("numberOfTasks", 10));
 
         huntId = new ObjectId();
     Document hunt = new Document()

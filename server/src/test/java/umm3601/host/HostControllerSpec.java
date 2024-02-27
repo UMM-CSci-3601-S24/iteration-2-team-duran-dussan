@@ -1,6 +1,9 @@
 package umm3601.host;
 
+import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -37,6 +40,8 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.json.JavalinJackson;
+import io.javalin.validation.BodyValidator;
+import io.javalin.validation.ValidationException;
 import io.javalin.validation.Validator;
 
 @SuppressWarnings({ "MagicNumber" })
@@ -110,33 +115,21 @@ public class HostControllerSpec {
         .append("name", "Fry's Hunt")
         .append("description", "Fry's hunt for the seven leaf clover")
         .append("est", 20)
-        .append("tasks", Arrays.asList(
-          new ObjectId(),
-          new ObjectId(),
-          new ObjectId()
-        )));
+        .append("numberOfTasks", 5));
     testHunts.add(
       new Document()
         .append("hostId", "frysId")
         .append("name", "Fry's Hunt 2")
         .append("description", "Fry's hunt for Morris")
         .append("est", 30)
-        .append("tasks", Arrays.asList(
-          new ObjectId(),
-          new ObjectId(),
-          new ObjectId()
-        )));
+        .append("numberOfTasks", 2));
     testHunts.add(
       new Document()
         .append("hostId", "frysId")
         .append("name", "Fry's Hunt 3")
         .append("description", "Fry's hunt for money")
         .append("est", 40)
-        .append("tasks", Arrays.asList(
-          new ObjectId(),
-          new ObjectId(),
-          new ObjectId()
-        )));
+        .append("numberOfTasks", 1));
 
         huntId = new ObjectId();
     Document hunt = new Document()
@@ -145,11 +138,7 @@ public class HostControllerSpec {
       .append("name", "Best Hunt")
       .append("description", "This is the best hunt")
       .append("est", 20)
-      .append("tasks", Arrays.asList(
-        new ObjectId(),
-        new ObjectId(),
-        new ObjectId()
-      ));
+      .append("numberOfTasks", 3);
 
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
@@ -180,7 +169,7 @@ public class HostControllerSpec {
   }
 
   @Test
-  void getHostsWithCategorySoftwareDesign() throws IOException {
+  void getHuntsByHostId() throws IOException {
     Map<String, List<String>> queryParams = new HashMap<>();
     queryParams.put("hostId", Collections.singletonList("frysId"));
     when(ctx.queryParamMap()).thenReturn(queryParams);
@@ -210,5 +199,170 @@ public class HostControllerSpec {
 
     assertEquals("Best Hunt", huntCaptor.getValue().name);
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
+  }
+
+   @Test
+  void addHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    hostController.addNewHunt(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    Document addedHunt = db.getCollection("hunts")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    assertNotEquals("", addedHunt.get("_id"));
+    assertEquals("New Hunt", addedHunt.get("name"));
+    assertEquals("frysId", addedHunt.get(HostController.HOST_KEY));
+    assertEquals("Newly made hunt", addedHunt.get("description"));
+    assertEquals(45, addedHunt.get("est"));
+    assertEquals(3, addedHunt.get("numberOfTasks"));
+  }
+
+  @Test
+  void addInvalidNoNameHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "",
+          "description": "Newly made hunt",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidLongNameHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "This should be a name that is too long to be valid hopefully",
+          "description": "Newly made hunt",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidHostIdHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "",
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidHostNullIdHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": null,
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidDescriptionHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "New Hunt",
+          "description": "This description has to be longer than two hundred characters so that it is invalid
+          when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
+          Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+          "est": 45,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidESTHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "New Hunt",
+          "description": "This is a great hunt",
+          "est": 300,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidNumberOfTasksHunt() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "New Hunt",
+          "description": "This is a great hunt",
+          "est": 30,
+          "numberOfTasks":
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewHunt(ctx);
+    });
   }
 }

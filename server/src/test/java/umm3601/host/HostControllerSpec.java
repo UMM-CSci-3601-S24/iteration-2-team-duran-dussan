@@ -392,4 +392,19 @@ public class HostControllerSpec {
       hostController.addNewHunt(ctx);
     });
   }
+
+  @Test
+  void canGetAllTasks() throws IOException {
+
+    when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
+
+    hostController.getTasks(ctx);
+
+    verify(ctx).json(taskArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(
+        db.getCollection("tasks").countDocuments(),
+        taskArrayListCaptor.getValue().size());
+  }
 }

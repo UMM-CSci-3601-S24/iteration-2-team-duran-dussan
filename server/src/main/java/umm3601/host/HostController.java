@@ -108,8 +108,7 @@ public class HostController implements Controller {
 
   private Bson constructSortingOrderHunts(Context ctx) {
     String sortBy = Objects.requireNonNullElse(ctx.queryParam("sortby"), "name");
-    String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
-    Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
+    Bson sortingOrder = Sorts.ascending(sortBy);
     return sortingOrder;
   }
 
@@ -142,8 +141,7 @@ public class HostController implements Controller {
 
   private Bson constructSortingOrderTasks(Context ctx) {
     String sortBy = Objects.requireNonNullElse(ctx.queryParam("sortby"), "name");
-    String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
-    Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
+    Bson sortingOrder = Sorts.ascending(sortBy);
     return sortingOrder;
   }
 

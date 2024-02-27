@@ -66,10 +66,16 @@ public class HostControllerSpec {
   private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
+  private ArgumentCaptor<ArrayList<Task>> taskArrayListCaptor;
+
+  @Captor
   private ArgumentCaptor<Host> hostCaptor;
 
   @Captor
   private ArgumentCaptor<Hunt> huntCaptor;
+
+  @Captor
+  private ArgumentCaptor<Task> taskCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -130,6 +136,13 @@ public class HostControllerSpec {
         .append("description", "Fry's hunt for money")
         .append("est", 40)
         .append("numberOfTasks", 1));
+    testHunts.add(
+      new Document()
+        .append("hostId", "differentId")
+        .append("name", "Different's Hunt")
+        .append("description", "Different's hunt for money")
+        .append("est", 60)
+        .append("numberOfTasks", 10));
 
         huntId = new ObjectId();
     Document hunt = new Document()
@@ -142,6 +155,32 @@ public class HostControllerSpec {
 
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
+
+    MongoCollection<Document> taskDocuments = db.getCollection("tasks");
+    taskDocuments.drop();
+    List<Document> testTasks = new ArrayList<>();
+    testTasks.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a cat")
+        .append("status", false));
+    testTasks.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a dog")
+        .append("status", false));
+    testTasks.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a park")
+        .append("status", true));
+    testTasks.add(
+      new Document()
+        .append("huntId", "differentId")
+        .append("name", "Take a picture of a moose")
+        .append("status", true));
+
+    taskDocuments.insertMany(testTasks);
 
     hostController = new HostController(db);
   }
@@ -364,5 +403,39 @@ public class HostControllerSpec {
     assertThrows(ValidationException.class, () -> {
       hostController.addNewHunt(ctx);
     });
+  }
+
+  @Test
+  void canGetAllTasks() throws IOException {
+
+    when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
+
+    hostController.getTasks(ctx);
+
+    verify(ctx).json(taskArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(
+        db.getCollection("tasks").countDocuments(),
+        taskArrayListCaptor.getValue().size());
+  }
+
+  @Test
+  void getTasksByHuntId() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("huntId", Collections.singletonList("huntId"));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+    when(ctx.queryParamAsClass("huntId", String.class))
+    .thenReturn(Validator.create(String.class, "huntId", "huntId"));
+
+    hostController.getTasks(ctx);
+
+    verify(ctx).json(taskArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(3, taskArrayListCaptor.getValue().size());
+    for (Task task : taskArrayListCaptor.getValue()) {
+      assertEquals("huntId", task.huntId);
+    }
   }
 }

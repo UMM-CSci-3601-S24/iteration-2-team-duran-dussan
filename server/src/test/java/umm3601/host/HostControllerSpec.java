@@ -193,6 +193,20 @@ public class HostControllerSpec {
   }
 
   @Test
+  void getHostById() throws IOException {
+    String id = frysId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    hostController.getHost(ctx);
+
+    verify(ctx).json(hostCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals("Fry", hostCaptor.getValue().name);
+    assertEquals(frysId.toHexString(), hostCaptor.getValue()._id);
+  }
+
+  @Test
   void canGetAllHunts() throws IOException {
 
     when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());

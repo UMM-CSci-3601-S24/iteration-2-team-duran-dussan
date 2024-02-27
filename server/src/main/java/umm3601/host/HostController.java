@@ -36,6 +36,7 @@ public class HostController implements Controller {
 
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
+  private final JacksonMongoCollection<Task> taskCollection;
 
   public HostController(MongoDatabase database) {
     hostCollection = JacksonMongoCollection.builder().build(
@@ -47,6 +48,11 @@ public class HostController implements Controller {
       database,
       "hunts",
       Hunt.class,
+       UuidRepresentation.STANDARD);
+    taskCollection = JacksonMongoCollection.builder().build(
+      database,
+      "tasks",
+      Task.class,
        UuidRepresentation.STANDARD);
   }
 
@@ -68,8 +74,8 @@ public class HostController implements Controller {
   }
 
   public void getHunts(Context ctx) {
-    Bson combinedFilter = constructFilter(ctx);
-    Bson sortingOrder = constructSortingOrder(ctx);
+    Bson combinedFilter = constructFilterHunts(ctx);
+    Bson sortingOrder = constructSortingOrderHunts(ctx);
 
     ArrayList<Hunt> matchingHunts = huntCollection
       .find(combinedFilter)
@@ -81,7 +87,7 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
-  private Bson constructFilter(Context ctx) {
+  private Bson constructFilterHunts(Context ctx) {
     List<Bson> filters = new ArrayList<>();
 
     if (ctx.queryParamMap().containsKey(HOST_KEY)) {
@@ -94,7 +100,41 @@ public class HostController implements Controller {
     return combinedFilter;
   }
 
-  private Bson constructSortingOrder(Context ctx) {
+  private Bson constructSortingOrderHunts(Context ctx) {
+    String sortBy = Objects.requireNonNullElse(ctx.queryParam("sortby"), "name");
+    String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
+    Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
+    return sortingOrder;
+  }
+
+  public void getTasks(Context ctx) {
+    Bson combinedFilter = constructFilterTasks(ctx);
+    Bson sortingOrder = constructSortingOrderTasks(ctx);
+
+    ArrayList<Hunt> matchingHunts = huntCollection
+      .find(combinedFilter)
+      .sort(sortingOrder)
+      .into(new ArrayList<>());
+
+    ctx.json(matchingHunts);
+
+    ctx.status(HttpStatus.OK);
+  }
+
+  private Bson constructFilterTasks(Context ctx) {
+    List<Bson> filters = new ArrayList<>();
+
+    if (ctx.queryParamMap().containsKey(HOST_KEY)) {
+      String targetHost = ctx.queryParamAsClass(HOST_KEY, String.class).get();
+      filters.add(eq(HOST_KEY, targetHost));
+    }
+
+    Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
+
+    return combinedFilter;
+  }
+
+  private Bson constructSortingOrderTasks(Context ctx) {
     String sortBy = Objects.requireNonNullElse(ctx.queryParam("sortby"), "name");
     String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
     Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);

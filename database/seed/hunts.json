@@ -1,0 +1,32 @@
+[
+  {
+    "_id": {
+      "$oid": "588935f57546a2daea54de7c"
+    },
+    "hostId": "588945f57546a2daea44de7c",
+    "name": "Default Hunt 1",
+    "description": "This is the default hunt 1",
+    "est": 20,
+    "numberOfTasks": 4
+  },
+  {
+    "_id": {
+      "$oid": "588935f57547a2daea54de7c"
+    },
+    "hostId": "588945f57546a2daea44de7c",
+    "name": "Default Hunt 2",
+    "description": "This is the default hunt 2",
+    "est": 30,
+    "numberOfTasks": 6
+  },
+  {
+    "_id": {
+      "$oid": "588945f57546a2daea54de7c"
+    },
+    "hostId": "588945f57546a2daea44de7c",
+    "name": "Default Hunt 3",
+    "description": "This is the default hunt 3",
+    "est": 40,
+    "numberOfTasks": 8
+  }
+]

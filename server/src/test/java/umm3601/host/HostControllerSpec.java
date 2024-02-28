@@ -220,7 +220,7 @@ public class HostControllerSpec {
   }
 
     @Test
-  void getHuntWithNonexistentId() throws IOException {
+  void getHostWithNonexistentId() throws IOException {
     String id = "588935f5c668650dc77df581";
     when(ctx.pathParam("id")).thenReturn(id);
 
@@ -279,7 +279,30 @@ public class HostControllerSpec {
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
   }
 
-   @Test
+  @Test
+  void getHuntWithBadId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getHunt(ctx);
+    });
+
+    assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
+  }
+
+    @Test
+  void getHuntWithNonexistentId() throws IOException {
+    String id = "588935f5c668650dc77df581";
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Throwable exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.getHunt(ctx);
+    });
+
+    assertEquals("The requested hunt was not found", exception.getMessage());
+  }
+
+  @Test
   void addHunt() throws IOException {
     String testNewHunt = """
         {
@@ -387,17 +410,16 @@ public class HostControllerSpec {
 
   @Test
   void addInvalidDescriptionHunt() throws IOException {
-    String testNewHunt = """
+    String tooLong = "t".repeat(HostController.REASONABLE_DESCRIPTION_LENGTH_HUNT + 1);
+    String testNewHunt = String.format("""
         {
           "hostId": "frysId",
           "name": "New Hunt",
-          "description": "This description has to be longer than two hundred characters so that it is invalid
-          when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
-          Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+          "description": "%s",
           "est": 45,
           "numberOfTasks": 3
         }
-        """;
+        """, tooLong);
     when(ctx.bodyValidator(Hunt.class))
         .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
 
@@ -476,5 +498,117 @@ public class HostControllerSpec {
     for (Task task : taskArrayListCaptor.getValue()) {
       assertEquals("huntId", task.huntId);
     }
+  }
+
+  @Test
+  void addTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    hostController.addNewTask(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    Document addedTask = db.getCollection("tasks")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    assertNotEquals("", addedTask.get("_id"));
+    assertEquals("New Task", addedTask.get("name"));
+    assertEquals("bestHuntId", addedTask.get("huntId"));
+    assertEquals(false, addedTask.get("status"));
+  }
+
+  @Test
+  void addInvalidHuntIdTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "",
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidHuntIdNullTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": null,
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidNoNameTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidLongNameTask() throws IOException {
+    String tooLong = "t".repeat(HostController.REASONABLE_NAME_LENGTH_TASK + 1);
+    String testNewTask = String.format("""
+        {
+          "huntId": "bestHuntId",
+          "name": "%s",
+          "status": false
+        }
+        """, tooLong);
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidStatusTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "",
+          "status": null
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
   }
 }

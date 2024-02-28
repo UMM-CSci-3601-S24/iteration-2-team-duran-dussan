@@ -220,7 +220,7 @@ public class HostControllerSpec {
   }
 
     @Test
-  void getHuntWithNonexistentId() throws IOException {
+  void getHostWithNonexistentId() throws IOException {
     String id = "588935f5c668650dc77df581";
     when(ctx.pathParam("id")).thenReturn(id);
 

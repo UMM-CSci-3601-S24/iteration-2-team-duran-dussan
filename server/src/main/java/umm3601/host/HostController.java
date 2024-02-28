@@ -26,7 +26,6 @@ import com.mongodb.client.model.Sorts;
 
 public class HostController implements Controller {
 
-  private static final String API_HOSTS = "/api/hosts";
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASKS = "/api/hunts";
@@ -61,7 +60,7 @@ public class HostController implements Controller {
       Task.class,
        UuidRepresentation.STANDARD);
   }
-  
+
   public void getHost(Context cts) {
     String id = cts.pathParam("id");
     Host host;
@@ -79,8 +78,8 @@ public class HostController implements Controller {
     }
   }
 
-  public void getHunt(Context cts) {
-    String id = cts.pathParam("id");
+  public void getHunt(Context ctx) {
+    String id = ctx.pathParam("id");
     Hunt hunt;
 
     try {
@@ -191,6 +190,8 @@ public class HostController implements Controller {
 
   @Override
   public void addRoutes(Javalin server) {
+
+    server.get(API_HOST_BY_ID, this::getHost);
 
     server.get(API_HUNTS, this::getHunts);
 

@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import io.javalin.http.NotFoundResponse;
 import umm3601.Controller;
 
 import static com.mongodb.client.model.Filters.and;
@@ -56,6 +57,23 @@ public class HostController implements Controller {
       "tasks",
       Task.class,
        UuidRepresentation.STANDARD);
+  }
+
+  public void getHost(Context cts) {
+    String id = cts.pathParam("id");
+    Host host;
+
+    try {
+      host = hostCollection.find(eq("_id", new ObjectId(id))).first();
+    } catch (IllegalArgumentException e) {
+      throw new BadRequestResponse("The requested host id wasn't a legal Mongo Object ID.");
+    }
+    if (host == null) {
+      throw new NotFoundResponse("The requested host was not found");
+    } else {
+      cts.json(host);
+      cts.status(HttpStatus.OK);
+    }
   }
 
   public void getHunt(Context cts) {

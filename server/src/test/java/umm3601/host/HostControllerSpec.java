@@ -37,8 +37,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.BodyValidator;
 import io.javalin.validation.ValidationException;
@@ -190,6 +192,43 @@ public class HostControllerSpec {
     Javalin mockServer = mock(Javalin.class);
     hostController.addRoutes(mockServer);
     verify(mockServer, Mockito.atLeast(1)).get(any(), any());
+  }
+
+  @Test
+  void getHostById() throws IOException {
+    String id = frysId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    hostController.getHost(ctx);
+
+    verify(ctx).json(hostCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals("Fry", hostCaptor.getValue().name);
+    assertEquals(frysId.toHexString(), hostCaptor.getValue()._id);
+  }
+
+  @Test
+  void getHostWithBadId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getHost(ctx);
+    });
+
+    assertEquals("The requested host id wasn't a legal Mongo Object ID.", exception.getMessage());
+  }
+
+    @Test
+  void getHuntWithNonexistentId() throws IOException {
+    String id = "588935f5c668650dc77df581";
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Throwable exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.getHost(ctx);
+    });
+
+    assertEquals("The requested host was not found", exception.getMessage());
   }
 
   @Test

@@ -37,8 +37,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.BodyValidator;
 import io.javalin.validation.ValidationException;
@@ -66,10 +68,16 @@ public class HostControllerSpec {
   private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
+  private ArgumentCaptor<ArrayList<Task>> taskArrayListCaptor;
+
+  @Captor
   private ArgumentCaptor<Host> hostCaptor;
 
   @Captor
   private ArgumentCaptor<Hunt> huntCaptor;
+
+  @Captor
+  private ArgumentCaptor<Task> taskCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -130,6 +138,13 @@ public class HostControllerSpec {
         .append("description", "Fry's hunt for money")
         .append("est", 40)
         .append("numberOfTasks", 1));
+    testHunts.add(
+      new Document()
+        .append("hostId", "differentId")
+        .append("name", "Different's Hunt")
+        .append("description", "Different's hunt for money")
+        .append("est", 60)
+        .append("numberOfTasks", 10));
 
         huntId = new ObjectId();
     Document hunt = new Document()
@@ -143,6 +158,32 @@ public class HostControllerSpec {
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
 
+    MongoCollection<Document> taskDocuments = db.getCollection("tasks");
+    taskDocuments.drop();
+    List<Document> testTasks = new ArrayList<>();
+    testTasks.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a cat")
+        .append("status", false));
+    testTasks.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a dog")
+        .append("status", false));
+    testTasks.add(
+      new Document()
+        .append("huntId", "huntId")
+        .append("name", "Take a picture of a park")
+        .append("status", true));
+    testTasks.add(
+      new Document()
+        .append("huntId", "differentId")
+        .append("name", "Take a picture of a moose")
+        .append("status", true));
+
+    taskDocuments.insertMany(testTasks);
+
     hostController = new HostController(db);
   }
 
@@ -151,6 +192,43 @@ public class HostControllerSpec {
     Javalin mockServer = mock(Javalin.class);
     hostController.addRoutes(mockServer);
     verify(mockServer, Mockito.atLeast(1)).get(any(), any());
+  }
+
+  @Test
+  void getHostById() throws IOException {
+    String id = frysId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    hostController.getHost(ctx);
+
+    verify(ctx).json(hostCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals("Fry", hostCaptor.getValue().name);
+    assertEquals(frysId.toHexString(), hostCaptor.getValue()._id);
+  }
+
+  @Test
+  void getHostWithBadId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getHost(ctx);
+    });
+
+    assertEquals("The requested host id wasn't a legal Mongo Object ID.", exception.getMessage());
+  }
+
+    @Test
+  void getHostWithNonexistentId() throws IOException {
+    String id = "588935f5c668650dc77df581";
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Throwable exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.getHost(ctx);
+    });
+
+    assertEquals("The requested host was not found", exception.getMessage());
   }
 
   @Test
@@ -201,7 +279,30 @@ public class HostControllerSpec {
     assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
   }
 
-   @Test
+  @Test
+  void getHuntWithBadId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getHunt(ctx);
+    });
+
+    assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
+  }
+
+    @Test
+  void getHuntWithNonexistentId() throws IOException {
+    String id = "588935f5c668650dc77df581";
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Throwable exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.getHunt(ctx);
+    });
+
+    assertEquals("The requested hunt was not found", exception.getMessage());
+  }
+
+  @Test
   void addHunt() throws IOException {
     String testNewHunt = """
         {
@@ -309,17 +410,16 @@ public class HostControllerSpec {
 
   @Test
   void addInvalidDescriptionHunt() throws IOException {
-    String testNewHunt = """
+    String tooLong = "t".repeat(HostController.REASONABLE_DESCRIPTION_LENGTH_HUNT + 1);
+    String testNewHunt = String.format("""
         {
           "hostId": "frysId",
           "name": "New Hunt",
-          "description": "This description has to be longer than two hundred characters so that it is invalid
-          when it tries to make a hunt. I really hope that this is long enough otherwise I have to type more.
-          Well it wasn't long enough so now I'm typing again and getting kind of sick of it.",
+          "description": "%s",
           "est": 45,
           "numberOfTasks": 3
         }
-        """;
+        """, tooLong);
     when(ctx.bodyValidator(Hunt.class))
         .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
 
@@ -363,6 +463,152 @@ public class HostControllerSpec {
 
     assertThrows(ValidationException.class, () -> {
       hostController.addNewHunt(ctx);
+    });
+  }
+
+  @Test
+  void canGetAllTasks() throws IOException {
+
+    when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
+
+    hostController.getTasks(ctx);
+
+    verify(ctx).json(taskArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(
+        db.getCollection("tasks").countDocuments(),
+        taskArrayListCaptor.getValue().size());
+  }
+
+  @Test
+  void getTasksByHuntId() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("huntId", Collections.singletonList("huntId"));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+    when(ctx.queryParamAsClass("huntId", String.class))
+    .thenReturn(Validator.create(String.class, "huntId", "huntId"));
+
+    hostController.getTasks(ctx);
+
+    verify(ctx).json(taskArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(3, taskArrayListCaptor.getValue().size());
+    for (Task task : taskArrayListCaptor.getValue()) {
+      assertEquals("huntId", task.huntId);
+    }
+  }
+
+  @Test
+  void addTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    hostController.addNewTask(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    Document addedTask = db.getCollection("tasks")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    assertNotEquals("", addedTask.get("_id"));
+    assertEquals("New Task", addedTask.get("name"));
+    assertEquals("bestHuntId", addedTask.get("huntId"));
+    assertEquals(false, addedTask.get("status"));
+  }
+
+  @Test
+  void addInvalidHuntIdTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "",
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidHuntIdNullTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": null,
+          "name": "New Task",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidNoNameTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "",
+          "status": false
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidLongNameTask() throws IOException {
+    String tooLong = "t".repeat(HostController.REASONABLE_NAME_LENGTH_TASK + 1);
+    String testNewTask = String.format("""
+        {
+          "huntId": "bestHuntId",
+          "name": "%s",
+          "status": false
+        }
+        """, tooLong);
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
+    });
+  }
+
+  @Test
+  void addInvalidStatusTask() throws IOException {
+    String testNewTask = """
+        {
+          "huntId": "bestHuntId",
+          "name": "",
+          "status": null
+        }
+        """;
+    when(ctx.bodyValidator(Task.class))
+        .then(value -> new BodyValidator<Task>(testNewTask, Task.class, javalinJackson));
+
+    assertThrows(ValidationException.class, () -> {
+      hostController.addNewTask(ctx);
     });
   }
 }

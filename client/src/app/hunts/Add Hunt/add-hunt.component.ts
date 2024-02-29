@@ -76,6 +76,26 @@ export class AddHuntComponent {
     return 'Unknown error';
   }
 
-};
+  submitForm() {
+    this.huntService.addHunt(this.addHuntForm.value).subscribe({
+      next: (newId) => {
+        this.snackBar.open(
+          `Added hunt ${this.addHuntForm.value.name}`,
+          null,
+          { duration: 2000 }
+        );
+        this.router.navigate(['/hunts/', newId]);
+      },
+      error: err => {
+        this.snackBar.open(
+          `Problem contacting the server – Error Code: ${err.status}\nMessage: ${err.message}`,
+          'OK',
+          { duration: 5000 }
+        );
+      },
+    });
+  }
+
+}
 
 

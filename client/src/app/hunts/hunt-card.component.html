@@ -30,3 +30,34 @@
     }
 </mat-card>
 }
+<div class="flex-row">
+  <div class="flex-1">
+
+    <mat-card class="search-card">
+      <mat-card-header>
+        <mat-card-title class="user-list-title">Hunts</mat-card-title>
+      </mat-card-header>
+      </mat-card>
+    </div>
+  </div>
+
+@if (this.hunt()) {
+  <mat-card class="hunt-card">
+    <mat-card-header>
+      <mat-card-title class="hunt-card-huntName">{{ this.hunt().name }}</mat-card-title>
+      <mat-card-subtitle class="user-card-company">{{ this.hunt().est }}</mat-card-subtitle>
+    </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <mat-icon matListItemIcon>schedule</mat-icon>
+            <p matListItemTitle>Name</p>
+            <p matListItemLine class="user-card-age">{{ this.hunt().name }}</p>
+          </mat-list-item>
+          <mat-divider [inset]=true></mat-divider>
+          <mat-list-item>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+</mat-card>
+}

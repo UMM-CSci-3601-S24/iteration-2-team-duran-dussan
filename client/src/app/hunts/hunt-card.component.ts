@@ -23,6 +23,8 @@ export class HuntCardComponent implements OnInit, OnDestroy  {
   public serverFilteredHunts: Hunt[];
   public filteredHunts: Hunt[];
 
+  hunt = input.required<Hunt>();
+
   public huntName: string;
   public huntEst: number;
   public huntDescription: string;
@@ -49,7 +51,7 @@ export class HuntCardComponent implements OnInit, OnDestroy  {
 
         this.serverFilteredHunts = returnedHunts;
 
-        //this.updateFilter();
+        // this.updateFilter();
       },
 
       error: (err) => {
@@ -68,11 +70,11 @@ export class HuntCardComponent implements OnInit, OnDestroy  {
     });
   }
 
-  /*
-  public updateFilter(): void {
-    this.filteredHunts = this.huntService.filterHunts(
-      this.serverFilteredHunts, { name: this.huntName, company: this.huntCompany });
-  } */
+  
+  // public updateFilter(): void {
+  //   this.filteredHunts = this.huntService.filterHunts(
+  //     this.serverFilteredHunts, { name: this.huntName, Est: this.huntEst });
+  // } 
 
 
   ngOnInit(): void {

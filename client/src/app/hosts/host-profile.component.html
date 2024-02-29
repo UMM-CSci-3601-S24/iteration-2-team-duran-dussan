@@ -1,0 +1,30 @@
+<div class="flex-row">
+  <div class="flex-1">
+    @if (hunt) {
+      <app-hunt-card [hunt]="this.hunt"></app-hunt-card>
+    } @else if (error) {
+      <mat-card class="error-card">
+        <mat-card-content>
+          <h2>
+            {{ error.help }}
+          </h2>
+          <p>
+            {{ error.message }}
+          </p>
+          <p>
+            {{ error.httpResponse }}
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button color=primary mat-raised-button routerLink="/hosts">Back to Hosts List</button>
+        </mat-card-actions>
+      </mat-card>
+    } @else {
+      <mat-card>
+        <mat-card-content>
+          <p>Loading Host Profile data...</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

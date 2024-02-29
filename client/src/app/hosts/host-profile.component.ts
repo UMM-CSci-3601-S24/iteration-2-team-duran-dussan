@@ -6,15 +6,18 @@ import { Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Host } from './host';
 import { HostService } from './host.service';
+import { HuntCardComponent } from '../hunts/hunt-card.component';
+import { Hunt } from '../hunts/hunt';
 
 @Component({
     selector: 'app-host-profile',
     templateUrl: './host-profile.component.html',
     styleUrls: ['./host-profile.component.scss'],
     standalone: true,
-    imports: [MatCardModule]
+    imports: [MatCardModule, HuntCardComponent]
 })
 export class HostProfileComponent implements OnInit, OnDestroy {
+  hunt: Hunt;
   host: Host;
   error: { help: string, httpResponse: string, message: string };
 
@@ -42,13 +45,13 @@ export class HostProfileComponent implements OnInit, OnDestroy {
     // down and clean up any associated resources (like memory).
     this.route.paramMap.pipe(
       // Map the paramMap into the id
-      map((paramMap: ParamMap) => paramMap.get('username')),
+      map((paramMap: ParamMap) => paramMap.get('id')),
       // Maps the `id` string into the Observable<Host>,
       // which will emit zero or one values depending on whether there is a
       // `Host` with that ID.
 
 
-      switchMap((userName: string) => this.hostService.getHostByUserName(userName)),
+      switchMap(() => this.hostService.getHostById("588945f57546a2daea44de7c")),
 
 
       // Allow the pipeline to continue to emit values until `this.ngUnsubscribe`
@@ -57,9 +60,9 @@ export class HostProfileComponent implements OnInit, OnDestroy {
       // associated resources (like memory) are cleaned up.
       takeUntil(this.ngUnsubscribe)
     ).subscribe({
-      next: host => {
-        this.host = host;
-        return host;
+      next: hunt => {
+        this.hunt = hunt;
+        return hunt;
       },
       error: _err => {
         this.error = {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +17,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     imports: [MatCardModule, MatButtonModule, MatListModule, MatIconModule, RouterLink]
 })
 export class HuntCardComponent implements OnInit, OnDestroy  {
+  hunt = input.required<Hunt>();
+  simple = input(false);
 
   public serverFilteredHunts: Hunt[];
   public filteredHunts: Hunt[];

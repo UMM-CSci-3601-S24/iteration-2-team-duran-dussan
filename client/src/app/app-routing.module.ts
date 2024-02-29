@@ -18,7 +18,7 @@ const routes: Routes = [
   {path: 'users/new', component: AddUserComponent, title: 'Add User'},
   {path: 'users/:id', component: UserProfileComponent, title: 'User Profile'},
   {path: 'companies', component: CompanyListComponent, title: 'Companies'},
-  {path: 'hosts', component: HostProfileComponent, title: 'Hosts Profile'},
+  {path: 'hosts', component: HostProfileComponent, title: 'Host Profile'},
   {path: 'hunts/:id', component: HuntProfileComponent, title: 'Hunts Profile'},
   {path: 'hunts', component: HuntCardComponent, title: 'Hunts'},
 ];

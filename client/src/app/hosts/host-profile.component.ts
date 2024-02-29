@@ -11,11 +11,11 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterLink } from "@angular/router";
-import { UserCardComponent } from "../users/user-card.component";
 import { Hunt } from "../hunts/hunt";
 import { Subject, takeUntil } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HostService } from "./host.service";
+import { HuntCardComponent } from "../hunts/hunt-card.component";
 
 @Component({
   selector: 'app-host-profile-component',
@@ -23,14 +23,15 @@ import { HostService } from "./host.service";
   styleUrls: ['./host-profile.component.scss'],
   providers: [],
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, MatRadioModule, UserCardComponent, MatListModule, RouterLink, MatButtonModule, MatTooltipModule, MatIconModule]
+  imports: [MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, MatRadioModule, MatListModule, RouterLink, MatButtonModule, MatTooltipModule, MatIconModule, HuntCardComponent]
 })
 
 export class HostProfileComponent implements OnInit, OnDestroy {
   public serverHunts: Hunt[];
   public userName: string;
   public name: string;
-  public hostId: string;
+  public hostId: "588945f57546a2daea44de7c";
+  public viewType: 'card'
 
   errMsg = '';
   private ngUnsubscribe = new Subject<void>();
@@ -39,9 +40,7 @@ export class HostProfileComponent implements OnInit, OnDestroy {
   }
 
   getHuntsFromServer(): void {
-    this.hostService.getHunts({
-      hostId: this.hostId
-    }).pipe(
+    this.hostService.getHunts(this.hostId).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe({
       next: (returnedHunts) => {

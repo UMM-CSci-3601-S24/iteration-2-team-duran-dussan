@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 //import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Host } from './host';
+import { Hunt } from '../hunts/hunt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HostService {
   readonly hostUrl: string = `${environment.apiUrl}hosts`;
+  readonly huntUrl: string = `${environment.apiUrl}hunts`;
 
   private readonly nameKey = 'name';
   private readonly userNameKey = 'username';
@@ -34,9 +36,21 @@ export class HostService {
 
   }
 
-  getHostById(id: string): Observable<Host> {
-    // The input to get could also be written as (this.userUrl + '/' + id)
-    return this.httpClient.get<Host>(`${this.hostUrl}/${id}`);
+  getHunts(filters?: { hostId?: string }): Observable<Hunt[]> {
+    let httpParams: HttpParams = new HttpParams();
+    if(filters) {
+      if (filters.hostId){
+        httpParams = httpParams.set(this.nameKey, filters.hostId);
+      }
+    }
+    return this.httpClient.get<Hunt[]>(this.huntUrl, {
+      params: httpParams,
+    });
+
+  }
+
+  getHuntById(id: string): Observable<Hunt> {
+    return this.httpClient.get<Hunt>(`${this.huntUrl}/${id}`);
   }
 
 }

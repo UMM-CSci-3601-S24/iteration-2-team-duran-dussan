@@ -28,7 +28,7 @@ public class HostController implements Controller {
 
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   private static final String API_HUNTS = "/api/hunts";
-  private static final String API_TASKS = "/api/hunts";
+  private static final String API_TASKS = "/api/tasks";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -191,9 +191,9 @@ public class HostController implements Controller {
   @Override
   public void addRoutes(Javalin server) {
 
-    server.get(API_HOST_BY_ID, this::getHost);
+    server.get(API_HOST_BY_ID, this::getHunts);
 
-    server.get(API_HUNTS, this::getHunts);
+    // server.get(API_HUNTS, this::getHunts);
 
     server.post(API_HUNTS, this::addNewHunt);
 

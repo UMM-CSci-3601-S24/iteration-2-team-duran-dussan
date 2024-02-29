@@ -1,5 +1,8 @@
 import { Component } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Router } from "@angular/router";
+import { HuntService } from "../hunt.service";
 
 
 @Component ({
@@ -51,6 +54,26 @@ export class AddHuntComponent {
       { type: 'max', message: 'Estimated time cannot be more than 4 hours' },
       { type: 'pattern', message: 'Estimated time must be a number' }
     ]
+  };
+
+  constructor(
+    private huntService: HuntService,
+    private snackBar: MatSnackBar,
+    private router: Router) {
+    }
+
+  formControlHasError(controlName: string): boolean {
+    return this.addHuntForm.get(controlName).invalid &&
+      (this.addHuntForm.get(controlName).dirty || this.addHuntForm.get(controlName).touched);
+  }
+
+  getErrorMessage(name: keyof typeof this.addHuntValidationMessages): string {
+    for(const {type, message} of this.addHuntValidationMessages[name]) {
+      if (this.addHuntForm.get(name).hasError(type)) {
+        return message;
+      }
+    }
+    return 'Unknown error';
   }
 
 };

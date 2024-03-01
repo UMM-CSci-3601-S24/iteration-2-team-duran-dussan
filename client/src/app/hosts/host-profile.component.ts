@@ -1,91 +1,72 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { Host } from './host';
-import { HostService } from './host.service';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatOptionModule } from "@angular/material/core";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { RouterLink } from "@angular/router";
+import { Hunt } from "../hunts/hunt";
+import { Subject, takeUntil } from "rxjs";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { HostService } from "./host.service";
+import { HuntCardComponent } from "../hunts/hunt-card.component";
 
 @Component({
-    selector: 'app-host-profile',
-    templateUrl: './host-profile.component.html',
-    styleUrls: ['./host-profile.component.scss'],
-    standalone: true,
-    imports: [MatCardModule]
+  selector: 'app-host-profile-component',
+  templateUrl: 'host-profile.component.html',
+  styleUrls: ['./host-profile.component.scss'],
+  providers: [],
+  standalone: true,
+  imports: [MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, MatRadioModule, MatListModule, RouterLink, MatButtonModule, MatTooltipModule, MatIconModule, HuntCardComponent]
 })
-export class HostProfileComponent implements OnInit, OnDestroy {
-  host: Host;
-  error: { help: string, httpResponse: string, message: string };
 
-  // This `Subject` will only ever emit one (empty) value when
-  // `ngOnDestroy()` is called, i.e., when this component is
-  // destroyed. That can be used ot tell any subscriptions to
-  // terminate, allowing the system to free up their resources (like memory).
+export class HostProfileComponent implements OnInit, OnDestroy {
+  public serverHunts: Hunt[];
+  public userName: string;
+  public name: string;
+  public hostId: "588945f57546a2daea44de7c";
+  public viewType: 'card'
+
+  errMsg = '';
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService) { }
+  constructor(private hostService: HostService, private snackBar: MatSnackBar) {
+  }
 
-  ngOnInit(): void {
-    // The `map`, `switchMap`, and `takeUntil` are all RXJS operators, and
-    // each represents a step in the pipeline built using the RXJS `pipe`
-    // operator.
-    // The map step takes the `ParamMap` from the `ActivatedRoute`, which
-    // is typically the URL in the browser bar.
-    // The result from the map step is the `id` string for the requested
-    // `Host`.
-    // That ID string gets passed (by `pipe`) to `switchMap`, which transforms
-    // it into an Observable<Host>, i.e., all the (zero or one) `Host`s
-    // that have that ID.
-    // The `takeUntil` operator allows this pipeline to continue to emit values
-    // until `this.ngUnsubscribe` emits a value, saying to shut the pipeline
-    // down and clean up any associated resources (like memory).
-    this.route.paramMap.pipe(
-      // Map the paramMap into the id
-      map((paramMap: ParamMap) => paramMap.get('username')),
-      // Maps the `id` string into the Observable<Host>,
-      // which will emit zero or one values depending on whether there is a
-      // `Host` with that ID.
-
-
-      switchMap((userName: string) => this.hostService.getHostByUserName(userName)),
-
-
-      // Allow the pipeline to continue to emit values until `this.ngUnsubscribe`
-      // returns a value, which only happens when this component is destroyed.
-      // At that point we shut down the pipeline, allowed any
-      // associated resources (like memory) are cleaned up.
+  getHuntsFromServer(): void {
+    this.hostService.getHunts(this.hostId).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe({
-      next: host => {
-        this.host = host;
-        return host;
+      next: (returnedHunts) => {
+        this.serverHunts = returnedHunts;
       },
-      error: _err => {
-        this.error = {
-          help: 'There was a problem loading the host – try again.',
-          httpResponse: _err.message,
-          message: _err.error?.title,
-        };
-      }
-      /*
-       * You can uncomment the line that starts with `complete` below to use that console message
-       * as a way of verifying that this subscription is completing.
-       * We removed it since we were not doing anything interesting on completion
-       * and didn't want to clutter the console log
-       */
-      // complete: () => console.log('We got a new host, and we are done!'),
+      error: (err) => {
+        if (err.error instanceof ErrorEvent) {
+          this.errMsg = `Problem in the client – Error: ${err.error.message}`;
+        } else {
+          this.errMsg = `Problem contacting the server – Error Code: ${err.status}\nMessage: ${err.message}`;
+        }
+        this.snackBar.open(
+          this.errMsg,
+          'OK',
+          { duration: 6000 });
+      },
     });
   }
 
+  ngOnInit(): void {
+    this.getHuntsFromServer();
+  }
+
   ngOnDestroy() {
-    // When the component is destroyed, we'll emit an empty
-    // value as a way of saying that any active subscriptions should
-    // shut themselves down so the system can free up any associated
-    // resources, like memory.
     this.ngUnsubscribe.next();
-    // Calling `complete()` says that this `Subject` is done and will
-    // never send any further values.
     this.ngUnsubscribe.complete();
   }
+
 }

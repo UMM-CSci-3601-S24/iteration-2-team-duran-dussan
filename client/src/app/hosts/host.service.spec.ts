@@ -19,6 +19,9 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { HuntCardComponent } from "../hunts/hunt-card.component";
 import { HostService } from "./host.service";
 import { MockHostService } from "src/testing/host.service.mock";
+import { Host } from "@angular/core";
+import { Observable } from "rxjs";
+import { Hunt } from "../hunts/hunt";
 
 const COMMON_IMPORTS: unknown[] = [
   FormsModule,
@@ -87,3 +90,51 @@ describe("Hunt list", () => {
     expect(huntList.serverHunts.some((hunt) => hunt.numberOfTasks === 18)).toBe(true);
   });
 });
+
+describe('Misbehaving Hunt List', () => {
+  let huntList: HostProfileComponent;
+  let fixture: ComponentFixture<HostProfileComponent>;
+
+  let huntServiceStub: {
+    getHuntss: () => Observable<Hunt[]>;
+  };
+
+  beforeEach(() => {
+    huntServiceStub = {
+      getHuntss: () => new Observable(observer => {
+        observer.error('getHuntss() Observer generates an error');
+      }),
+    };
+
+    TestBed.configureTestingModule({
+    imports: [COMMON_IMPORTS, HostProfileComponent],
+    providers: [{ provide: HostService, useValue: huntServiceStub }]
+});
+  });
+
+  beforeEach(waitForAsync(() => {
+    TestBed.compileComponents().then(() => {
+      fixture = TestBed.createComponent(HostProfileComponent);
+      huntList = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+  }));
+
+  it('generates an error if we don\'t set up a HostProfileService', () => {
+    const mockedMethod = spyOn(huntList, 'getHuntsFromServer').and.callThrough();
+    expect(huntList.serverHunts)
+      .withContext('service can\'t give values to the list if it\'s not there')
+      .toBeUndefined();
+    expect(huntList.getHuntsFromServer)
+      .withContext('will generate the right error if we try to getHostsFromServer')
+      .toThrow();
+    expect(mockedMethod)
+      .withContext('will be called')
+      .toHaveBeenCalled();
+    expect(huntList.errMsg)
+      .withContext('the error message will be')
+      .toContain('Problem contacting the server – Error Code:');
+      console.log(huntList.errMsg);
+  });
+});
+

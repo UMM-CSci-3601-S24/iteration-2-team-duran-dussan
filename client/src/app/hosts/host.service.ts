@@ -11,10 +11,6 @@ export class HostService {
   readonly hostUrl: string = `${environment.apiUrl}hosts`;
   readonly huntUrl: string = `${environment.apiUrl}hunts`;
 
-  private readonly nameKey = 'name';
-  private readonly userNameKey = 'username';
-  private readonly hostIdKey = 'hostId'
-
   constructor(private httpClient: HttpClient){
   }
 
@@ -27,6 +23,7 @@ export class HostService {
   }
 
   addHunt(newHunt: Partial<Hunt>): Observable<string> {
+    newHunt.hostId = "588945f57546a2daea44de7c";
     return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
   }
 

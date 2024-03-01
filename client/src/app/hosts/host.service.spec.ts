@@ -3,9 +3,9 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { Hunt } from "../hunts/hunt";
 import { HostService } from "./host.service";
 import { TestBed } from "@angular/core/testing";
+import { of } from "rxjs";
 
-describe
-('HostService', () => {
+describe('HostService', () => {
   const testHunts: Hunt[] = [
     {
       _id: "ann_id",
@@ -49,5 +49,19 @@ describe
     httpTestingController.verify();
   })
 
-  
+  describe('When getHunts() is called with a hostId', () => {
+    it('calls api/hosts/:hostId', () => {
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHunts));
+
+      hostService.getHunts('ann_id').subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith('/api/hosts/ann_id');
+      })
+    });
+  })
 })

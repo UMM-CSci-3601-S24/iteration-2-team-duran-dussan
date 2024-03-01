@@ -107,4 +107,40 @@ describe('AddHuntComponent', () => {
       expect(nameControl.valid).toBeTruthy();
     });
   });
+
+  describe('The EST field', () => {
+    let ageControl: AbstractControl;
+
+    beforeEach(() => {
+      ageControl = addHuntComponent.addHuntForm.controls.est;
+    });
+
+    it('should not allow empty est', () => {
+      ageControl.setValue('');
+      expect(ageControl.valid).toBeFalsy();
+    });
+
+    it('should be fine with "25"', () => {
+      ageControl.setValue('25');
+      expect(ageControl.valid).toBeTruthy();
+    });
+
+    it('should fail on negative est', () => {
+      ageControl.setValue('-20');
+      expect(ageControl.valid).toBeFalsy();
+      expect(ageControl.hasError('min')).toBeTruthy();
+    });
+
+    it('should fail on ages that are too high', () => {
+      ageControl.setValue(300);
+      expect(ageControl.valid).toBeFalsy();
+      expect(ageControl.hasError('max')).toBeTruthy();
+    });
+
+    it('should not allow an est to contain a decimal point', () => {
+      ageControl.setValue(20.5);
+      expect(ageControl.valid).toBeFalsy();
+      expect(ageControl.hasError('pattern')).toBeTruthy();
+    });
+  });
 })

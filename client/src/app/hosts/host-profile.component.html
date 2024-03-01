@@ -2,7 +2,7 @@
   @if (serverHunts) {
     <div class="flex-1" >
       <div>
-        <div class="hunt-cards-container flex-row gap-8 flex-wrap">
+        <div class="hunt-cards-container">
           @for (hunt of serverHunts; track hunt._id) {
             <app-hunt-card [simple]="true" class="hunt-card" [hunt]="hunt" ></app-hunt-card>
           }

@@ -46,11 +46,10 @@ import io.javalin.validation.BodyValidator;
 import io.javalin.validation.ValidationException;
 import io.javalin.validation.Validator;
 
-@SuppressWarnings({ "MagicNumber" })
+
 public class HostControllerSpec {
-
+  @SuppressWarnings({ "MagicNumber" })
   private HostController hostController;
-
   private ObjectId frysId;
   private ObjectId huntId;
 
@@ -611,4 +610,22 @@ public class HostControllerSpec {
       hostController.addNewTask(ctx);
     });
   }
+
+
+  @Test
+  void deleteFoundHunt() throws IOException {
+    String testID = huntId.toHexString();
+    when(ctx.pathParam("hostId")).thenReturn(testID);
+
+    assertEquals(1, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+
+    hostController.deleteHunt(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+  }
+
+
+
 }

@@ -1,15 +1,20 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatCardModule } from "@angular/material/card";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { MatSelectModule } from "@angular/material/select";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { RouterTestingModule } from "@angular/router/testing";
-import { AddHuntComponent } from "./add-hunt.component";
-import { MockHostService } from "src/testing/host.service.mock";
-import { HostService } from "src/app/hosts/host.service";
+import { Location } from '@angular/common';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed, fakeAsync, flush, tick, waitForAsync } from '@angular/core/testing';
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of, throwError } from 'rxjs';
+import { MockHostService } from 'src/testing/host.service.mock';
+import { AddHuntComponent } from './add-hunt.component';
+import { HostService } from 'src/app/hosts/host.service';
+import { HuntProfileComponent } from '../hunt-profile.component';
 
 
 describe('AddHuntComponent', () => {
@@ -143,4 +148,89 @@ describe('AddHuntComponent', () => {
       expect(ageControl.hasError('pattern')).toBeTruthy();
     });
   });
-})
+
+  describe('getErrorMessage()', () => {
+    it('should return the correct error message', () => {
+      let controlName: keyof typeof addHuntComponent.addHuntValidationMessages = 'name';
+      addHuntComponent.addHuntForm.get(controlName).setErrors({'required': true});
+      expect(addHuntComponent.getErrorMessage(controlName)).toEqual('Name is required');
+
+      controlName = 'est';
+      addHuntComponent.addHuntForm.get(controlName).setErrors({'required': true});
+      expect(addHuntComponent.getErrorMessage(controlName)).toEqual('Estimated time is required');
+
+    });
+
+    it('should return "Unknown error" if no error message is found', () => {
+      const controlName: keyof typeof addHuntComponent.addHuntValidationMessages = 'name';
+      addHuntComponent.addHuntForm.get(controlName).setErrors({'unknown': true});
+      expect(addHuntComponent.getErrorMessage(controlName)).toEqual('Unknown error');
+    });
+  })
+});
+
+describe('AddHuntComponent#submitForm()', () => {
+  let component: AddHuntComponent;
+  let fixture: ComponentFixture<AddHuntComponent>;
+  let hostService: HostService;
+  let location: Location;
+
+  beforeEach(() => {
+    TestBed.overrideProvider(HostService, { useValue: new MockHostService() });
+    TestBed.configureTestingModule({
+    imports: [
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatCardModule,
+        MatSelectModule,
+        MatInputModule,
+        BrowserAnimationsModule,
+        RouterTestingModule.withRoutes([
+            { path: 'hunts/1', component: HuntProfileComponent }
+        ]),
+        HttpClientTestingModule,
+        AddHuntComponent, HuntProfileComponent
+    ],
+}).compileComponents().catch(error => {
+      expect(error).toBeNull();
+    });
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AddHuntComponent);
+    component = fixture.componentInstance;
+    hostService = TestBed.inject(HostService);
+    location = TestBed.inject(Location);
+    TestBed.inject(Router);
+    TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+  });
+
+  beforeEach(() => {
+    component.addHuntForm.controls.name.setValue('Best Hunt');
+    component.addHuntForm.controls.description.setValue('This is the best hunt');
+    component.addHuntForm.controls.est.setValue(30);
+  });
+
+  it('should call addHunt() and handle success response', fakeAsync(() => {
+    fixture.ngZone.run(() => {
+      const addHuntSpy = spyOn(hostService, 'addHunt').and.returnValue(of('1'));
+      component.submitForm();
+      expect(addHuntSpy).toHaveBeenCalledWith(component.addHuntForm.value);
+      tick();
+      expect(location.path()).toBe('/hunts/1');
+      flush();
+    });
+  }));
+
+  it('should call addHunt() and handle error response', () => {
+    const path = location.path();
+    const errorResonse = { status: 500, message: 'Server error' };
+    const addHuntSpy = spyOn(hostService, 'addHunt')
+      .and
+      .returnValue(throwError(() => errorResonse));
+    component.submitForm();
+    expect(addHuntSpy).toHaveBeenCalledWith(component.addHuntForm.value);
+    expect(location.path()).toBe(path);
+  });
+});

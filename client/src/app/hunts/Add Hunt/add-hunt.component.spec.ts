@@ -166,7 +166,7 @@ describe('AddHuntComponent', () => {
       addHuntComponent.addHuntForm.get(controlName).setErrors({'unknown': true});
       expect(addHuntComponent.getErrorMessage(controlName)).toEqual('Unknown error');
     });
-  })
+  });
 });
 
 describe('AddHuntComponent#submitForm()', () => {

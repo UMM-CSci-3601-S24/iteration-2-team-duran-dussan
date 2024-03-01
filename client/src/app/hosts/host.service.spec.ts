@@ -19,7 +19,6 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { HuntCardComponent } from "../hunts/hunt-card.component";
 import { HostService } from "./host.service";
 import { MockHostService } from "src/testing/host.service.mock";
-import { Host } from "@angular/core";
 import { Observable } from "rxjs";
 import { Hunt } from "../hunts/hunt";
 

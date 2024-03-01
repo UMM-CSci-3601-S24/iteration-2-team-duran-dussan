@@ -95,13 +95,13 @@ describe('Misbehaving Hunt List', () => {
   let fixture: ComponentFixture<HostProfileComponent>;
 
   let huntServiceStub: {
-    getHuntss: () => Observable<Hunt[]>;
+    getHunts: () => Observable<Hunt[]>;
   };
 
   beforeEach(() => {
     huntServiceStub = {
-      getHuntss: () => new Observable(observer => {
-        observer.error('getHuntss() Observer generates an error');
+      getHunts: () => new Observable(observer => {
+        observer.error('getHunts() Observer generates an error');
       }),
     };
 

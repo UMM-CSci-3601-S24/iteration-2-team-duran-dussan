@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { Hunt } from "../hunts/hunt";
 import { HostService } from "./host.service";
-import { TestBed } from "@angular/core/testing";
+import { TestBed, waitForAsync } from "@angular/core/testing";
 import { of } from "rxjs";
 
 describe('HostService', () => {
@@ -60,8 +60,27 @@ describe('HostService', () => {
 
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith('/api/hosts/ann_id');
-      })
+          .toHaveBeenCalledWith(`${hostService.hostUrl}/ann_id`);
+      });
     });
-  })
-})
+  });
+
+  describe('When getHuntById() is given an ID', () => {
+    it('calls api/hunts/id with the correct ID', waitForAsync(() => {
+      const targetHunt: Hunt = testHunts[1];
+      const targetId: string = targetHunt._id;
+
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetHunt));
+
+      hostService.getHuntById(targetId).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.huntUrl}/${targetId}`);
+      });
+    }));
+  });
+});

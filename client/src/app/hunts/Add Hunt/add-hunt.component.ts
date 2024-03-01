@@ -43,8 +43,6 @@ export class AddHuntComponent {
     ],
 
     description: [
-      { type: 'required', message: 'Description is required' },
-      { type: 'minlength', message: 'Description must be at least 1 character long' },
       { type: 'maxlength', message: 'Description cannot be more than 200 characters long' }
     ],
 

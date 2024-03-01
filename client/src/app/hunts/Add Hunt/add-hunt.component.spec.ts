@@ -83,4 +83,28 @@ describe('AddHuntComponent', () => {
       expect(nameControl.valid).toBeTruthy();
     });
   });
+
+  describe('The description field', () => {
+    let nameControl: AbstractControl;
+
+    beforeEach(() => {
+      nameControl = addHuntComponent.addHuntForm.controls.description;
+    });
+
+    it('should be fine with "This is the Best Hunt"', () => {
+      nameControl.setValue('The Best Hunt');
+      expect(nameControl.valid).toBeTruthy();
+    });
+
+    it('should fail on really long description', () => {
+      nameControl.setValue('t'.repeat(201));
+      expect(nameControl.valid).toBeFalsy();
+      expect(nameControl.hasError('maxlength')).toBeTruthy();
+    });
+
+    it('should allow digits in the description', () => {
+      nameControl.setValue('Bad2Th3B0ne');
+      expect(nameControl.valid).toBeTruthy();
+    });
+  });
 })

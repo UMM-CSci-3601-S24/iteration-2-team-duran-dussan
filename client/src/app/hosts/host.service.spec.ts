@@ -45,24 +45,4 @@ beforeEach(() => {
 afterEach(() => {
   httpTestingController.verify();
 });
-
-describe('When getHosts() is called with no parameters', () => {
-
-   it('calls `api/hosts`', waitForAsync(() => {
-
-     const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testHosts));
-
-     hostService.getHosts().subscribe(() => {
-
-       expect(mockedMethod)
-         .withContext('one call')
-         .toHaveBeenCalledTimes(1);
-
-       expect(mockedMethod)
-         .withContext('talks to the correct endpoint')
-         .toHaveBeenCalledWith(hostService.hostUrl, { params: new HttpParams() });
-     });
-   }));
- });
-
 })

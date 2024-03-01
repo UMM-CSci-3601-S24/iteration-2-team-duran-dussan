@@ -1,13 +1,12 @@
 <div class="flex-row">
-  @if (serverHunts !== null) {
+  @if (serverHunts) {
     <div class="flex-1" >
-      <!-- Switch between card and list view based on the viewType variable, set above in the mar-radio-group -->
       <div>
-            <div class="hunt-cards-container flex-row gap-8 flex-wrap">
-              @for (hunt of serverHunts; track hunt._id) {
-                <app-hunt-card [simple]="true" class="hunt-card" [hunt]="hunt" ></app-hunt-card>
-              }
-            </div>
+        <div class="hunt-cards-container flex-row gap-8 flex-wrap">
+          @for (hunt of serverHunts; track hunt._id) {
+            <app-hunt-card [simple]="true" class="hunt-card" [hunt]="hunt" ></app-hunt-card>
+          }
+          </div>
       </div>
     </div>
   } @else {
@@ -21,8 +20,6 @@
       </mat-error>
     </div>
   }
-
-  <!-- Maybe this should be a pop-up instead of just a text message? Not sure. -->
 
 </div>
 

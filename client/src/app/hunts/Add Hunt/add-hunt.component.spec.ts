@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HuntService } from '../hunt.service';
 import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -9,7 +8,8 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AddHuntComponent } from "./add-hunt.component";
-import { MockHuntService } from "src/testing/hunt.service.mock";
+import { MockHostService } from "src/testing/host.service.mock";
+import { HostService } from "src/app/hosts/host.service";
 
 
 describe('AddHuntComponent', () => {
@@ -18,7 +18,7 @@ describe('AddHuntComponent', () => {
   let fixture: ComponentFixture<AddHuntComponent>;
 
   beforeEach(waitForAsync(() => {
-    TestBed.overrideProvider(HuntService, { useValue: new MockHuntService() });
+    TestBed.overrideProvider(HostService, { useValue: new MockHostService() });
     TestBed.configureTestingModule({
       imports: [
         FormsModule,

@@ -9,6 +9,12 @@ import { Hunt } from './hunt';
 import { HuntCardComponent } from './hunt-card.component';
 import { HuntProfileComponent } from './hunt-profile.component';
 import { HuntService } from './hunt.service';
+//import { HttpClientTestingModule } from '@angular/common/http/testing';
+//import { ReactiveFormsModule } from '@angular/forms';
+//import { MatInputModule } from '@angular/material/input';
+//import { MatSelectModule } from '@angular/material/select';
+//import { MatSnackBarModule } from '@angular/material/snack-bar';
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('HuntProfileComponent', () => {
   let component: HuntProfileComponent;
@@ -101,3 +107,60 @@ describe('HuntProfileComponent', () => {
     expect(getHuntSpy).toHaveBeenCalledWith(chrisId);
   });
 });
+
+/*
+
+describe('DeleteHunt()', () => {
+  let component: HuntProfileComponent;
+  let fixture: ComponentFixture<HuntProfileComponent>;
+  let huntService: HuntService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let location: Location;
+  let router: Router;
+  const fryId = 'fry_id';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const activatedRoute: ActivatedRouteStub = new ActivatedRouteStub({
+    id : fryId
+  });
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+        MatSnackBarModule,
+        MatCardModule,
+        MatSelectModule,
+        MatInputModule,
+        BrowserAnimationsModule,
+        RouterTestingModule.withRoutes([
+          { path: 'hunts/1', component: HuntProfileComponent }
+        ]),
+        HttpClientTestingModule
+      ],
+      providers: [HuntService]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HuntProfileComponent);
+    component = fixture.componentInstance;
+    huntService = TestBed.inject(HuntService);
+    location = TestBed.inject(Location);
+    router = TestBed.inject(Router);
+  });
+
+  it('should call deleteHunt on HuntService when deleteHunt is called in HuntProfileComponent', () => {
+    const deleteHuntSpy = spyOn(huntService, 'deleteHunt').and.callThrough();
+    component.deleteHunt(fryId);
+    expect(deleteHuntSpy).toHaveBeenCalledWith(fryId);
+  });
+
+  it('should delete a hunt and navigate to /hunts', () => {
+    const navigateSpy = spyOn(router, 'navigate');
+    const deleteHuntSpy = spyOn(huntService, 'deleteHunt').and.returnValue(of(null));
+
+    component.deleteHunt('testId');
+
+    expect(deleteHuntSpy).toHaveBeenCalledWith('testId');
+    expect(navigateSpy).toHaveBeenCalledWith(['/hunts']);
+  });
+});
+*/

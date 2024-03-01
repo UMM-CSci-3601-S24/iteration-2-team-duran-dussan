@@ -86,4 +86,25 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
-})
+
+  describe('Adding a hunt using `addHunt()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const hunt_id = 'pat_id';
+      const expected_http_response = { id: hunt_id } ;
+
+      const mockedMethod = spyOn(httpClient, 'post')
+        .and
+        .returnValue(of(expected_http_response));
+
+      hostService.addHunt(testHunts[1]).subscribe((new_hunt_id) => {
+        expect(new_hunt_id).toBe(hunt_id);
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(hostService.huntUrl, testHunts[1]);
+      });
+    }));
+  });
+});

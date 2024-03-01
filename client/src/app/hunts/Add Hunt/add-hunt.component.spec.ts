@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -49,5 +49,38 @@ describe('AddHuntComponent', () => {
   it('should create the component and form', () => {
     expect(addHuntComponent).toBeTruthy();
     expect(addHuntForm).toBeTruthy();
+  });
+
+  it('form should be invalid when empty', () => {
+    expect(addHuntForm.valid).toBeFalsy();
+  });
+
+  describe('The name field', () => {
+    let nameControl: AbstractControl;
+
+    beforeEach(() => {
+      nameControl = addHuntComponent.addHuntForm.controls.name;
+    });
+
+    it('should not allow empty names', () => {
+      nameControl.setValue('');
+      expect(nameControl.valid).toBeFalsy();
+    });
+
+    it('should be fine with "The Best Hunt"', () => {
+      nameControl.setValue('The Best Hunt');
+      expect(nameControl.valid).toBeTruthy();
+    });
+
+    it('should fail on really long names', () => {
+      nameControl.setValue('t'.repeat(100));
+      expect(nameControl.valid).toBeFalsy();
+      expect(nameControl.hasError('maxlength')).toBeTruthy();
+    });
+
+    it('should allow digits in the name', () => {
+      nameControl.setValue('Bad2Th3B0ne');
+      expect(nameControl.valid).toBeTruthy();
+    });
   });
 })

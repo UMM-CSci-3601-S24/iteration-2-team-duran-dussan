@@ -62,9 +62,6 @@ public class HostControllerSpec {
   private Context ctx;
 
   @Captor
-  private ArgumentCaptor<ArrayList<Host>> hostArrayListCaptor;
-
-  @Captor
   private ArgumentCaptor<ArrayList<Hunt>> huntArrayListCaptor;
 
   @Captor
@@ -74,10 +71,7 @@ public class HostControllerSpec {
   private ArgumentCaptor<Host> hostCaptor;
 
   @Captor
-  private ArgumentCaptor<Hunt> huntCaptor;
-
-  @Captor
-  private ArgumentCaptor<Task> taskCaptor;
+  private ArgumentCaptor<CompleteHunt> completeHuntCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -270,13 +264,10 @@ public class HostControllerSpec {
     String id = huntId.toHexString();
     when(ctx.pathParam("id")).thenReturn(id);
 
-    hostController.getHunt(ctx);
+    Hunt hunt = hostController.getHunt(ctx);
 
-    verify(ctx).json(huntCaptor.capture());
-    verify(ctx).status(HttpStatus.OK);
-
-    assertEquals("Best Hunt", huntCaptor.getValue().name);
-    assertEquals(huntId.toHexString(), huntCaptor.getValue()._id);
+    assertEquals("Best Hunt", hunt.name);
+    assertEquals(huntId.toHexString(), hunt._id);
   }
 
   @Test
@@ -471,14 +462,11 @@ public class HostControllerSpec {
 
     when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
 
-    hostController.getTasks(ctx);
-
-    verify(ctx).json(taskArrayListCaptor.capture());
-    verify(ctx).status(HttpStatus.OK);
+    ArrayList<Task> tasks = hostController.getTasks(ctx);
 
     assertEquals(
         db.getCollection("tasks").countDocuments(),
-        taskArrayListCaptor.getValue().size());
+        tasks.size());
   }
 
   @Test
@@ -489,13 +477,10 @@ public class HostControllerSpec {
     when(ctx.queryParamAsClass("huntId", String.class))
     .thenReturn(Validator.create(String.class, "huntId", "huntId"));
 
-    hostController.getTasks(ctx);
+    ArrayList<Task> tasks = hostController.getTasks(ctx);
 
-    verify(ctx).json(taskArrayListCaptor.capture());
-    verify(ctx).status(HttpStatus.OK);
-
-    assertEquals(3, taskArrayListCaptor.getValue().size());
-    for (Task task : taskArrayListCaptor.getValue()) {
+    assertEquals(3, tasks.size());
+    for (Task task : tasks) {
       assertEquals("huntId", task.huntId);
     }
   }
@@ -610,5 +595,30 @@ public class HostControllerSpec {
     assertThrows(ValidationException.class, () -> {
       hostController.addNewTask(ctx);
     });
+  }
+
+  @Test
+  void getCompleteHuntById() throws IOException {
+    String id = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("huntId", Collections.singletonList("huntId"));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+    when(ctx.queryParamAsClass("huntId", String.class))
+    .thenReturn(Validator.create(String.class, "huntId", "huntId"));
+
+    hostController.getCompleteHunt(ctx);
+
+    verify(ctx).json(completeHuntCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals("Best Hunt", completeHuntCaptor.getValue().hunt.name);
+    assertEquals(huntId.toHexString(), completeHuntCaptor.getValue().hunt._id);
+
+    assertEquals(3, completeHuntCaptor.getValue().tasks.size());
+    for (Task task : completeHuntCaptor.getValue().tasks) {
+      assertEquals("huntId", task.huntId);
+    }
   }
 }

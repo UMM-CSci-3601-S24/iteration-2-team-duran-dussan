@@ -23,11 +23,13 @@ import org.mongojack.JacksonMongoCollection;
 
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.DeleteResult;
 
 public class HostController implements Controller {
 
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   private static final String API_HUNTS = "/api/hunts";
+  private static final String API_HUNT_BY_ID = "/api/hunts/{id}";
   private static final String API_TASKS = "/api/tasks";
 
   static final String HOST_KEY = "hostId";
@@ -188,6 +190,19 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.CREATED);
   }
 
+  public void deleteHunt(Context ctx) {
+  String id = ctx.pathParam("id");
+  DeleteResult deleteResult = huntCollection.deleteOne(eq("_id", new ObjectId(id)));
+  if (deleteResult.getDeletedCount() != 1) {
+    ctx.status(HttpStatus.NOT_FOUND);
+    throw new NotFoundResponse(
+      "Was unable to delete ID "
+        + id
+        + "; perhaps illegal ID or an ID for an item not in the system?");
+  }
+  ctx.status(HttpStatus.OK);
+}
+
   @Override
   public void addRoutes(Javalin server) {
 
@@ -200,6 +215,8 @@ public class HostController implements Controller {
     server.get(API_TASKS, this::getTasks);
 
     server.post(API_TASKS, this::addNewTask);
+
+    server.delete(API_HUNT_BY_ID, this::deleteHunt);
   }
 
 }

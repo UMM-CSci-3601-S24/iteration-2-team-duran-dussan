@@ -20,6 +20,12 @@
         <mat-icon matListItemIcon>business</mat-icon>
         Companies
       </a>
+
+      <a mat-list-item routerLink="/hosts" routerLinkActive="drawer-list-item-active" (click)="drawer.close()">
+        <mat-icon matListItemIcon>contacts</mat-icon>
+        Hosts
+      </a>
+
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -35,3 +41,4 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+

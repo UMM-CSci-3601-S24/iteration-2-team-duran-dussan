@@ -43,4 +43,8 @@ export class HuntService {
   getHuntById(id: string): Observable<Hunt> {
     return this.httpClient.get<Hunt>(`${this.huntUrl}/${id}`);
   }
+
+  deleteHunt(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`/api/hunts/${id}`);
+  }
 }

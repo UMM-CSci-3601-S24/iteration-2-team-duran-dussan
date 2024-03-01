@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Hunt } from './hunt';
@@ -21,7 +21,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private huntService: HuntService) { }
+  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private huntService: HuntService, private router: Router) { }
 
   ngOnInit(): void {
 
@@ -45,6 +45,12 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
         };
       }
 
+    });
+  }
+
+  deleteHunt(id: string): void {
+    this.huntService.deleteHunt(id).subscribe(() => {
+      this.router.navigate(['/todos']);
     });
   }
 

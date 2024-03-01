@@ -158,6 +158,27 @@ describe('When getHunts() is called with no parameters', () => {
   });
 });
 
+describe('Removing a hunt using `deleteHunt()`', () => {
+  it('talks to the right endpoint and is called once', waitForAsync(() => {
+    const hunt_id = 'hunt_id';
+    const expected_http_response = { hunt_id };
+
+    const mockedMethod = spyOn(httpClient, 'delete')
+      .and
+      .returnValue(of(expected_http_response));
+
+    huntService.deleteHunt(hunt_id).subscribe(() => {
+      expect(mockedMethod)
+        .withContext('one call')
+        .toHaveBeenCalledTimes(1);
+      expect(mockedMethod)
+        .withContext('talks to the correct endpoint')
+        .toHaveBeenCalledWith(`${huntService.huntUrl}/hunt_id`);
+
+    });
+  }));
+});
+
 
 
 })

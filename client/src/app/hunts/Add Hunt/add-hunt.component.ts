@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
-import { HuntService } from "../hunt.service";
+import { HostService } from "src/app/hosts/host.service";
 
 
 @Component ({
@@ -57,7 +57,7 @@ export class AddHuntComponent {
   };
 
   constructor(
-    private huntService: HuntService,
+    private hostService: HostService,
     private snackBar: MatSnackBar,
     private router: Router) {
     }
@@ -77,7 +77,7 @@ export class AddHuntComponent {
   }
 
   submitForm() {
-    this.huntService.addHunt(this.addHuntForm.value).subscribe({
+    this.hostService.addHunt(this.addHuntForm.value).subscribe({
       next: (newId) => {
         this.snackBar.open(
           `Added hunt ${this.addHuntForm.value.name}`,
@@ -95,7 +95,6 @@ export class AddHuntComponent {
       },
     });
   }
-
 }
 
 

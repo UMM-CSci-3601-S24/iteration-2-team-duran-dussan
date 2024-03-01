@@ -225,10 +225,10 @@ describe('AddHuntComponent#submitForm()', () => {
 
   it('should call addHunt() and handle error response', () => {
     const path = location.path();
-    const errorResonse = { status: 500, message: 'Server error' };
+    const errorResponse = { status: 500, message: 'Server error' };
     const addHuntSpy = spyOn(hostService, 'addHunt')
       .and
-      .returnValue(throwError(() => errorResonse));
+      .returnValue(throwError(() => errorResponse));
     component.submitForm();
     expect(addHuntSpy).toHaveBeenCalledWith(component.addHuntForm.value);
     expect(location.path()).toBe(path);

@@ -36,17 +36,14 @@ let hostService: HostService;
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
 
-beforeEach(() => {
-  // Set up the mock handling of the HTTP requests
-  TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule]
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
   });
-  // Construct an instance of the service with the mock
-  // HTTP client.
   httpClient = TestBed.inject(HttpClient);
   httpTestingController = TestBed.inject(HttpTestingController);
   hostService = new HostService(httpClient);
-});
+  });
 
 afterEach(() => {
   httpTestingController.verify();

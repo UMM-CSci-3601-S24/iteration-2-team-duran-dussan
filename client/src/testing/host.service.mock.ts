@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
 import { Hunt } from '../app/hunts/hunt';
-import { HuntService } from '../app/hunts/hunt.service';
+import { HostService } from '../app/hosts/host.service';
 
 @Injectable({
   providedIn: AppComponent
 })
-export class MockHuntService extends HuntService {
+export class MockHostService extends HostService {
   static testHunts: Hunt[] = [
     {
       _id: "ann_id",
@@ -41,15 +41,15 @@ export class MockHuntService extends HuntService {
 
 
   getHunts(): Observable<Hunt[]> {
-    return of(MockHuntService.testHunts);
+    return of(MockHostService.testHunts);
   }
 
   getHuntById(id: string): Observable<Hunt> {
 
-    if (id === MockHuntService.testHunts[0]._id) {
-      return of(MockHuntService.testHunts[0]);
-    } else if (id === MockHuntService.testHunts[1]._id) {
-      return of(MockHuntService.testHunts[1]);
+    if (id === MockHostService.testHunts[0]._id) {
+      return of(MockHostService.testHunts[0]);
+    } else if (id === MockHostService.testHunts[1]._id) {
+      return of(MockHostService.testHunts[1]);
     } else {
       return of(null);
     }

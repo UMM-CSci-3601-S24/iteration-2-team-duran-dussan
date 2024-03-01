@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { throwError } from 'rxjs';
 import { ActivatedRouteStub } from '../../testing/activated-route-stub';
-import { MockHuntService } from '../../testing/hunt.service.mock';
+import { MockHostService } from '../../testing/host.service.mock';
 import { Hunt } from './hunt';
 import { HuntCardComponent } from './hunt-card.component';
 import { HuntProfileComponent } from './hunt-profile.component';
@@ -13,7 +13,7 @@ import { HuntService } from './hunt.service';
 describe('HuntProfileComponent', () => {
   let component: HuntProfileComponent;
   let fixture: ComponentFixture<HuntProfileComponent>;
-  const mockHuntService = new MockHuntService();
+  const mockHuntService = new MockHostService();
   const chrisId = 'chris_id';
   const activatedRoute: ActivatedRouteStub = new ActivatedRouteStub({
     id : chrisId
@@ -45,7 +45,7 @@ describe('HuntProfileComponent', () => {
   });
 
   it('should navigate to a specific hunt profile', () => {
-    const expectedHunt: Hunt = MockHuntService.testHunts[0];
+    const expectedHunt: Hunt = MockHostService.testHunts[0];
     // Setting this should cause anyone subscribing to the paramMap
     // to update. Our `HuntProfileComponent` subscribes to that, so
     // it should update right away.
@@ -54,7 +54,7 @@ describe('HuntProfileComponent', () => {
   });
 
   it('should navigate to correct hunt when the id parameter changes', () => {
-    let expectedHunt: Hunt = MockHuntService.testHunts[0];
+    let expectedHunt: Hunt = MockHostService.testHunts[0];
     // Setting this should cause anyone subscribing to the paramMap
     // to update. Our `HuntProfileComponent` subscribes to that, so
     // it should update right away.
@@ -62,7 +62,7 @@ describe('HuntProfileComponent', () => {
     expect(component.hunt).toEqual(expectedHunt);
 
     // Changing the paramMap should update the displayed hunt profile.
-    expectedHunt = MockHuntService.testHunts[1];
+    expectedHunt = MockHostService.testHunts[1];
     activatedRoute.setParamMap({ id: expectedHunt._id });
     expect(component.hunt).toEqual(expectedHunt);
   });

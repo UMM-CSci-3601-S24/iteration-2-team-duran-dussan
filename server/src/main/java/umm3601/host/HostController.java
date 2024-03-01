@@ -27,6 +27,7 @@ import com.mongodb.client.model.Sorts;
 public class HostController implements Controller {
 
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
+  private static final String API_HUNT = "/api/hunts/{id}";
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASKS = "/api/tasks";
 
@@ -78,7 +79,7 @@ public class HostController implements Controller {
     }
   }
 
-  public void getHunt(Context ctx) {
+  public Hunt getHunt(Context ctx) {
     String id = ctx.pathParam("id");
     Hunt hunt;
 
@@ -90,8 +91,7 @@ public class HostController implements Controller {
     if (hunt == null) {
       throw new NotFoundResponse("The requested hunt was not found");
     } else {
-      ctx.json(hunt);
-      ctx.status(HttpStatus.OK);
+      return hunt;
     }
   }
 
@@ -128,7 +128,7 @@ public class HostController implements Controller {
     return sortingOrder;
   }
 
-  public void getTasks(Context ctx) {
+  public ArrayList<Task> getTasks(Context ctx) {
     Bson combinedFilter = constructFilterTasks(ctx);
     Bson sortingOrder = constructSortingOrderTasks(ctx);
 
@@ -137,9 +137,7 @@ public class HostController implements Controller {
       .sort(sortingOrder)
       .into(new ArrayList<>());
 
-    ctx.json(matchingTasks);
-
-    ctx.status(HttpStatus.OK);
+    return matchingTasks;
   }
 
   private Bson constructFilterTasks(Context ctx) {
@@ -188,18 +186,21 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.CREATED);
   }
 
-  @Override
-  public void addRoutes(Javalin server) {
+  public void getCompleteHunt(Context ctx) {
+    CompleteHunt completeHunt = new CompleteHunt();
+    completeHunt.hunt = getHunt(ctx);
+    completeHunt.tasks = getTasks(ctx);
 
-    server.get(API_HOST_BY_ID, this::getHunts);
-
-    // server.get(API_HUNTS, this::getHunts);
-
-    server.post(API_HUNTS, this::addNewHunt);
-
-    server.get(API_TASKS, this::getTasks);
-
-    server.post(API_TASKS, this::addNewTask);
+    ctx.json(completeHunt);
+    ctx.status(HttpStatus.OK);
   }
 
+  @Override
+  public void addRoutes(Javalin server) {
+    server.get(API_HOST_BY_ID, this::getHunts);
+    server.get(API_HUNT, this::getCompleteHunt);
+    server.post(API_HUNTS, this::addNewHunt);
+    server.get(API_TASKS, this::getTasks);
+    server.post(API_TASKS, this::addNewTask);
+  }
 }

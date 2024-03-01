@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Hunt } from '../hunts/hunt';
 
@@ -24,6 +24,10 @@ export class HostService {
 
   getHuntById(id: string): Observable<Hunt> {
     return this.httpClient.get<Hunt>(`${this.huntUrl}/${id}`);
+  }
+
+  addHunt(newHunt: Partial<Hunt>): Observable<string> {
+    return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
   }
 
 }

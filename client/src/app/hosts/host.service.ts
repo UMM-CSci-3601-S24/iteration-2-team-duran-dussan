@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Hunt } from '../hunts/hunt';
+import { Task } from '../hunts/task';
 import { CompleteHunt } from '../hunts/completeHunt';
 
 @Injectable({

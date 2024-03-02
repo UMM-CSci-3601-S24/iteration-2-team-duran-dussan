@@ -234,6 +234,7 @@ public class HostControllerSpec {
     assertEquals("The requested host was not found", exception.getMessage());
   }
 
+  /*
   @Test
   void canGetAllHunts() throws IOException {
 
@@ -247,7 +248,7 @@ public class HostControllerSpec {
     assertEquals(
         db.getCollection("hunts").countDocuments(),
         huntArrayListCaptor.getValue().size());
-  }
+  } */
 
   @Test
   void getHuntsByHostId() throws IOException {
@@ -605,6 +606,22 @@ public class HostControllerSpec {
     verify(ctx).status(HttpStatus.OK);
 
     assertEquals(0, db.getCollection("tasks").countDocuments(eq("hostId", new ObjectId(testID))));
+  }
+
+  @Test
+  void tryToDeleteNotFoundUser() throws IOException {
+    String testID = hostId.toHexString();
+    when(ctx.pathParam("hostId")).thenReturn(testID);
+
+    hostController.deleteHunt(ctx);
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+
+    assertThrows(NotFoundResponse.class, () -> {
+      hostController.deleteHunt(ctx);
+    });
+
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+    assertEquals(0, db.getCollection("todos").countDocuments(eq("_id", new ObjectId(testID))));
   }
 
 

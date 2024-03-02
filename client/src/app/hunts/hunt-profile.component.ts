@@ -11,13 +11,14 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Hunt } from './hunt';
 import { HuntService } from './hunt.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
     selector: 'app-hunt-profile',
     templateUrl: './hunt-profile.component.html',
     styleUrls: ['./hunt-profile.component.scss'],
     standalone: true,
-    imports: [HuntCardComponent, MatCardModule, MatIconButton, MatIcon]
+    imports: [HuntCardComponent, MatCardModule, MatIconButton, MatIcon, HttpClientModule]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
   completeHunt: CompleteHunt;

@@ -8,13 +8,14 @@ import { MockHostService } from '../../testing/host.service.mock';
 import { HuntCardComponent } from './hunt-card.component';
 import { HuntProfileComponent } from './hunt-profile.component';
 import { HostService } from '../hosts/host.service';
-//import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 //import { ReactiveFormsModule } from '@angular/forms';
 //import { MatInputModule } from '@angular/material/input';
 //import { MatSelectModule } from '@angular/material/select';
 //import { MatSnackBarModule } from '@angular/material/snack-bar';
 //import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CompleteHunt } from './completeHunt';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('HuntProfileComponent', () => {
   let component: HuntProfileComponent;
@@ -30,7 +31,7 @@ describe('HuntProfileComponent', () => {
     imports: [
         RouterTestingModule,
         MatCardModule,
-        HuntProfileComponent, HuntCardComponent
+        HuntProfileComponent, HuntCardComponent, HttpClientModule, HttpClientTestingModule
     ],
     providers: [
         { provide: HostService, useValue: mockHostService },

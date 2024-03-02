@@ -22,6 +22,9 @@ export class AddTaskComponent {
   huntId = input.required<string>();
 
   addTaskForm = new FormGroup({
+    huntId: new FormControl(),
+    status: new FormControl(),
+
     name: new FormControl('', Validators.compose([
       Validators.required,
       Validators.minLength(2),
@@ -57,6 +60,8 @@ export class AddTaskComponent {
   }
 
   submitForm() {
+    this.addTaskForm.value.huntId = this.huntId;
+    this.addTaskForm.value.status = false;
     this.hostService.addTask(this.addTaskForm.value).subscribe({
       next: () => {
         this.snackBar.open(

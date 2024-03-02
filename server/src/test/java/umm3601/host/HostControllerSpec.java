@@ -157,17 +157,17 @@ public class HostControllerSpec {
     List<Document> testTasks = new ArrayList<>();
     testTasks.add(
       new Document()
-        .append("huntId", "huntId")
+        .append("huntId", huntId.toHexString())
         .append("name", "Take a picture of a cat")
         .append("status", false));
     testTasks.add(
       new Document()
-        .append("huntId", "huntId")
+        .append("huntId", huntId.toHexString())
         .append("name", "Take a picture of a dog")
         .append("status", false));
     testTasks.add(
       new Document()
-        .append("huntId", "huntId")
+        .append("huntId", huntId.toHexString())
         .append("name", "Take a picture of a park")
         .append("status", true));
     testTasks.add(
@@ -458,30 +458,16 @@ public class HostControllerSpec {
   }
 
   @Test
-  void canGetAllTasks() throws IOException {
-
-    when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
-
-    ArrayList<Task> tasks = hostController.getTasks(ctx);
-
-    assertEquals(
-        db.getCollection("tasks").countDocuments(),
-        tasks.size());
-  }
-
-  @Test
   void getTasksByHuntId() throws IOException {
-    Map<String, List<String>> queryParams = new HashMap<>();
-    queryParams.put("huntId", Collections.singletonList("huntId"));
-    when(ctx.queryParamMap()).thenReturn(queryParams);
-    when(ctx.queryParamAsClass("huntId", String.class))
-    .thenReturn(Validator.create(String.class, "huntId", "huntId"));
+
+    String id = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
 
     ArrayList<Task> tasks = hostController.getTasks(ctx);
 
     assertEquals(3, tasks.size());
     for (Task task : tasks) {
-      assertEquals("huntId", task.huntId);
+      assertEquals(huntId.toHexString(), task.huntId);
     }
   }
 
@@ -602,12 +588,6 @@ public class HostControllerSpec {
     String id = huntId.toHexString();
     when(ctx.pathParam("id")).thenReturn(id);
 
-    Map<String, List<String>> queryParams = new HashMap<>();
-    queryParams.put("huntId", Collections.singletonList("huntId"));
-    when(ctx.queryParamMap()).thenReturn(queryParams);
-    when(ctx.queryParamAsClass("huntId", String.class))
-    .thenReturn(Validator.create(String.class, "huntId", "huntId"));
-
     hostController.getCompleteHunt(ctx);
 
     verify(ctx).json(completeHuntCaptor.capture());
@@ -618,7 +598,7 @@ public class HostControllerSpec {
 
     assertEquals(3, completeHuntCaptor.getValue().tasks.size());
     for (Task task : completeHuntCaptor.getValue().tasks) {
-      assertEquals("huntId", task.huntId);
+      assertEquals(huntId.toHexString(), task.huntId);
     }
   }
 }

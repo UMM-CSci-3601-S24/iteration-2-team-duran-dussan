@@ -596,32 +596,32 @@ public class HostControllerSpec {
 
   @Test
   void deleteFoundHunt() throws IOException {
-    String testID = hostId.toHexString();
-    when(ctx.pathParam("hostId")).thenReturn(testID);
+    String testID = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
 
-    assertEquals(1, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+    assertEquals(1, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
 
     hostController.deleteHunt(ctx);
 
     verify(ctx).status(HttpStatus.OK);
 
-    assertEquals(0, db.getCollection("tasks").countDocuments(eq("hostId", new ObjectId(testID))));
+    assertEquals(0, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
   }
 
   @Test
   void tryToDeleteNotFoundHunt() throws IOException {
-    String testID = hostId.toHexString();
-    when(ctx.pathParam("hostId")).thenReturn(testID);
+    String testID = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
 
     hostController.deleteHunt(ctx);
-    assertEquals(0, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
 
     assertThrows(NotFoundResponse.class, () -> {
       hostController.deleteHunt(ctx);
     });
 
     verify(ctx).status(HttpStatus.NOT_FOUND);
-    assertEquals(0, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
   }
 
 

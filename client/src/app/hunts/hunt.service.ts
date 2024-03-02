@@ -45,7 +45,7 @@ export class HuntService {
   }
 
   deleteHunt(id: string): Observable<void> {
-    return this.httpClient.delete<void>(`/api/hunts/${id}`);
+    return this.httpClient.delete<void>(`${this.huntUrl}/${id}`);
   }
 
   addHunt(newHunt: Partial<Hunt>): Observable<string> {

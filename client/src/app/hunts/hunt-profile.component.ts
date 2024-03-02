@@ -10,6 +10,7 @@ import { HostService } from '../hosts/host.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Hunt } from './hunt';
+import { HuntService } from './hunt.service';
 
 @Component({
     selector: 'app-hunt-profile',
@@ -25,7 +26,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService, private router: Router) { }
+  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService, private router: Router, private huntService: HuntService) { }
 
   ngOnInit(): void {
 
@@ -53,8 +54,8 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
   }
 
   deleteHunt(id: string): void {
-    this.hostService.deleteHunt(id).subscribe(() => {
-      this.router.navigate(['/hunts']);
+    this.huntService.deleteHunt(id).subscribe(() => {
+      this.router.navigate(['/hosts']);
     });
   }
 

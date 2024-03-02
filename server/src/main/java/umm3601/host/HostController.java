@@ -30,7 +30,7 @@ public class HostController implements Controller {
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   private static final String API_HUNT = "/api/hunts/{id}";
   private static final String API_HUNTS = "/api/hunts";
-  private static final String API_HUNT_BY_ID = "/api/hunts/{id}";
+  private static final String API_HUNT_BY_ID = "/api/hunts/${id}";
   private static final String API_TASKS = "/api/tasks";
 
   static final String HOST_KEY = "hostId";
@@ -177,13 +177,13 @@ public class HostController implements Controller {
   }
 
   public void deleteHunt(Context ctx) {
-    String hostId = ctx.pathParam("hostId");
-    DeleteResult deleteResult = huntCollection.deleteOne(eq("hostId", new ObjectId(hostId)));
+    String huntId = ctx.pathParam("id");
+    DeleteResult deleteResult = huntCollection.deleteOne(eq("_id", new ObjectId(huntId)));
     if (deleteResult.getDeletedCount() != 1) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
         "Was unable to delete hostId "
-          + hostId
+          + huntId
           + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     ctx.status(HttpStatus.OK);

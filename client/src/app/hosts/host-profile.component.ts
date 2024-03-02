@@ -16,6 +16,8 @@ import { Subject, takeUntil } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HostService } from "./host.service";
 import { HuntCardComponent } from "../hunts/hunt-card.component";
+import { Router } from "@angular/router";
+import { HuntService } from "../hunts/hunt.service";
 
 @Component({
   selector: 'app-host-profile-component',
@@ -36,7 +38,7 @@ export class HostProfileComponent implements OnInit, OnDestroy {
   errMsg = '';
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private hostService: HostService, private snackBar: MatSnackBar) {
+  constructor(private hostService: HostService, private snackBar: MatSnackBar, private router: Router, private huntService: HuntService) {
   }
 
   getHuntsFromServer(): void {
@@ -59,6 +61,12 @@ export class HostProfileComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+  /* deleteHunt(id: string): void {
+    this.huntService.deleteHunt(id).subscribe(() => {
+      this.router.navigate(['/hosts']);
+    });
+  } */
 
   ngOnInit(): void {
     this.getHuntsFromServer();

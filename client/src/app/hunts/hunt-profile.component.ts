@@ -9,6 +9,7 @@ import { CompleteHunt } from './completeHunt';
 import { HostService } from '../hosts/host.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { Hunt } from './hunt';
 
 @Component({
     selector: 'app-hunt-profile',
@@ -19,6 +20,7 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
   completeHunt: CompleteHunt;
+  hunt: Hunt;
   error: { help: string, httpResponse: string, message: string };
 
   private ngUnsubscribe = new Subject<void>();
@@ -52,7 +54,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   deleteHunt(id: string): void {
     this.hostService.deleteHunt(id).subscribe(() => {
-      this.router.navigate(['/todos']);
+      this.router.navigate(['/hunts']);
     });
   }
 

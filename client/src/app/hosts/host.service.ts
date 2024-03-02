@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Hunt } from '../hunts/hunt';
+import { CompleteHunt } from '../hunts/completeHunt';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,8 @@ export class HostService {
     return this.httpClient.get<Hunt[]>(`${this.hostUrl}/${hostId}`);
   }
 
-  getHuntById(id: string): Observable<Hunt> {
-    return this.httpClient.get<Hunt>(`${this.huntUrl}/${id}`);
+  getHuntById(id: string): Observable<CompleteHunt> {
+    return this.httpClient.get<CompleteHunt>(`${this.huntUrl}/${id}`);
   }
 
   addHunt(newHunt: Partial<Hunt>): Observable<string> {

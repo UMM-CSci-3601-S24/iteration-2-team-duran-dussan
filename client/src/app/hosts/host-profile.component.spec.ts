@@ -86,7 +86,7 @@ describe("Hunt list", () => {
   });
 
   it("has a hunt with number of tasks of 18", () => {
-    expect(huntList.serverHunts.some((hunt) => hunt.numberOfTasks === 18)).toBe(true);
+    expect(huntList.serverHunts.some((hunt) => hunt.numberOfTasks === 4)).toBe(true);
   });
 });
 

@@ -1,0 +1,35 @@
+<div class="flex-row">
+  <div class="flex-1">
+    @if (completeHunt) {
+      <app-hunt-card [hunt]="this.completeHunt.hunt"></app-hunt-card>
+      <ol>
+        @for (task of this.completeHunt.tasks; track task._id) {
+          <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
+        }
+    </ol>
+    } @else if (error) {
+      <mat-card class="error-card">
+        <mat-card-content>
+          <h2>
+            {{ error.help }}
+          </h2>
+          <p>
+            {{ error.message }}
+          </p>
+          <p>
+            {{ error.httpResponse }}
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button color=primary mat-raised-button routerLink="/hunts">Back to Hunts</button>
+        </mat-card-actions>
+      </mat-card>
+    } @else {
+      <mat-card>
+        <mat-card-content>
+          <p>Loading Hunt Profile data...</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

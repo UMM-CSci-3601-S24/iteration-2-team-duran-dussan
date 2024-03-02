@@ -46,9 +46,8 @@ import io.javalin.validation.BodyValidator;
 import io.javalin.validation.ValidationException;
 import io.javalin.validation.Validator;
 
-
+@SuppressWarnings({ "MagicNumber" })
 public class HostControllerSpec {
-  @SuppressWarnings({ "MagicNumber" })
   private HostController hostController;
   private ObjectId frysId;
   private ObjectId huntId;

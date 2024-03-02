@@ -62,8 +62,8 @@ public class HostController implements Controller {
        UuidRepresentation.STANDARD);
   }
 
-  public void getHost(Context cts) {
-    String id = cts.pathParam("id");
+  public void getHost(Context ctx) {
+    String id = ctx.pathParam("id");
     Host host;
 
     try {
@@ -74,8 +74,8 @@ public class HostController implements Controller {
     if (host == null) {
       throw new NotFoundResponse("The requested host was not found");
     } else {
-      cts.json(host);
-      cts.status(HttpStatus.OK);
+      ctx.json(host);
+      ctx.status(HttpStatus.OK);
     }
   }
 
@@ -129,28 +129,16 @@ public class HostController implements Controller {
   }
 
   public ArrayList<Task> getTasks(Context ctx) {
-    Bson combinedFilter = constructFilterTasks(ctx);
     Bson sortingOrder = constructSortingOrderTasks(ctx);
 
+    String targetHunt = ctx.pathParam("id");
+
     ArrayList<Task> matchingTasks = taskCollection
-      .find(combinedFilter)
+      .find(eq(HUNT_KEY, targetHunt))
       .sort(sortingOrder)
       .into(new ArrayList<>());
 
     return matchingTasks;
-  }
-
-  private Bson constructFilterTasks(Context ctx) {
-    List<Bson> filters = new ArrayList<>();
-
-    if (ctx.queryParamMap().containsKey(HUNT_KEY)) {
-      String targetHunt = ctx.queryParamAsClass(HUNT_KEY, String.class).get();
-      filters.add(eq(HUNT_KEY, targetHunt));
-    }
-
-    Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
-
-    return combinedFilter;
   }
 
   private Bson constructSortingOrderTasks(Context ctx) {

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Hunt } from './hunt';
 
@@ -46,5 +46,9 @@ export class HuntService {
 
   deleteHunt(id: string): Observable<void> {
     return this.httpClient.delete<void>(`/api/hunts/${id}`);
+  }
+
+  addHunt(newHunt: Partial<Hunt>): Observable<string> {
+    return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
   }
 }

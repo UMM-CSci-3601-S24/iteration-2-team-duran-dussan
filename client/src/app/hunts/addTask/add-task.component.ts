@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, input } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -18,6 +18,8 @@ import { HostService } from "src/app/hosts/host.service";
     providers: [HostService]
 })
 export class AddTaskComponent {
+
+  huntId = input.required<string>();
 
   addTaskForm = new FormGroup({
     name: new FormControl('', Validators.compose([

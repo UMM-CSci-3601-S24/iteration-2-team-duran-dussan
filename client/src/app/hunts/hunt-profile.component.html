@@ -9,7 +9,7 @@
     </ol>
     <div>
       @if (this.addTask) {
-        <app-add-task></app-add-task>
+        <app-add-task [huntId]="this.completeHunt.hunt._id"></app-add-task>
       } @else {
         <button mat-raised-button color="primary" (click)="this.addTask = true">Add Task</button>
       }

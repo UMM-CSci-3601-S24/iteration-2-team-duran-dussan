@@ -609,7 +609,7 @@ public class HostControllerSpec {
   }
 
   @Test
-  void tryToDeleteNotFoundUser() throws IOException {
+  void tryToDeleteNotFoundHunt() throws IOException {
     String testID = hostId.toHexString();
     when(ctx.pathParam("hostId")).thenReturn(testID);
 
@@ -621,7 +621,7 @@ public class HostControllerSpec {
     });
 
     verify(ctx).status(HttpStatus.NOT_FOUND);
-    assertEquals(0, db.getCollection("todos").countDocuments(eq("_id", new ObjectId(testID))));
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
   }
 
 

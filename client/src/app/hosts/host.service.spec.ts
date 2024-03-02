@@ -87,7 +87,4 @@ describe('When getHunts() is called', () => {
      });
    }));
  });
-
-
-
 })

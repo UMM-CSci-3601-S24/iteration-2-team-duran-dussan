@@ -27,6 +27,7 @@ import com.mongodb.client.model.Sorts;
 public class HostController implements Controller {
 
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
+  private static final String API_HUNT = "/api/hunts/{id}";
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASKS = "/api/tasks";
 
@@ -61,8 +62,8 @@ public class HostController implements Controller {
        UuidRepresentation.STANDARD);
   }
 
-  public void getHost(Context cts) {
-    String id = cts.pathParam("id");
+  public void getHost(Context ctx) {
+    String id = ctx.pathParam("id");
     Host host;
 
     try {
@@ -73,12 +74,12 @@ public class HostController implements Controller {
     if (host == null) {
       throw new NotFoundResponse("The requested host was not found");
     } else {
-      cts.json(host);
-      cts.status(HttpStatus.OK);
+      ctx.json(host);
+      ctx.status(HttpStatus.OK);
     }
   }
 
-  public void getHunt(Context ctx) {
+  public Hunt getHunt(Context ctx) {
     String id = ctx.pathParam("id");
     Hunt hunt;
 
@@ -90,8 +91,7 @@ public class HostController implements Controller {
     if (hunt == null) {
       throw new NotFoundResponse("The requested hunt was not found");
     } else {
-      ctx.json(hunt);
-      ctx.status(HttpStatus.OK);
+      return hunt;
     }
   }
 
@@ -128,31 +128,17 @@ public class HostController implements Controller {
     return sortingOrder;
   }
 
-  public void getTasks(Context ctx) {
-    Bson combinedFilter = constructFilterTasks(ctx);
+  public ArrayList<Task> getTasks(Context ctx) {
     Bson sortingOrder = constructSortingOrderTasks(ctx);
 
+    String targetHunt = ctx.pathParam("id");
+
     ArrayList<Task> matchingTasks = taskCollection
-      .find(combinedFilter)
+      .find(eq(HUNT_KEY, targetHunt))
       .sort(sortingOrder)
       .into(new ArrayList<>());
 
-    ctx.json(matchingTasks);
-
-    ctx.status(HttpStatus.OK);
-  }
-
-  private Bson constructFilterTasks(Context ctx) {
-    List<Bson> filters = new ArrayList<>();
-
-    if (ctx.queryParamMap().containsKey(HUNT_KEY)) {
-      String targetHunt = ctx.queryParamAsClass(HUNT_KEY, String.class).get();
-      filters.add(eq(HUNT_KEY, targetHunt));
-    }
-
-    Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
-
-    return combinedFilter;
+    return matchingTasks;
   }
 
   private Bson constructSortingOrderTasks(Context ctx) {
@@ -188,18 +174,21 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.CREATED);
   }
 
-  @Override
-  public void addRoutes(Javalin server) {
+  public void getCompleteHunt(Context ctx) {
+    CompleteHunt completeHunt = new CompleteHunt();
+    completeHunt.hunt = getHunt(ctx);
+    completeHunt.tasks = getTasks(ctx);
 
-    server.get(API_HOST_BY_ID, this::getHunts);
-
-    // server.get(API_HUNTS, this::getHunts);
-
-    server.post(API_HUNTS, this::addNewHunt);
-
-    server.get(API_TASKS, this::getTasks);
-
-    server.post(API_TASKS, this::addNewTask);
+    ctx.json(completeHunt);
+    ctx.status(HttpStatus.OK);
   }
 
+  @Override
+  public void addRoutes(Javalin server) {
+    server.get(API_HOST_BY_ID, this::getHunts);
+    server.get(API_HUNT, this::getCompleteHunt);
+    server.post(API_HUNTS, this::addNewHunt);
+    server.get(API_TASKS, this::getTasks);
+    server.post(API_TASKS, this::addNewTask);
+  }
 }

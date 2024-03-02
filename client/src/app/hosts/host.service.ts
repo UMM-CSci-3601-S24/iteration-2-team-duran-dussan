@@ -24,6 +24,11 @@ export class HostService {
   getHuntById(id: string): Observable<CompleteHunt> {
     return this.httpClient.get<CompleteHunt>(`${this.huntUrl}/${id}`);
   }
+  
+  addHunt(newHunt: Partial<Hunt>): Observable<string> {
+    newHunt.hostId = "588945f57546a2daea44de7c";
+    return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
+  }
 
   addTask(newTask: Partial<Task>): Observable<string> {
     return this.httpClient.post<{id: string}>(this.taskUrl, newTask).pipe(map(res => res.id));

@@ -177,17 +177,17 @@ public class HostController implements Controller {
   }
 
   public void deleteHunt(Context ctx) {
-  String id = ctx.pathParam("id");
-  DeleteResult deleteResult = huntCollection.deleteOne(eq("_id", new ObjectId(id)));
-  if (deleteResult.getDeletedCount() != 1) {
-    ctx.status(HttpStatus.NOT_FOUND);
-    throw new NotFoundResponse(
-      "Was unable to delete ID "
-        + id
-        + "; perhaps illegal ID or an ID for an item not in the system?");
+    String hostId = ctx.pathParam("hostId");
+    DeleteResult deleteResult = huntCollection.deleteOne(eq("hostId", new ObjectId(hostId)));
+    if (deleteResult.getDeletedCount() != 1) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new NotFoundResponse(
+        "Was unable to delete hostId "
+          + hostId
+          + "; perhaps illegal ID or an ID for an item not in the system?");
+    }
+    ctx.status(HttpStatus.OK);
   }
-  ctx.status(HttpStatus.OK);
-}
 
   public void getCompleteHunt(Context ctx) {
     CompleteHunt completeHunt = new CompleteHunt();

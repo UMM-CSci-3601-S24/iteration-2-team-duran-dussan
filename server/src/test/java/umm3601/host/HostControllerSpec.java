@@ -51,6 +51,7 @@ public class HostControllerSpec {
   private HostController hostController;
   private ObjectId frysId;
   private ObjectId huntId;
+  private ObjectId hostId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -147,8 +148,18 @@ public class HostControllerSpec {
       .append("est", 20)
       .append("numberOfTasks", 3);
 
+      hostId = new ObjectId();
+    Document host = new Document()
+      .append("_id", "4_id")
+      .append("hostId", hostId)
+      .append("name", "Best Hunt")
+      .append("description", "This is the best hunt")
+      .append("est", 20)
+      .append("numberOfTasks", 3);
+
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
+    huntDocuments.insertOne(host);
 
     MongoCollection<Document> taskDocuments = db.getCollection("tasks");
     taskDocuments.drop();
@@ -584,7 +595,7 @@ public class HostControllerSpec {
 
   @Test
   void deleteFoundHunt() throws IOException {
-    String testID = huntId.toHexString();
+    String testID = hostId.toHexString();
     when(ctx.pathParam("hostId")).thenReturn(testID);
 
     assertEquals(1, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
@@ -593,7 +604,7 @@ public class HostControllerSpec {
 
     verify(ctx).status(HttpStatus.OK);
 
-    assertEquals(0, db.getCollection("hunts").countDocuments(eq("hostId", new ObjectId(testID))));
+    assertEquals(0, db.getCollection("tasks").countDocuments(eq("hostId", new ObjectId(testID))));
   }
 
 

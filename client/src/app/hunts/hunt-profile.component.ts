@@ -7,15 +7,17 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { HuntCardComponent } from './hunt-card.component';
 import { CompleteHunt } from './completeHunt';
 import { HostService } from '../hosts/host.service';
+import { AddTaskComponent } from './addTask/add-task.component';
 
 @Component({
     selector: 'app-hunt-profile',
     templateUrl: './hunt-profile.component.html',
     styleUrls: ['./hunt-profile.component.scss'],
     standalone: true,
-    imports: [HuntCardComponent, MatCardModule]
+    imports: [HuntCardComponent, MatCardModule, AddTaskComponent]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
+  addTask: boolean = false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
 

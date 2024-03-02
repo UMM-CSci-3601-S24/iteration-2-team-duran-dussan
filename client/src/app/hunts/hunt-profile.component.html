@@ -7,6 +7,13 @@
           <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
         }
     </ol>
+    <div>
+      @if (this.addTask) {
+        <app-add-task></app-add-task>
+      } @else {
+        <button mat-raised-button color="primary" (click)="this.addTask = true">Add Task</button>
+      }
+    </div>
     } @else if (error) {
       <mat-card class="error-card">
         <mat-card-content>

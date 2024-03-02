@@ -7,13 +7,15 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { HuntCardComponent } from './hunt-card.component';
 import { CompleteHunt } from './completeHunt';
 import { HostService } from '../hosts/host.service';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-hunt-profile',
     templateUrl: './hunt-profile.component.html',
     styleUrls: ['./hunt-profile.component.scss'],
     standalone: true,
-    imports: [HuntCardComponent, MatCardModule]
+    imports: [HuntCardComponent, MatCardModule, MatIconButton, MatIcon]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
   completeHunt: CompleteHunt;

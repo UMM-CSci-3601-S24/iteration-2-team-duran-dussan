@@ -7,7 +7,6 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Router } from "@angular/router";
 import { HostService } from "src/app/hosts/host.service";
 
 @Component({
@@ -15,7 +14,8 @@ import { HostService } from "src/app/hosts/host.service";
     templateUrl: './add-task.component.html',
     styleUrls: ['./add-task.component.scss'],
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule]
+    imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule],
+    providers: [HostService]
 })
 export class AddTaskComponent {
 
@@ -37,8 +37,7 @@ export class AddTaskComponent {
 
   constructor(
     private hostService: HostService,
-    private snackBar: MatSnackBar,
-    private router: Router) {
+    private snackBar: MatSnackBar,) {
   }
 
   formControlHasError(controlName: string): boolean {

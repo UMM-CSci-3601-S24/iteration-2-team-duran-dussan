@@ -1,0 +1,38 @@
+<div class="flex-row">
+  <div class="flex-1">
+    <form [formGroup]="addTaskForm" (ngSubmit)="submitForm();">
+      <mat-card class="add-task-card">
+        <mat-card-header>
+          <mat-card-title class="add-task-title">New Task</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="flex-col">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name"
+                required>
+              @if (formControlHasError('name')) {
+                <mat-error data-test="nameError">
+                  {{getErrorMessage('name')}}
+                </mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button
+            mat-button
+            type="button"
+            color="primary"
+            [disabled]="!addTaskForm.valid"
+            type="submit"
+            data-test="confirmAddUserButton"
+            >
+            ADD TASK
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+  </div>
+</div>

@@ -182,7 +182,7 @@ public class HostController implements Controller {
     if (deleteResult.getDeletedCount() != 1) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
-        "Was unable to delete hostId "
+        "Was unable to delete ID "
           + id
           + "; perhaps illegal ID or an ID for an item not in the system?");
     }

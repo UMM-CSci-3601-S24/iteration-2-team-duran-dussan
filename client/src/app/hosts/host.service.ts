@@ -23,13 +23,13 @@ export class HostService {
     return this.httpClient.get<CompleteHunt>(`${this.huntUrl}/${id}`);
   }
 
-   deleteHunt(id: string): Observable<void> {
-    return this.httpClient.delete<void>(`/api/hunts/${id}`);
-  }
-
   addHunt(newHunt: Partial<Hunt>): Observable<string> {
     newHunt.hostId = "588945f57546a2daea44de7c";
     return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
+  }
+
+  deleteHunt(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`/api/hunts/${id}`);
   }
 
 }

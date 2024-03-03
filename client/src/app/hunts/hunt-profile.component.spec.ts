@@ -1,21 +1,23 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ActivatedRouteStub } from '../../testing/activated-route-stub';
 import { MockHostService } from '../../testing/host.service.mock';
 import { HuntCardComponent } from './hunt-card.component';
 import { HuntProfileComponent } from './hunt-profile.component';
 import { HostService } from '../hosts/host.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-//import { ReactiveFormsModule } from '@angular/forms';
-//import { MatInputModule } from '@angular/material/input';
-//import { MatSelectModule } from '@angular/material/select';
-//import { MatSnackBarModule } from '@angular/material/snack-bar';
-//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CompleteHunt } from './completeHunt';
 import { HttpClientModule } from '@angular/common/http';
+import { HuntService } from './hunt.service';
+import { Location } from '@angular/common';
 
 describe('HuntProfileComponent', () => {
   let component: HuntProfileComponent;
@@ -91,8 +93,6 @@ describe('HuntProfileComponent', () => {
   });
 });
 
-/*
-
 describe('DeleteHunt()', () => {
   let component: HuntProfileComponent;
   let fixture: ComponentFixture<HuntProfileComponent>;
@@ -136,14 +136,13 @@ describe('DeleteHunt()', () => {
     expect(deleteHuntSpy).toHaveBeenCalledWith(fryId);
   });
 
-  it('should delete a hunt and navigate to /hunts', () => {
+  it('should delete a hunt and navigate to /hosts', () => {
     const navigateSpy = spyOn(router, 'navigate');
     const deleteHuntSpy = spyOn(huntService, 'deleteHunt').and.returnValue(of(null));
 
     component.deleteHunt('testId');
 
     expect(deleteHuntSpy).toHaveBeenCalledWith('testId');
-    expect(navigateSpy).toHaveBeenCalledWith(['/hunts']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/hosts']);
   });
 });
-*/

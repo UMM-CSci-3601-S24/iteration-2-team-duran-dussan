@@ -30,7 +30,7 @@ public class HostController implements Controller {
   private static final String API_HOST_BY_ID = "/api/hosts/{id}";
   private static final String API_HUNT = "/api/hunts/{id}";
   private static final String API_HUNTS = "/api/hunts";
-  private static final String API_HUNT_BY_ID = "/api/hunts/${id}";
+  private static final String API_HUNT_BY_ID = "/api/hunts/{id}";
   private static final String API_TASKS = "/api/tasks";
 
   static final String HOST_KEY = "hostId";

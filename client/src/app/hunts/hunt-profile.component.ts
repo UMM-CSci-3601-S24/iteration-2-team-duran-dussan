@@ -55,7 +55,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
   }
 
   deleteHunt(id: string): void {
-    this.huntService.deleteHunt(id).subscribe(() => {
+    this.hostService.deleteHunt(id).subscribe(() => {
       this.router.navigate(['/hosts']);
     });
   }

@@ -62,11 +62,12 @@ export class HostProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  /* deleteHunt(id: string): void {
+   deleteHunt(id: string): void {
     this.huntService.deleteHunt(id).subscribe(() => {
+      //this.getHuntsFromServer();
       this.router.navigate(['/hosts']);
     });
-  } */
+  }
 
   ngOnInit(): void {
     this.getHuntsFromServer();

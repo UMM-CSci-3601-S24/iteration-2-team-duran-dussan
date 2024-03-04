@@ -16,8 +16,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CompleteHunt } from './completeHunt';
 import { HttpClientModule } from '@angular/common/http';
-//import { HuntService } from './hunt.service';
 import { Location } from '@angular/common';
+
 
 describe('HuntProfileComponent', () => {
   let component: HuntProfileComponent;
@@ -31,6 +31,7 @@ describe('HuntProfileComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     imports: [
+        HttpClientModule,
         RouterTestingModule,
         MatCardModule,
         HuntProfileComponent, HuntCardComponent, HttpClientModule, HttpClientTestingModule

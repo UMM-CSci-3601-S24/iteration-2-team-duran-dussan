@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Hunt } from '../hunts/hunt';
+import { Task } from '../hunts/task';
 import { HostService } from './host.service';
 
 describe('HostService', () => {
@@ -30,6 +31,27 @@ const testHunts: Hunt[] = [
     description: "This is the default hunt 3",
     est: 15,
     numberOfTasks: 4
+  },
+];
+
+const testTasks: Task[] = [
+  {
+    _id: "5889",
+    huntId: "588",
+    name: "Default Task 1",
+    status: false
+  },
+  {
+    _id: "5754",
+    huntId: "575",
+    name: "Default Task 2",
+    status: false
+  },
+  {
+    _id: "de7c",
+    huntId: "e7c",
+    name: "Default Task 3",
+    status: false
   },
 ];
 let hostService: HostService;
@@ -104,6 +126,27 @@ describe('When getHunts() is called', () => {
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
           .toHaveBeenCalledWith(hostService.huntUrl, testHunts[1]);
+      });
+    }));
+  });
+
+  describe('Adding a task using `addTask()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const task_id = 'hunt_id';
+      const expected_http_response = { id: task_id } ;
+
+      const mockedMethod = spyOn(httpClient, 'post')
+        .and
+        .returnValue(of(expected_http_response));
+
+      hostService.addTask(testTasks[1]).subscribe((new_task_id) => {
+        expect(new_task_id).toBe(task_id);
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(hostService.taskUrl, testTasks[1]);
       });
     }));
   });

@@ -8,7 +8,7 @@ import { CompanyListComponent } from './company-list/company-list.component';
 import { HostProfileComponent } from './hosts/host-profile.component';
 import { HuntProfileComponent } from './hunts/hunt-profile.component';
 import { HuntCardComponent } from './hunts/hunt-card.component';
-import { AddHuntComponent } from './hunts/Add Hunt/add-hunt.component';
+import { AddHuntComponent } from './hunts/addHunt/add-hunt.component';
 
 // Note that the 'users/new' route needs to come before 'users/:id'.
 // If 'users/:id' came first, it would accidentally catch requests to

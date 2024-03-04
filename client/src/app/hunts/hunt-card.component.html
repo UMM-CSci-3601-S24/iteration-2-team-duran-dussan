@@ -1,41 +1,18 @@
-<mat-card class="search-card">
-  <mat-card-header>
-    <mat-card-title class="hunt-list-title">Hunts</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-
-  </mat-card-content>
-</mat-card>
-
 @if (this.hunt()) {
   <mat-card class="hunt-card">
     <mat-card-header>
       <mat-card-title class="hunt-card-name">{{ this.hunt().name }}</mat-card-title>
       <mat-card-subtitle class="hunt-card-description">{{ this.hunt().description }}</mat-card-subtitle>
-      <mat-card-title class="hunt-card-time"> <mat-icon matListItemIcon>av_timer</mat-icon> {{ this.hunt().est }} minutes</mat-card-title>
+      <mat-card-title class="hunt-card-time top-right icon-center">
+        <div>
+          <mat-icon matListItemIcon>av_timer</mat-icon>
+          <span class="time-text">{{ this.hunt().est }} min</span>
+        </div>
+      </mat-card-title>
     </mat-card-header>
-    @if (!this.simple()) {
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item>
-            <mat-icon matListItemIcon>dataset</mat-icon>
-            <p matListItemTitle>Estimated Time</p>
-
-            <p matListItemLine class="hunt-card-est">{{ this.hunt().est }}</p>
-          </mat-list-item>
-          <mat-divider [inset]=true></mat-divider>
-          <mat-list-item>
-            <mat-icon matListItemIcon>schedule</mat-icon>
-            <p matListItemTitle>Number of Tasks</p>
-            <p matListItemLine class="hunt-card-numberOfTasks">{{ this.hunt().numberOfTasks }}</p>
-          </mat-list-item>
-          <mat-divider [inset]=true></mat-divider>
-        </mat-list>
-      </mat-card-content>
-    }
     @if (this.simple()) {
       <mat-card-actions>
-        <button mat-button data-test="viewProfileButton" [routerLink]="['/hunts', this.hunt()._id]">View Profile</button>
+        <button mat-button class="profile-button" data-test="viewProfileButton" [routerLink]="['/hunts', this.hunt()._id]">View Profile</button>
       </mat-card-actions>
     }
   </mat-card>

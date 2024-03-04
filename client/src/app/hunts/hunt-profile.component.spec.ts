@@ -9,6 +9,8 @@ import { HuntCardComponent } from './hunt-card.component';
 import { HuntProfileComponent } from './hunt-profile.component';
 import { HostService } from '../hosts/host.service';
 import { CompleteHunt } from './completeHunt';
+import { HttpClientModule } from '@angular/common/http';
+
 
 describe('HuntProfileComponent', () => {
   let component: HuntProfileComponent;
@@ -22,6 +24,7 @@ describe('HuntProfileComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     imports: [
+        HttpClientModule,
         RouterTestingModule,
         MatCardModule,
         HuntProfileComponent, HuntCardComponent

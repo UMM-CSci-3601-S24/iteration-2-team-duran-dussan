@@ -52,6 +52,7 @@ public class HostControllerSpec {
   private ObjectId frysId;
   private ObjectId huntId;
   private ObjectId hostId;
+  private ObjectId taskId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -185,7 +186,15 @@ public class HostControllerSpec {
         .append("name", "Take a picture of a moose")
         .append("status", true));
 
+        taskId = new ObjectId();
+        Document task = new Document()
+          .append("_id", taskId)
+          .append("huntId", "someId")
+          .append("name", "Best Task")
+          .append("status", false);
+
     taskDocuments.insertMany(testTasks);
+    taskDocuments.insertOne(task);
 
     hostController = new HostController(db);
   }
@@ -233,22 +242,6 @@ public class HostControllerSpec {
 
     assertEquals("The requested host was not found", exception.getMessage());
   }
-
-  /*
-  @Test
-  void canGetAllHunts() throws IOException {
-
-    when(ctx.queryParamMap()).thenReturn(Collections.emptyMap());
-
-    hostController.getHunts(ctx);
-
-    verify(ctx).json(huntArrayListCaptor.capture());
-    verify(ctx).status(HttpStatus.OK);
-
-    assertEquals(
-        db.getCollection("hunts").countDocuments(),
-        huntArrayListCaptor.getValue().size());
-  } */
 
   @Test
   void getHuntsByHostId() throws IOException {
@@ -624,8 +617,35 @@ public class HostControllerSpec {
     assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
   }
 
+  @Test
+  void deleteFoundTask() throws IOException {
+    String testID = taskId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
 
+    assertEquals(1, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
 
+    hostController.deleteTask(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(0, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
+  }
+
+  @Test
+  void tryToDeleteNotFoundTask() throws IOException {
+    String testID = taskId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    hostController.deleteTask(ctx);
+    assertEquals(0, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
+
+    assertThrows(NotFoundResponse.class, () -> {
+      hostController.deleteTask(ctx);
+    });
+
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+    assertEquals(0, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
+  }
 
   @Test
   void getCompleteHuntById() throws IOException {
@@ -644,5 +664,16 @@ public class HostControllerSpec {
     for (Task task : completeHuntCaptor.getValue().tasks) {
       assertEquals(huntId.toHexString(), task.huntId);
     }
+  }
+
+  @Test
+  void getCompleteHuntWithBadId() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getCompleteHunt(ctx);
+    });
+
+    assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
   }
 }

@@ -21,6 +21,7 @@ import { HostService } from "./host.service";
 import { MockHostService } from "src/testing/host.service.mock";
 import { Observable } from "rxjs";
 import { Hunt } from "../hunts/hunt";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 const COMMON_IMPORTS: unknown[] = [
   FormsModule,
@@ -39,6 +40,7 @@ const COMMON_IMPORTS: unknown[] = [
   MatSnackBarModule,
   BrowserAnimationsModule,
   RouterTestingModule,
+  HttpClientTestingModule
 ];
 
 describe("Hunt list", () => {

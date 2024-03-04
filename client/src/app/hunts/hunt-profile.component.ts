@@ -9,7 +9,6 @@ import { CompleteHunt } from './completeHunt';
 import { HostService } from '../hosts/host.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { Hunt } from './hunt';
 import { HuntService } from './hunt.service';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -22,7 +21,6 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
   completeHunt: CompleteHunt;
-  hunt: Hunt;
   error: { help: string, httpResponse: string, message: string };
 
   private ngUnsubscribe = new Subject<void>();
@@ -60,10 +58,6 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
       console.log('Hunt deleted successfully.');
       this.router.navigate(['/hosts']);
     });
-  }
-
-  logValueToConsole(): void {
-    console.log(this.hunt._id);
   }
 
   ngOnDestroy() {

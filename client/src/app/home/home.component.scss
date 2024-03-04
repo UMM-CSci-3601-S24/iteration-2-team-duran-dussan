@@ -4,12 +4,9 @@
     text-align: center;
     border: 1px solid #000;
     border-radius: 5px;
-    background-color: #000000;
+    background-color: 70, 70, 70;
     box-shadow: 0 0 5px 0 #000;
     transition: box-shadow 0.3s;
-    &:hover {
-        box-shadow: 0 0 10px 0 #000;
-    }
 }
 
 .home {
@@ -32,8 +29,10 @@
 
 .icon {
     transform: scale(2);
+    color: rgb(0, 162, 255);
 }
 
 .button-text {
     margin-left: 10px;
+    color: rgb(0, 162, 255);
   }

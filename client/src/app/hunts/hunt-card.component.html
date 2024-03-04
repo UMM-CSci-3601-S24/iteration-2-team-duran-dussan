@@ -1,8 +1,18 @@
+<mat-card class="search-card">
+  <mat-card-header>
+    <mat-card-title class="hunt-list-title">Hunts</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+  </mat-card-content>
+</mat-card>
+
 @if (this.hunt()) {
   <mat-card class="hunt-card">
     <mat-card-header>
       <mat-card-title class="hunt-card-name">{{ this.hunt().name }}</mat-card-title>
       <mat-card-subtitle class="hunt-card-description">{{ this.hunt().description }}</mat-card-subtitle>
+      <mat-card-title class="hunt-card-time"> <mat-icon matListItemIcon>av_timer</mat-icon> {{ this.hunt().est }} minutes</mat-card-title>
     </mat-card-header>
     @if (!this.simple()) {
       <mat-card-content>
@@ -28,5 +38,5 @@
         <button mat-button data-test="viewProfileButton" [routerLink]="['/hunts', this.hunt()._id]">View Profile</button>
       </mat-card-actions>
     }
-</mat-card>
+  </mat-card>
 }

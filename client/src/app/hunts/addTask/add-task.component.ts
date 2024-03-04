@@ -20,6 +20,7 @@ import { HostService } from "src/app/hosts/host.service";
 export class AddTaskComponent {
 
   huntId = input.required<string>();
+  addTask: boolean = false;
 
   addTaskForm = new FormGroup({
     huntId: new FormControl(),

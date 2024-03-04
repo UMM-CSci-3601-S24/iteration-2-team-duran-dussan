@@ -18,7 +18,6 @@ import { MatDivider } from '@angular/material/divider';
     imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
-  addTask: boolean = false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
 

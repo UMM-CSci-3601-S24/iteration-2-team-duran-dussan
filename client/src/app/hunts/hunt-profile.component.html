@@ -12,7 +12,7 @@
       @if (this.addTask) {
         <app-add-task [huntId]="this.completeHunt.hunt._id"></app-add-task>
       } @else {
-        <button mat-raised-button color="primary" (click)="this.addTask = true">Add Task</button>
+        <button class="add-task-button" mat-raised-button color="primary" (click)="this.addTask = true">Add Task</button>
       }
     </div>
     } @else if (error) {

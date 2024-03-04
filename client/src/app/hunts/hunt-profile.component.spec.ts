@@ -16,7 +16,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CompleteHunt } from './completeHunt';
 import { HttpClientModule } from '@angular/common/http';
-import { HuntService } from './hunt.service';
+//import { HuntService } from './hunt.service';
 import { Location } from '@angular/common';
 
 describe('HuntProfileComponent', () => {
@@ -96,7 +96,7 @@ describe('HuntProfileComponent', () => {
 describe('DeleteHunt()', () => {
   let component: HuntProfileComponent;
   let fixture: ComponentFixture<HuntProfileComponent>;
-  let huntService: HuntService;
+  let hostService: HostService;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let location: Location;
   let router: Router;
@@ -120,25 +120,25 @@ describe('DeleteHunt()', () => {
         ]),
         HttpClientTestingModule
       ],
-      providers: [HuntService]
+      providers: [HostService]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HuntProfileComponent);
     component = fixture.componentInstance;
-    huntService = TestBed.inject(HuntService);
+    hostService = TestBed.inject(HostService);
     location = TestBed.inject(Location);
     router = TestBed.inject(Router);
   });
 
   it('should call deleteHunt on HuntService when deleteHunt is called in HuntProfileComponent', () => {
-    const deleteHuntSpy = spyOn(huntService, 'deleteHunt').and.callThrough();
+    const deleteHuntSpy = spyOn(hostService, 'deleteHunt').and.callThrough();
     component.deleteHunt(fryId);
     expect(deleteHuntSpy).toHaveBeenCalledWith(fryId);
   });
 
   it('should delete a hunt and navigate to /hosts', () => {
     const navigateSpy = spyOn(router, 'navigate');
-    const deleteHuntSpy = spyOn(huntService, 'deleteHunt').and.returnValue(of(null));
+    const deleteHuntSpy = spyOn(hostService, 'deleteHunt').and.returnValue(of(null));
 
     component.deleteHunt('testId');
 

@@ -2,13 +2,20 @@
   <div class="flex-1">
     <mat-card class="home-card">
       <mat-card-header>
-        <mat-card-title>
-          Home
-        </mat-card-title>
       </mat-card-header>
-      <mat-card-content>
-        This is a home page! It doesn't do anything!
+      <mat-card-title class="home">
+        Home
+      </mat-card-title>
+      <mat-card-content class="home-subtitle">
+        Welcome to {{title}}!
       </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <a mat-button class="centered-button" routerLink="/hosts" routerLinkActive="drawer-list-item-active">
+          <mat-icon class="icon" matListItemIcon>contacts</mat-icon>
+          <span class="button-text">Hosts</span>
+        </a>
+      </mat-card-actions>
     </mat-card>
   </div>
 </div>

@@ -60,7 +60,7 @@ export class AddTaskComponent {
   }
 
   submitForm() {
-    this.addTaskForm.value.huntId = this.huntId;
+    this.addTaskForm.value.huntId = this.huntId();
     this.addTaskForm.value.status = false;
     this.hostService.addTask(this.addTaskForm.value).subscribe({
       next: () => {

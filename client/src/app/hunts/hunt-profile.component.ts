@@ -8,13 +8,14 @@ import { HuntCardComponent } from './hunt-card.component';
 import { CompleteHunt } from './completeHunt';
 import { HostService } from '../hosts/host.service';
 import { AddTaskComponent } from './addTask/add-task.component';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
     selector: 'app-hunt-profile',
     templateUrl: './hunt-profile.component.html',
     styleUrls: ['./hunt-profile.component.scss'],
     standalone: true,
-    imports: [HuntCardComponent, MatCardModule, AddTaskComponent]
+    imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
   addTask: boolean = false;

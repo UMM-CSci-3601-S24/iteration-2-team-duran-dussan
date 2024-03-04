@@ -68,26 +68,43 @@ describe('When getHunts() is called', () => {
   }));
  });
 
- describe('When getUserById() is given an ID', () => {
+ describe('When getHuntById() is given an ID', () => {
+  it('calls api/hunts/id with the correct ID', waitForAsync(() => {
+    const targetHunt: Hunt = testHunts[1];
+    const targetId: string = targetHunt._id;
 
-   it('calls api/hosts/hostId with the correct hostId', waitForAsync(() => {
+    const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetHunt));
 
-     const targetHunt: Hunt = testHunts[1];
-     const targetId: string = targetHunt.hostId;
+      hostService.getHuntById(targetId).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
 
-     const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetHunt));
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.huntUrl}/${targetId}`);
+      });
+    }));
+  });
 
-     hostService.getHuntById(targetId).subscribe(() => {
-       expect(mockedMethod)
-         .withContext('one call')
-         .toHaveBeenCalledTimes(1);
-       expect(mockedMethod)
-         .withContext('talks to the correct endpoint')
-         .toHaveBeenCalledWith(`${hostService.huntUrl}/${targetId}`);
-     });
-   }));
- });
+  describe('Adding a hunt using `addHunt()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const hunt_id = 'pat_id';
+      const expected_http_response = { id: hunt_id } ;
 
+      const mockedMethod = spyOn(httpClient, 'post')
+        .and
+        .returnValue(of(expected_http_response));
 
-
-})
+      hostService.addHunt(testHunts[1]).subscribe((new_hunt_id) => {
+        expect(new_hunt_id).toBe(hunt_id);
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(hostService.huntUrl, testHunts[1]);
+      });
+    }));
+  });
+});

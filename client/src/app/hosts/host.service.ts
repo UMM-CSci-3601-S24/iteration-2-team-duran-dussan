@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Hunt } from '../hunts/hunt';
+import { CompleteHunt } from '../hunts/completeHunt';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,6 @@ export class HostService {
   readonly hostUrl: string = `${environment.apiUrl}hosts`;
   readonly huntUrl: string = `${environment.apiUrl}hunts`;
 
-  private readonly nameKey = 'name';
-  private readonly userNameKey = 'username';
-  private readonly hostIdKey = 'hostId'
-
   constructor(private httpClient: HttpClient){
   }
 
@@ -22,8 +19,13 @@ export class HostService {
     return this.httpClient.get<Hunt[]>(`${this.hostUrl}/${hostId}`);
   }
 
-  getHuntById(id: string): Observable<Hunt> {
-    return this.httpClient.get<Hunt>(`${this.huntUrl}/${id}`);
+  getHuntById(id: string): Observable<CompleteHunt> {
+    return this.httpClient.get<CompleteHunt>(`${this.huntUrl}/${id}`);
+  }
+
+  addHunt(newHunt: Partial<Hunt>): Observable<string> {
+    newHunt.hostId = "588945f57546a2daea44de7c";
+    return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
   }
 
 }

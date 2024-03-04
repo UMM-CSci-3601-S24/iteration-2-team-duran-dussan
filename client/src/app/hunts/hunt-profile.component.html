@@ -31,5 +31,9 @@
         </mat-card-content>
       </mat-card>
     }
+
+    <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="deleteHunt(completeHunt.hunt._id)" data-test="removeHuntButton">
+      <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
+    </button>
   </div>
 </div>

@@ -28,4 +28,8 @@ export class HostService {
     return this.httpClient.post<{id: string}>(this.huntUrl, newHunt).pipe(map(result => result.id));
   }
 
+  deleteHunt(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`/api/hunts/${id}`);
+  }
+
 }

@@ -51,7 +51,6 @@ public class HostControllerSpec {
   private HostController hostController;
   private ObjectId frysId;
   private ObjectId huntId;
-  private ObjectId hostId;
   private ObjectId taskId;
 
   private static MongoClient mongoClient;
@@ -149,18 +148,8 @@ public class HostControllerSpec {
       .append("est", 20)
       .append("numberOfTasks", 3);
 
-      hostId = new ObjectId();
-    Document host = new Document()
-      .append("_id", "4_id")
-      .append("hostId", hostId)
-      .append("name", "Best Hunt")
-      .append("description", "This is the best hunt")
-      .append("est", 20)
-      .append("numberOfTasks", 3);
-
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
-    huntDocuments.insertOne(host);
 
     MongoCollection<Document> taskDocuments = db.getCollection("tasks");
     taskDocuments.drop();

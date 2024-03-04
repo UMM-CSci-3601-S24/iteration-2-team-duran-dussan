@@ -9,7 +9,6 @@ import { CompleteHunt } from './completeHunt';
 import { HostService } from '../hosts/host.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-//import { HuntService } from './hunt.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({

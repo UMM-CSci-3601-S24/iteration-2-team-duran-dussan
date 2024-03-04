@@ -27,10 +27,10 @@ import com.mongodb.client.result.DeleteResult;
 
 public class HostController implements Controller {
 
-  private static final String API_HOST_BY_ID = "/api/hosts/{id}";
+  private static final String API_HOST = "/api/hosts/{id}";
   private static final String API_HUNT = "/api/hunts/{id}";
   private static final String API_HUNTS = "/api/hunts";
-  private static final String API_HUNT_BY_ID = "/api/hunts/{id}";
+  private static final String API_TASK = "/api/tasks/{id}";
   private static final String API_TASKS = "/api/tasks";
 
   static final String HOST_KEY = "hostId";
@@ -213,12 +213,12 @@ public class HostController implements Controller {
 
   @Override
   public void addRoutes(Javalin server) {
-    server.get(API_HOST_BY_ID, this::getHunts);
+    server.get(API_HOST, this::getHunts);
     server.get(API_HUNT, this::getCompleteHunt);
     server.post(API_HUNTS, this::addNewHunt);
     server.get(API_TASKS, this::getTasks);
     server.post(API_TASKS, this::addNewTask);
-
-    server.delete(API_HUNT_BY_ID, this::deleteHunt);
+    server.delete(API_HUNT, this::deleteHunt);
+    server.delete(API_TASK, this::deleteTask);
   }
 }

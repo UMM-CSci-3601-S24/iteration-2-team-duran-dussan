@@ -11,6 +11,7 @@
     <div>
       @if (this.addTask) {
         <app-add-task [huntId]="this.completeHunt.hunt._id"></app-add-task>
+        <button class="add-task-button" mat-raised-button color="primary" (click)="this.addTask = false">Cancel</button>
       } @else {
         <button class="add-task-button" mat-raised-button color="primary" (click)="this.addTask = true">Add Task</button>
       }

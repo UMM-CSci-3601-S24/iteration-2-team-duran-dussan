@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatButton } from '@angular/material/button';
 
 export interface DialogData {
   taskId: string;
@@ -10,8 +9,6 @@ export interface DialogData {
   selector: 'app-delete-task-dialog',
   templateUrl: './delete-task-dialog.component.html',
   styleUrls: ['./delete-task-dialog.component.scss'],
-  standalone: true,
-  imports: [MatButton]
 })
 export class DeleteTaskDialogComponent {
   constructor(

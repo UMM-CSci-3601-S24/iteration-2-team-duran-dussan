@@ -1,15 +1,18 @@
 <div class="flex-row">
   <div class="flex-1">
+    <mat-card class="background">
     @if (completeHunt) {
-      <app-hunt-card [hunt]="this.completeHunt.hunt"></app-hunt-card>
+      <app-hunt-card class="hunt-card" [hunt]="this.completeHunt.hunt" [simple]="false">
+      </app-hunt-card>
       <ol class="task-list">
+        <mat-card-title>Tasks</mat-card-title>
         @for (task of this.completeHunt.tasks; track task._id) {
           <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
           <mat-divider></mat-divider>
         }
     </ol>
     <div>
-      <app-add-task [huntId]="this.completeHunt.hunt._id"></app-add-task>
+      <app-add-task class="add-task-button" [huntId]="this.completeHunt.hunt._id"></app-add-task>
     </div>
     } @else if (error) {
       <mat-card class="error-card">
@@ -39,5 +42,6 @@
     <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="deleteHunt(completeHunt.hunt._id)" data-test="removeHuntButton">
       <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
     </button>
+  </mat-card>
   </div>
 </div>

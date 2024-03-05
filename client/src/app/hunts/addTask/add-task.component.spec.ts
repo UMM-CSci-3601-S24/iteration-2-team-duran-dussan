@@ -169,4 +169,25 @@ describe('AddTaskComponent#submitForm()', () => {
     expect(addTaskSpy).toHaveBeenCalledWith(component.addTaskForm.value);
     expect(location.path()).toBe(path);
   });
+
+  it('should return true when the control is invalid and either dirty or touched', () => {
+    const controlName = 'name';
+    component.addTaskForm.get(controlName).setValue('');
+    component.addTaskForm.get(controlName).markAsDirty();
+    expect(component.formControlHasError(controlName)).toBeTruthy();
+  });
+
+  it('should return false when the control is valid', () => {
+    const controlName = 'name';
+    component.addTaskForm.get(controlName).setValue('Valid Name');
+    expect(component.formControlHasError(controlName)).toBeFalsy();
+  });
+
+  it('should return false when the control is invalid but not dirty or touched', () => {
+    const controlName = 'name';
+    component.addTaskForm.get(controlName).setValue('');
+    expect(component.formControlHasError(controlName)).toBeFalsy();
+  });
+
 });
+

@@ -172,8 +172,18 @@ public class HostController implements Controller {
     .get();
 
     taskCollection.insertOne(newTask);
+    increaseTaskCount(newTask.huntId);
     ctx.json(Map.of("id", newTask._id));
     ctx.status(HttpStatus.CREATED);
+  }
+
+  public void increaseTaskCount(String huntId) {
+    try {
+      huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
+       new Document("$inc", new Document("numberOfTasks", 1)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void deleteHunt(Context ctx) {

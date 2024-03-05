@@ -94,7 +94,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'confirm') {
-        this.deleteHunt(taskId);
+        this.deleteTask(taskId);
       }
     });
   }

@@ -14,5 +14,5 @@ import { MatDividerModule } from '@angular/material/divider';
     imports: [MatDividerModule, MatButtonModule, MatCardModule, MatIconModule, RouterLink, RouterLinkActive, RouterOutlet]
 })
 export class HomeComponent {
-    title = 'Scav n Snap';
+    title = 'Scav-n-Snap';
 }

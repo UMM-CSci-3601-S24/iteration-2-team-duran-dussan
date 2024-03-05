@@ -3,17 +3,18 @@
     <mat-card class="home-card">
       <mat-card-header>
       </mat-card-header>
-      <mat-card-title class="home">
-        Home
-      </mat-card-title>
-      <mat-card-content class="home-subtitle">
+      <mat-card-title class="title">
         Welcome to {{title}}!
-      </mat-card-content>
+      </mat-card-title>
       <mat-divider></mat-divider>
       <mat-card-actions>
-        <a mat-button class="centered-button" routerLink="/hosts" routerLinkActive="drawer-list-item-active">
+        <a mat-button class="link-button" routerLink="/hosts" routerLinkActive="drawer-list-item-active">
           <mat-icon class="icon" matListItemIcon>contacts</mat-icon>
-          <span class="button-text">Hosts</span>
+          <span class="button-text">Host</span>
+        </a>
+        <a mat-button class="link-button"  routerLinkActive="drawer-list-item-active">
+          <mat-icon class="icon" matListItemIcon>map</mat-icon>
+          <span class="button-text">Hunter</span>
         </a>
       </mat-card-actions>
     </mat-card>

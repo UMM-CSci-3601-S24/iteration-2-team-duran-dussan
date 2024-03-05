@@ -28,7 +28,7 @@ describe('Home', () => {
 
   it('It has the basic home page text', () => {
     fixture.detectChanges();
-    expect(el.textContent).toContain('Welcome to Scav n Snap');
+    expect(el.textContent).toContain('Welcome to Scav-n-Snap');
     expect(component).toBeTruthy();
   });
 

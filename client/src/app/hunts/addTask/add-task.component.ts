@@ -79,5 +79,6 @@ export class AddTaskComponent {
         );
       },
     });
+    window.location.reload();
   }
 }

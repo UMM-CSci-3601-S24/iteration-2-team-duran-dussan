@@ -477,7 +477,7 @@ public class HostControllerSpec {
   void addTask() throws IOException {
     String testNewTask = """
         {
-          "huntId": "adkng294js71apls92jas328",
+          "huntId": "bestHuntId",
           "name": "New Task",
           "status": false
         }

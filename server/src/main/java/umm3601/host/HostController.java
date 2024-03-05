@@ -178,9 +178,9 @@ public class HostController implements Controller {
   }
 
   public void increaseTaskCount(String huntId) {
-    Hunt hunt = huntCollection.find(eq("_id", new ObjectId(huntId))).first();
     try {
-      huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)), new Document("$inc", new Document("numberOfTasks", hunt.numberOfTasks + 1)));
+      huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
+       new Document("$inc", new Document("numberOfTasks", 1)));
     } catch (Exception e) {
       e.printStackTrace();
     }

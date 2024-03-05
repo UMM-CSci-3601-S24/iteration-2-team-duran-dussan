@@ -1,0 +1,43 @@
+.title {
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .title {
+      color: rgb(255, 255, 255); // color for dark mode
+    }
+  }
+
+.message {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 20px;
+    text-align: center;
+    color: rgb(255, 0, 0);
+}
+
+.button-no {
+    position: absolute;
+    font-size: 1em;
+    gap: 20px;
+    bottom: 50px;
+    right: 50px;
+    background-color: gray;
+}
+
+.button-yes {
+    position: absolute;
+    font-size: 1em;
+    gap: 20px;
+    bottom: 50px;
+    left: 50px;
+    background-color: red;
+}
+
+

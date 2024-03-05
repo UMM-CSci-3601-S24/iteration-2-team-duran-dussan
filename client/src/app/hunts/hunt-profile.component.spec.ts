@@ -146,4 +146,10 @@ describe('DeleteHunt()', () => {
     expect(deleteHuntSpy).toHaveBeenCalledWith('testId');
     expect(navigateSpy).toHaveBeenCalledWith(['/hosts']);
   });
+
+  it('should call deleteTask on HuntService when deleteTask is called in HuntProfileComponent', () => {
+    const deleteTaskSpy = spyOn(hostService, 'deleteTask').and.callThrough();
+    component.deleteTask(fryId);
+    expect(deleteTaskSpy).toHaveBeenCalledWith(fryId);
+  });
 });

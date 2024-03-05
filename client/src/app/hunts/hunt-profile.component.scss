@@ -46,3 +46,14 @@
   bottom: 10px;
   left: 10px;
 }
+
+.remove-task-fab {
+  background-color: transparent;
+  color: red;
+}
+
+.task-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -467,10 +467,22 @@ public class HostControllerSpec {
   void increaseTaskCount() throws IOException {
     String testHuntId = huntId.toHexString();
     assertEquals(3, db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first().get("numberOfTasks"));
+
     hostController.increaseTaskCount(testHuntId);
 
     Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first();
     assertEquals(4, hunt.get("numberOfTasks"));
+  }
+
+  @Test
+  void decreaseTaskCount() throws IOException {
+    String testHuntId = huntId.toHexString();
+    assertEquals(3, db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first().get("numberOfTasks"));
+    
+    hostController.decreaseTaskCount(testHuntId);
+
+    Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first();
+    assertEquals(2, hunt.get("numberOfTasks"));
   }
 
   @Test

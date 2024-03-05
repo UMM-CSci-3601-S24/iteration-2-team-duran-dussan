@@ -202,8 +202,11 @@ public class HostController implements Controller {
 
   public void deleteTask(Context ctx) {
     String id = ctx.pathParam("id");
-    DeleteResult deleteResult = taskCollection.deleteOne(eq("_id", new ObjectId(id)));
-    if (deleteResult.getDeletedCount() != 1) {
+    try{
+      String huntId = taskCollection.find(eq("_id", new ObjectId(id))).first().huntId;
+      taskCollection.deleteOne(eq("_id", new ObjectId(id)));
+      decreaseTaskCount(huntId);
+    } catch (Exception e) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
         "Was unable to delete ID "
@@ -211,6 +214,15 @@ public class HostController implements Controller {
           + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     ctx.status(HttpStatus.OK);
+  }
+
+  public void decreaseTaskCount(String huntId) {
+    try {
+      huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
+       new Document("$inc", new Document("numberOfTasks", -1)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void deleteTasks(Context ctx) {

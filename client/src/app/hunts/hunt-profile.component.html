@@ -39,8 +39,14 @@
       </mat-card>
     }
 
-    <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="deleteHunt(completeHunt.hunt._id)" data-test="removeHuntButton">
-      <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
-    </button>
+    @if (confirmDeleteHunt) {
+      <p>Confirm deletion of hunt: {{this.completeHunt.hunt.name}}</p>
+      <button mat-raised-button color="warn" (click)="deleteHunt(this.completeHunt.hunt._id)" data-test="confirmDeleteHuntButton">Confirm</button>
+      <button mat-raised-button (click)="confirmDeleteHunt = false" data-test="cancelDeleteHuntButton">Cancel</button>
+    } @else {
+      <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="confirmDeleteHunt = true" data-test="removeHuntButton">
+        <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
+      </button>
+    }
   </div>
 </div>

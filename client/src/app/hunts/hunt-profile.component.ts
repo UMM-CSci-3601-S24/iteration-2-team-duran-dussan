@@ -21,6 +21,7 @@ import { HttpClientModule } from '@angular/common/http';
     imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
+  confirmDeleteHunt: boolean =false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
 

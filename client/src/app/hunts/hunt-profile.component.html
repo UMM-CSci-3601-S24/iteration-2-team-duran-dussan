@@ -5,8 +5,11 @@
       <ol class="task-list">
         @for (task of this.completeHunt.tasks; track task._id) {
           <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
+          <button mat-fab class="remove-task-fab" matTooltip="Remove Task" matTooltipPosition="left" (click)="deleteTask(task._id)" data-test="removeTaskButton">
+            DELETE TASK
+          </button>
           <mat-divider></mat-divider>
-        }
+          }
     </ol>
     <div>
       <app-add-task [huntId]="this.completeHunt.hunt._id"></app-add-task>

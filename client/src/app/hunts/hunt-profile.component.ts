@@ -12,6 +12,8 @@ import { MatDivider } from '@angular/material/divider';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteHuntDialogComponent } from './deleteHunt/delete-hunt-dialog.component';
 
 @Component({
     selector: 'app-hunt-profile',
@@ -26,7 +28,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService, private router: Router) { }
+  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService, private router: Router, public dialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -58,6 +60,19 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     this.hostService.deleteHunt(id).subscribe(() => {
       console.log('Hunt deleted successfully.');
       this.router.navigate(['/hosts']);
+    });
+  }
+
+  openDeleteDialog(huntId: string): void {
+    const dialogRef = this.dialog.open(DeleteHuntDialogComponent, {
+      width: '250px',
+      data: { huntId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.deleteHunt(huntId);
+      }
     });
   }
 

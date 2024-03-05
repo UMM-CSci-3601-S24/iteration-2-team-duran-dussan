@@ -202,7 +202,7 @@ public class HostController implements Controller {
 
   public void deleteTask(Context ctx) {
     String id = ctx.pathParam("id");
-    try{
+    try {
       String huntId = taskCollection.find(eq("_id", new ObjectId(id))).first().huntId;
       taskCollection.deleteOne(eq("_id", new ObjectId(id)));
       decreaseTaskCount(huntId);

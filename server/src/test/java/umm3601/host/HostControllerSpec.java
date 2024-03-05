@@ -478,7 +478,7 @@ public class HostControllerSpec {
   void decreaseTaskCount() throws IOException {
     String testHuntId = huntId.toHexString();
     assertEquals(3, db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first().get("numberOfTasks"));
-    
+
     hostController.decreaseTaskCount(testHuntId);
 
     Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first();

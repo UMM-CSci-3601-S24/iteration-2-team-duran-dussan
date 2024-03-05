@@ -5,8 +5,8 @@
       <ol class="task-list">
         @for (task of this.completeHunt.tasks; track task._id) {
           <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
-          <button mat-fab class="remove-task-fab" matTooltip="Remove Task" matTooltipPosition="left" (click)="deleteTask(task._id)" data-test="removeTaskButton">
-            DELETE TASK
+          <button mat-fab class="remove-task-fab" matTooltip="Remove Task" matTooltipPosition="left" (click)="openDeleteTaskDialog(task._id)" data-test="removeTaskButton">
+            <mat-icon class="md-24" aria-label="Remove Task">delete</mat-icon>
           </button>
           <mat-divider></mat-divider>
           }
@@ -39,14 +39,8 @@
       </mat-card>
     }
 
-    @if (confirmDeleteHunt) {
-      <p>Confirm deletion of hunt: {{this.completeHunt.hunt.name}}</p>
-      <button mat-raised-button color="warn" (click)="deleteHunt(this.completeHunt.hunt._id)" data-test="confirmDeleteHuntButton">Confirm</button>
-      <button mat-raised-button (click)="confirmDeleteHunt = false" data-test="cancelDeleteHuntButton">Cancel</button>
-    } @else {
-      <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="confirmDeleteHunt = true" data-test="removeHuntButton">
-        <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
-      </button>
-    }
+    <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="openDeleteHuntDialog(completeHunt.hunt._id)" data-test="removeHuntButton">
+      <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
+    </button>
   </div>
 </div>

@@ -7,16 +7,8 @@ export interface DialogData {
 
 @Component({
   selector: 'app-delete-hunt-dialog',
-  template: `
-    <h1 mat-dialog-title>Are you sure?</h1>
-    <div mat-dialog-content>
-      <p>You are about to delete this hunt. This action cannot be undone.</p>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-button (click)="onNoClick()">No</button>
-      <button mat-button cdkFocusInitial (click)="onYesClick()">Yes</button>
-    </div>
-  `,
+  templateUrl: './delete-hunt-dialog.component.html',
+  styleUrls: ['./delete-hunt-dialog.component.scss'] // Add this line
 })
 export class DeleteHuntDialogComponent {
   constructor(

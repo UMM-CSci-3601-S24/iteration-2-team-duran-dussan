@@ -36,5 +36,14 @@
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  background-color: rgb(70, 70, 70);
+  display: flex;
+  justify-content: space-between;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.username-content {
+  text-align: right;
 }

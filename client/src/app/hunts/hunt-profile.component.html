@@ -8,8 +8,11 @@
         <mat-card-title>Tasks</mat-card-title>
         @for (task of this.completeHunt.tasks; track task._id) {
           <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
+          <button mat-fab class="remove-task-fab" matTooltip="Remove Task" matTooltipPosition="left" (click)="openDeleteTaskDialog(task._id)" data-test="removeTaskButton">
+            <mat-icon class="md-24" aria-label="Remove Task">delete</mat-icon>
+          </button>
           <mat-divider></mat-divider>
-        }
+          }
     </ol>
     <div>
       <app-add-task class="add-task-button" [huntId]="this.completeHunt.hunt._id"></app-add-task>
@@ -39,7 +42,7 @@
       </mat-card>
     }
 
-    <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="deleteHunt(completeHunt.hunt._id)" data-test="removeHuntButton">
+    <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="openDeleteHuntDialog(completeHunt.hunt._id)" data-test="removeHuntButton">
       <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
     </button>
   </mat-card>

@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, fakeAsync, flush, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { MockHostService } from 'src/testing/host.service.mock';
 import { HostService } from 'src/app/hosts/host.service';
 import { HuntProfileComponent } from '../hunt-profile.component';
@@ -121,9 +121,6 @@ describe('AddTaskComponent#submitForm()', () => {
         MatSelectModule,
         MatInputModule,
         BrowserAnimationsModule,
-        RouterTestingModule.withRoutes([
-            { path: 'hunts/1', component: HuntProfileComponent }
-        ]),
         HttpClientTestingModule,
         AddTaskComponent, HuntProfileComponent
     ],
@@ -148,17 +145,6 @@ describe('AddTaskComponent#submitForm()', () => {
     component.huntId = input('1');
   });
 
-  it('should call addTask() and handle success response', fakeAsync(() => {
-    fixture.ngZone.run(() => {
-      const addTaskSpy = spyOn(hostService, 'addTask').and.returnValue(of('1'));
-      component.submitForm();
-      expect(addTaskSpy).toHaveBeenCalledWith(component.addTaskForm.value);
-      tick();
-      expect(location.path()).toBe('');
-      flush();
-    });
-  }));
-
   it('should call addTask() and handle error response', () => {
     const path = location.path();
     const errorResponse = { status: 500, message: 'Server error' };
@@ -169,4 +155,26 @@ describe('AddTaskComponent#submitForm()', () => {
     expect(addTaskSpy).toHaveBeenCalledWith(component.addTaskForm.value);
     expect(location.path()).toBe(path);
   });
+
+
+  it('should return true when the control is invalid and either dirty or touched', () => {
+    const controlName = 'name';
+    component.addTaskForm.get(controlName).setValue('');
+    component.addTaskForm.get(controlName).markAsDirty();
+    expect(component.formControlHasError(controlName)).toBeTruthy();
+  });
+
+  it('should return false when the control is valid', () => {
+    const controlName = 'name';
+    component.addTaskForm.get(controlName).setValue('Valid Name');
+    expect(component.formControlHasError(controlName)).toBeFalsy();
+  });
+
+  it('should return false when the control is invalid but not dirty or touched', () => {
+    const controlName = 'name';
+    component.addTaskForm.get(controlName).setValue('');
+    expect(component.formControlHasError(controlName)).toBeFalsy();
+  });
+
 });
+

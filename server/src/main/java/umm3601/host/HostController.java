@@ -27,10 +27,10 @@ import com.mongodb.client.result.DeleteResult;
 
 public class HostController implements Controller {
 
-  private static final String API_HOST_BY_ID = "/api/hosts/{id}";
+  private static final String API_HOST = "/api/hosts/{id}";
   private static final String API_HUNT = "/api/hunts/{id}";
   private static final String API_HUNTS = "/api/hunts";
-  private static final String API_HUNT_BY_ID = "/api/hunts/{id}";
+  private static final String API_TASK = "/api/tasks/{id}";
   private static final String API_TASKS = "/api/tasks";
 
   static final String HOST_KEY = "hostId";
@@ -172,8 +172,18 @@ public class HostController implements Controller {
     .get();
 
     taskCollection.insertOne(newTask);
+    increaseTaskCount(newTask.huntId);
     ctx.json(Map.of("id", newTask._id));
     ctx.status(HttpStatus.CREATED);
+  }
+
+  public void increaseTaskCount(String huntId) {
+    try {
+      huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
+       new Document("$inc", new Document("numberOfTasks", 1)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public void deleteHunt(Context ctx) {
@@ -186,7 +196,26 @@ public class HostController implements Controller {
           + id
           + "; perhaps illegal ID or an ID for an item not in the system?");
     }
+    deleteTasks(ctx);
     ctx.status(HttpStatus.OK);
+  }
+
+  public void deleteTask(Context ctx) {
+    String id = ctx.pathParam("id");
+    DeleteResult deleteResult = taskCollection.deleteOne(eq("_id", new ObjectId(id)));
+    if (deleteResult.getDeletedCount() != 1) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new NotFoundResponse(
+        "Was unable to delete ID "
+          + id
+          + "; perhaps illegal ID or an ID for an item not in the system?");
+    }
+    ctx.status(HttpStatus.OK);
+  }
+
+  public void deleteTasks(Context ctx) {
+    String huntId = ctx.pathParam("id");
+    taskCollection.deleteMany(eq("huntId", huntId));
   }
 
   public void getCompleteHunt(Context ctx) {
@@ -200,12 +229,12 @@ public class HostController implements Controller {
 
   @Override
   public void addRoutes(Javalin server) {
-    server.get(API_HOST_BY_ID, this::getHunts);
+    server.get(API_HOST, this::getHunts);
     server.get(API_HUNT, this::getCompleteHunt);
     server.post(API_HUNTS, this::addNewHunt);
     server.get(API_TASKS, this::getTasks);
     server.post(API_TASKS, this::addNewTask);
-
-    server.delete(API_HUNT_BY_ID, this::deleteHunt);
+    server.delete(API_HUNT, this::deleteHunt);
+    server.delete(API_TASK, this::deleteTask);
   }
 }

@@ -33,9 +33,13 @@ export class HostService {
   addTask(newTask: Partial<Task>): Observable<string> {
     return this.httpClient.post<{id: string}>(this.taskUrl, newTask).pipe(map(res => res.id));
   }
-  
+
   deleteHunt(id: string): Observable<void> {
     return this.httpClient.delete<void>(`/api/hunts/${id}`);
+  }
+
+  deleteTask(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`/api/tasks/${id}`);
   }
 
 }

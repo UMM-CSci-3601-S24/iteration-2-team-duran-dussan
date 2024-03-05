@@ -674,4 +674,16 @@ public class HostControllerSpec {
 
     assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
   }
+
+  @Test
+  void deleteTasksWithHunt() throws IOException {
+    String testID = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    assertEquals(3, db.getCollection("tasks").countDocuments(eq("huntId", testID)));
+
+    hostController.deleteTasks(ctx);
+
+    assertEquals(0, db.getCollection("tasks").countDocuments(eq("huntId", testID)));
+  }
 }

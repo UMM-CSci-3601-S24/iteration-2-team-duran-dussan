@@ -14,6 +14,7 @@ import { MatIcon } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteHuntDialogComponent } from './deleteHunt/delete-hunt-dialog.component';
+import { DeleteTaskDialogComponent } from './deleteTask/delete-task-dialog.component';
 
 @Component({
     selector: 'app-hunt-profile',
@@ -63,7 +64,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDeleteDialog(huntId: string): void {
+  openDeleteHuntDialog(huntId: string): void {
     const dialogRef = this.dialog.open(DeleteHuntDialogComponent, {
       width: '250px',
       data: { huntId }
@@ -72,6 +73,19 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'confirm') {
         this.deleteHunt(huntId);
+      }
+    });
+  }
+
+  openDeleteTaskDialog(taskId: string): void {
+    const dialogRef = this.dialog.open(DeleteTaskDialogComponent, {
+      width: '250px',
+      data: { taskId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.deleteHunt(taskId);
       }
     });
   }

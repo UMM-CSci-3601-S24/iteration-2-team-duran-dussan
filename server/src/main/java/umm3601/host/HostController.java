@@ -196,6 +196,7 @@ public class HostController implements Controller {
           + id
           + "; perhaps illegal ID or an ID for an item not in the system?");
     }
+    deleteTasks(ctx);
     ctx.status(HttpStatus.OK);
   }
 
@@ -210,6 +211,11 @@ public class HostController implements Controller {
           + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     ctx.status(HttpStatus.OK);
+  }
+
+  public void deleteTasks(Context ctx) {
+    String huntId = ctx.pathParam("id");
+    taskCollection.deleteMany(eq("huntId", huntId));
   }
 
   public void getCompleteHunt(Context ctx) {

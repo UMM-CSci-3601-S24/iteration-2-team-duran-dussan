@@ -21,6 +21,7 @@ import { HttpClientModule } from '@angular/common/http';
     imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
+  confirmDeleteHunt: boolean =false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
 
@@ -58,6 +59,14 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     this.hostService.deleteHunt(id).subscribe(() => {
       console.log('Hunt deleted successfully.');
       this.router.navigate(['/hosts']);
+    });
+  }
+
+  deleteTask(id: string): void {
+    console.log('Deleting task with ID:', id);
+    this.hostService.deleteTask(id).subscribe(() => {
+      console.log('Task deleted successfully.');
+      location.reload();
     });
   }
 

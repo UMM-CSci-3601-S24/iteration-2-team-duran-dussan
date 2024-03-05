@@ -150,4 +150,42 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('Deleting a hunt using `deleteHunt()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const hunt_id = 'hunt_id';
+
+      const mockedMethod = spyOn(httpClient, 'delete')
+        .and
+        .returnValue(of(undefined));
+
+      hostService.deleteHunt(hunt_id).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`/api/hunts/${hunt_id}`);
+      });
+    }));
+  });
+
+  describe('Deleting a task using `deleteTask()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const task_id = 'task_id';
+
+      const mockedMethod = spyOn(httpClient, 'delete')
+        .and
+        .returnValue(of(undefined));
+
+      hostService.deleteTask(task_id).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`/api/tasks/${task_id}`);
+      });
+    }));
+  });
 });

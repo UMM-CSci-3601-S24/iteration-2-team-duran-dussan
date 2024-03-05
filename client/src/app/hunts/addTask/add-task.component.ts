@@ -70,6 +70,7 @@ export class AddTaskComponent {
           null,
           { duration: 2000 }
         );
+        setTimeout(() => window.location.reload(), 2000);
       },
       error: err => {
         this.snackBar.open(
@@ -79,6 +80,5 @@ export class AddTaskComponent {
         );
       },
     });
-    window.location.reload();
   }
 }

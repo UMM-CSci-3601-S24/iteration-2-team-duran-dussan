@@ -19,7 +19,7 @@
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
-    background-color: black;
+    background-color: rgb(132, 209, 245);
   }
 
   .search-card {
@@ -34,14 +34,14 @@
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
-    background-color: black;
+    background-color: rgb(235, 99, 99);
   }
-  
+
   // Capitalize the user role when displaying it in the user card.
   .hunt-card-role {
     text-transform: capitalize;
   }
-  
+
   .hunt-card-email {
     display: block; /* Make it a block-level element */
     color: inherit; /* Inherit the text color from the parent element */
@@ -57,7 +57,7 @@
     gap: 1px;
     font-size: 0.2em;
   }
-  
+
   .top-right {
     position: absolute;
     top: 33px;
@@ -89,7 +89,7 @@
     font-weight: bold;
     transition: background-color 0.3s ease;
   }
-  
+
   .profile-button:hover {
     background-color: #0056b3;
   }

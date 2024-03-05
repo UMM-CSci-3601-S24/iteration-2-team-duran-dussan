@@ -464,10 +464,20 @@ public class HostControllerSpec {
   }
 
   @Test
+  void increaseTaskCount() throws IOException {
+    String testHuntId = huntId.toHexString();
+    assertEquals(3, db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first().get("numberOfTasks"));
+    hostController.increaseTaskCount(testHuntId);
+
+    Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testHuntId))).first();
+    assertEquals(4, hunt.get("numberOfTasks"));
+  }
+
+  @Test
   void addTask() throws IOException {
     String testNewTask = """
         {
-          "huntId": "bestHuntId",
+          "huntId": "adkng294js71apls92jas328",
           "name": "New Task",
           "status": false
         }
@@ -574,7 +584,6 @@ public class HostControllerSpec {
       hostController.addNewTask(ctx);
     });
   }
-
 
   @Test
   void deleteFoundHunt() throws IOException {

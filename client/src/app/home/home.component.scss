@@ -1,0 +1,40 @@
+.home-card {
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: 70, 70, 70;
+    box-shadow: 0 0 5px 0 #000;
+    transition: box-shadow 0.3s;
+}
+
+
+.title {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.link-button {
+    width: 100%;
+    text-align: center;
+    font-size: 3em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 50px;
+  }
+
+  .link-button:hover {
+    background-color: rgb(190, 231, 255);
+    color: #fff;
+  }
+
+.icon {
+    transform: scale(2);
+    color: rgb(12, 102, 154);
+}
+
+.button-text {
+    margin-left: 10px;
+    color: rgb(41, 162, 232);
+  }

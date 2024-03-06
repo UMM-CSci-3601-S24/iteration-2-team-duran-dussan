@@ -8,7 +8,7 @@ export interface DialogData {
 @Component({
   selector: 'app-delete-task-dialog',
   templateUrl: './delete-task-dialog.component.html',
-  styleUrls: ['./delete-task-dialog.component.scss']
+  styleUrls: ['./delete-task-dialog.component.scss'],
 })
 export class DeleteTaskDialogComponent {
   constructor(

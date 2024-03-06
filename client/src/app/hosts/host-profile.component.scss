@@ -2,6 +2,7 @@
   position: fixed;
   bottom: 16px;
   right: 16px;
+  background-color: #007BFF;
 }
 
 .hunt-cards-container {
@@ -34,6 +35,15 @@
   gap: 8px;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
-  background-color: black;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.username-content {
+  text-align: right;
 }

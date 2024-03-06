@@ -11,7 +11,7 @@
         Home
       </a>
 
-      <a mat-list-item routerLink="/users" routerLinkActive="drawer-list-item-active" (click)="drawer.close()">
+      <!-- <a mat-list-item routerLink="/users" routerLinkActive="drawer-list-item-active" (click)="drawer.close()">
         <mat-icon matListItemIcon>people</mat-icon>
         Users
       </a>
@@ -19,7 +19,7 @@
       <a mat-list-item routerLink="/companies" routerLinkActive="drawer-list-item-active" (click)="drawer.close()">
         <mat-icon matListItemIcon>business</mat-icon>
         Companies
-      </a>
+      </a> -->
 
       <a mat-list-item routerLink="/hosts" routerLinkActive="drawer-list-item-active" (click)="drawer.close()">
         <mat-icon matListItemIcon>contacts</mat-icon>
@@ -28,12 +28,23 @@
 
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <!-- <mat-sidenav-content>
     <mat-toolbar color="primary">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" onclick="this.blur()"
         class="sidenav-button">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
+      <span class="app-title">{{title}}</span>
+    </mat-toolbar>
+    <div class="main-content mat-typography">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content> -->
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <a mat-icon-button routerLink="/" routerLinkActive="toolbar-button-active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon>home</mat-icon>
+      </a>
       <span class="app-title">{{title}}</span>
     </mat-toolbar>
     <div class="main-content mat-typography">

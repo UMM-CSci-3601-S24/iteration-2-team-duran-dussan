@@ -1,9 +1,9 @@
 export class HostProfilePage {
   private readonly baseUrl = '/hosts';
-  private readonly pageTitle = '.host-list-title';
-  private readonly hostCardSelector = '.host-cards-container app-host-card';
+  private readonly pageTitle = '.hunt-list-title';
+  private readonly hostCardSelector = '.hunt-cards-container app-hunt-card';
   private readonly profileButtonSelector = '[data-test=viewProfileButton]';
-  private readonly addHostButtonSelector = '[data-test=addHostButton]';
+  private readonly addHuntButtonSelector = '[data-test=addHuntButton]';
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -25,7 +25,7 @@ export class HostProfilePage {
    * @returns an iterable (`Cypress.Chainable`) containing all
    *   the `app-host-card` DOM elements.
    */
-   getHostCards() {
+   getHuntCards() {
     return cy.get(this.hostCardSelector);
   }
 
@@ -39,7 +39,7 @@ export class HostProfilePage {
     return card.find<HTMLButtonElement>(this.profileButtonSelector).click();
   }
 
-  addHostButton() {
-    return cy.get(this.addHostButtonSelector);
+  addHuntButton() {
+    return cy.get(this.addHuntButtonSelector);
   }
 }

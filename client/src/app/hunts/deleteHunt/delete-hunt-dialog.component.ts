@@ -8,7 +8,7 @@ export interface DialogData {
 @Component({
   selector: 'app-delete-hunt-dialog',
   templateUrl: './delete-hunt-dialog.component.html',
-  styleUrls: ['./delete-hunt-dialog.component.scss']
+  styleUrls: ['./delete-hunt-dialog.component.scss'],
 })
 export class DeleteHuntDialogComponent {
   constructor(

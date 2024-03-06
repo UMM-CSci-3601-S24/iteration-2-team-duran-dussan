@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { By } from '@angular/platform-browser';
 import { HomeComponent } from './home.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('Home', () => {
 
@@ -13,7 +14,7 @@ describe('Home', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [MatCardModule, HomeComponent],
+    imports: [MatCardModule, HomeComponent, RouterTestingModule],
 });
 
     fixture = TestBed.createComponent(HomeComponent);
@@ -27,7 +28,7 @@ describe('Home', () => {
 
   it('It has the basic home page text', () => {
     fixture.detectChanges();
-    expect(el.textContent).toContain('This is a home page! It doesn\'t do anything!');
+    expect(el.textContent).toContain('Welcome to Scav-n-Snap');
     expect(component).toBeTruthy();
   });
 

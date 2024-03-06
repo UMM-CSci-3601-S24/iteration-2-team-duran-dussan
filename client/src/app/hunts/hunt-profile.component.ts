@@ -73,7 +73,8 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   openDeleteHuntDialog(huntId: string): void {
     const dialogRef = this.dialog.open(DeleteHuntDialogComponent, {
-      width: '250px',
+      width: '400px',
+      height: '300px',
       data: { huntId }
     });
 
@@ -86,7 +87,8 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   openDeleteTaskDialog(taskId: string): void {
     const dialogRef = this.dialog.open(DeleteTaskDialogComponent, {
-      width: '250px',
+      width: '400px',
+      height: '300px',
       data: { taskId }
     });
 

@@ -11,6 +11,10 @@
             <button mat-button [routerLink]="['/hunts', this.hunt()._id]" class="profile-button">View Profile</button>
           </mat-card-actions>
         }
+        @else {
+          <mat-card-actions>
+            <button mat-button [routerLink]="['/hunts']" class="return-to-hunts">Return to Hunts</button>
+          </mat-card-actions>}
         <mat-card-title class="hunt-card-task icon-center bot-right">
           <div>
             <mat-icon matListItemIcon>checklist</mat-icon>

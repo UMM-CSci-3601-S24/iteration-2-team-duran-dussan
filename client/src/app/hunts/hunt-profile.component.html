@@ -5,7 +5,7 @@
       <app-hunt-card class="hunt-card" [hunt]="this.completeHunt.hunt" [simple]="false">
       </app-hunt-card>
       <ol class="task-list">
-        <mat-card-title>Tasks</mat-card-title>
+        <mat-card-title class="tasks-title">Tasks</mat-card-title>
         @for (task of this.completeHunt.tasks; track task._id) {
           <div class="task-line">
           <li matListItemTitle mat-line class="task-list-name"> {{task.name}} </li>
@@ -44,8 +44,8 @@
       </mat-card>
     }
 
-    <button mat-fab class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="openDeleteHuntDialog(completeHunt.hunt._id)" data-test="removeHuntButton">
-      <mat-icon class="md-24" aria-label="Remove Hunt">delete</mat-icon>
+    <button mat-raised-button class="remove-hunt-fab" matTooltip="Remove Hunt" matTooltipPosition="left" (click)="openDeleteHuntDialog(completeHunt.hunt._id)" data-test="removeHuntButton">
+      DELETE HUNT
     </button>
   </mat-card>
   </div>

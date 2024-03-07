@@ -46,13 +46,22 @@
           <button
             mat-button
             type="button"
+            color="warn"
+            [routerLink]="['/hosts']"
+            data-test="cancelAddHuntButton"
+            >
+            CANCEL
+           </button>
+          <button
+            mat-button
+            type="button"
             color="primary"
             [disabled]="!addHuntForm.valid"
             type="submit"
             data-test="confirmAddHuntButton"
             >
             ADD HUNT
-          </button>
+           </button>
         </mat-card-actions>
       </mat-card>
     </form>

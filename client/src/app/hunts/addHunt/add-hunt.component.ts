@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HostService } from 'src/app/hosts/host.service';
 
 
@@ -16,7 +16,7 @@ import { HostService } from 'src/app/hosts/host.service';
   templateUrl: './add-hunt.component.html',
   styleUrls: ['./add-hunt.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule]
+  imports: [RouterLink, FormsModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule]
 })
 export class AddHuntComponent {
 

@@ -17,7 +17,7 @@
           }
     </ol>
     <div>
-      <app-add-task class="add-task-button" [huntId]="this.completeHunt.hunt._id"></app-add-task>
+      <app-add-task class="add-task-button" data-test="addTaskButton" [huntId]="this.completeHunt.hunt._id"></app-add-task>
     </div>
     } @else if (error) {
       <mat-card class="error-card">

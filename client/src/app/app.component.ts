@@ -14,5 +14,5 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     imports: [MatSidenavModule, MatToolbarModule, MatListModule, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, RouterOutlet]
 })
 export class AppComponent {
-  title = 'Scav n Snap';
+  title = 'Scav-n-Snap';
 }

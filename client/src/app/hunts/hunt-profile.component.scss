@@ -8,6 +8,12 @@
   margin-top: 10px;
 }
 
+.tasks-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -34,11 +40,12 @@
 }
 
 .remove-hunt-fab {
+  font-size: 18px;
   position: absolute;
   bottom: 10px;
   right: 10px;
   background-color: transparent;
-  color: red;
+  color: rgb(214, 1, 1);
 }
 
 .add-task-button {

@@ -13,7 +13,7 @@
     gap: 8px;
     padding: 16px;
     border-radius: 8px;
-    box-shadow: 0 0 8px 0 rgba(25, 165, 247, 0.459);
+    box-shadow: 0 0 8px 0 rgb(0, 158, 250);
     background-color: #badffd2d;
     color: #0056b3;
 
@@ -108,4 +108,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+  }
+
+  .hunt-card-description {
+    margin-right: 50px;
   }

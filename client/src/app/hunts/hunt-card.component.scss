@@ -16,6 +16,14 @@
     box-shadow: 0 0 8px 0 rgba(25, 165, 247, 0.459);
     background-color: #badffd2d;
     color: #0056b3;
+
+    @media (prefers-color-scheme: dark) {
+      color: #00ccff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      box-shadow: #00ccff;
+    }
   }
 
   .hunt-card.time {
@@ -51,10 +59,18 @@
     padding: 10px 20px;
     font-weight: bold;
     transition: background-color 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
   }
 
   .profile-button:hover {
     background-color: #0056b3;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
   }
 
   .return-to-hunts {
@@ -63,10 +79,18 @@
     padding: 10px 20px;
     font-weight: bold;
     transition: background-color 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
   }
 
   .return-to-hunts:hover {
     background-color: #0056b3;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
   }
 
   .time-text {

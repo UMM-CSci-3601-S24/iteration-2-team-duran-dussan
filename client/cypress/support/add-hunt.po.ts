@@ -10,7 +10,6 @@ export class AddHuntPage {
   private readonly descriptionFieldName = 'description';
   private readonly estFieldName = 'est';
   private readonly formFieldSelector = `mat-form-field`;
-  private readonly dropDownSelector = `mat-option`;
 
   navigateTo() {
     return cy.visit(this.url);
@@ -22,13 +21,6 @@ export class AddHuntPage {
 
   addHuntButton() {
     return cy.get(this.button);
-  }
-
-  selectMatSelectValue(select: Cypress.Chainable, value: string) {
-    // Find and click the drop down
-    return select.click()
-      // Select and click the desired value from the resulting menu
-      .get(`${this.dropDownSelector}[value="${value}"]`).click();
   }
 
   getFormField(fieldName: string) {

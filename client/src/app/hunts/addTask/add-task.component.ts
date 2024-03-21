@@ -9,6 +9,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HostService } from "src/app/hosts/host.service";
 import { CompleteHunt } from "../completeHunt";
+import { Task } from "../task";
 
 @Component({
     selector: 'app-add-task',
@@ -26,6 +27,7 @@ export class AddTaskComponent {
   addTaskForm = new FormGroup({
     huntId: new FormControl(),
     status: new FormControl(),
+    _id: new FormControl(),
 
     name: new FormControl('', Validators.compose([
       Validators.required,
@@ -71,8 +73,11 @@ export class AddTaskComponent {
           null,
           { duration: 2000 }
         );
-        setTimeout(() => window.location.reload(), 2000);
-
+        this.addTaskForm.value._id = '';
+        this.completeHunt().tasks.push(this.addTaskForm.value as Task);
+        this.completeHunt().hunt.numberOfTasks++;
+        this.addTask = false;
+        this.addTaskForm.reset();
       },
       error: err => {
         this.snackBar.open(

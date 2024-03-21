@@ -8,6 +8,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { HostService } from "src/app/hosts/host.service";
+import { CompleteHunt } from "../completeHunt";
 
 @Component({
     selector: 'app-add-task',
@@ -19,7 +20,7 @@ import { HostService } from "src/app/hosts/host.service";
 })
 export class AddTaskComponent {
 
-  huntId = input.required<string>();
+  completeHunt = input.required<CompleteHunt>();
   addTask: boolean = false;
 
   addTaskForm = new FormGroup({
@@ -61,7 +62,7 @@ export class AddTaskComponent {
   }
 
   submitForm() {
-    this.addTaskForm.value.huntId = this.huntId();
+  this.addTaskForm.value.huntId = this.completeHunt().hunt._id;
     this.addTaskForm.value.status = false;
     this.hostService.addTask(this.addTaskForm.value).subscribe({
       next: () => {
@@ -71,6 +72,7 @@ export class AddTaskComponent {
           { duration: 2000 }
         );
         setTimeout(() => window.location.reload(), 2000);
+
       },
       error: err => {
         this.snackBar.open(

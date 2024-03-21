@@ -431,6 +431,36 @@ public class HostControllerSpec {
   }
 
   @Test
+  void addHuntWithMaxEST() throws IOException {
+    String testNewHunt = """
+        {
+          "hostId": "frysId",
+          "name": "New Hunt",
+          "description": "Newly made hunt",
+          "est": 240,
+          "numberOfTasks": 3
+        }
+        """;
+    when(ctx.bodyValidator(Hunt.class))
+        .then(value -> new BodyValidator<Hunt>(testNewHunt, Hunt.class, javalinJackson));
+
+    hostController.addNewHunt(ctx);
+    verify(ctx).json(mapCaptor.capture());
+
+    verify(ctx).status(HttpStatus.CREATED);
+
+    Document addedHunt = db.getCollection("hunts")
+        .find(eq("_id", new ObjectId(mapCaptor.getValue().get("id")))).first();
+
+    assertNotEquals("", addedHunt.get("_id"));
+    assertEquals("New Hunt", addedHunt.get("name"));
+    assertEquals("frysId", addedHunt.get(HostController.HOST_KEY));
+    assertEquals("Newly made hunt", addedHunt.get("description"));
+    assertEquals(240, addedHunt.get("est"));
+    assertEquals(3, addedHunt.get("numberOfTasks"));
+  }
+
+  @Test
   void addInvalidNumberOfTasksHunt() throws IOException {
     String testNewHunt = """
         {

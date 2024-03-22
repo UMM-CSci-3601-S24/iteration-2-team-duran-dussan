@@ -12,4 +12,5 @@ public class StartedHunt {
     public String _id;
     public String accessCode;
     public Hunt hunt;
+    public Boolean status;
 }

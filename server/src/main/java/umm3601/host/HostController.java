@@ -32,6 +32,7 @@ public class HostController implements Controller {
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASK = "/api/tasks/{id}";
   private static final String API_TASKS = "/api/tasks";
+  private static final String API_STARTED_HUNT = "/api/startedHunts/{id}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -239,6 +240,20 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
+  public String startHunt(Context ctx) {
+    StartedHunt startedHunt = new StartedHunt();
+    startedHunt.accessCode = java.util.UUID.randomUUID().toString(); // Generate a random access code
+    Hunt hunt = getHunt(ctx); // Get the hunt from the database
+    startedHunt.hunt = hunt; // Assign the hunt to the startedHunt
+    startedHunt.status = true; // true means the hunt is active
+
+    // Use the id of the hunt instead of hostId
+    huntCollection.findOneAndUpdate(eq("_id", new ObjectId(hunt._id)),
+     new Document("$push", new Document("startedHunts", startedHunt)));
+
+    return startedHunt.accessCode;
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);
@@ -248,5 +263,6 @@ public class HostController implements Controller {
     server.post(API_TASKS, this::addNewTask);
     server.delete(API_HUNT, this::deleteHunt);
     server.delete(API_TASK, this::deleteTask);
+    server.get(API_STARTED_HUNT, this::startHunt);
   }
 }

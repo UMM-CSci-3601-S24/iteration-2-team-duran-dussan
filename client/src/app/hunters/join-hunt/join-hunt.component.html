@@ -4,10 +4,11 @@
       <mat-card-actions>
         <mat-form-field class="full-width">
           <mat-label>Access Code</mat-label>
-          <input matInput type="number" pattern="\d{6}">
+          <input matInput type="text" pattern="[0-9]{6}" maxlength="6" (keypress)="numericOnly($event)">
         </mat-form-field>
       </mat-card-actions>
-      <a mat-raised-button color="accent" class="link-button center-button" name="host-button" routerLink="/hosts" routerLinkActive="drawer-list-item-active">
+      <a mat-raised-button color="accent" class="link-button center-button" name="join-button"
+        routerLinkActive="drawer-list-item-active">
         <span class="button-text">Join</span>
       </a>
     </mat-card-content>

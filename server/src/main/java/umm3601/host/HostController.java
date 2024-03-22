@@ -32,7 +32,7 @@ public class HostController implements Controller {
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASK = "/api/tasks/{id}";
   private static final String API_TASKS = "/api/tasks";
-  private static final String API_STARTED_HUNT = "/api/startedHunts/{id}";
+  private static final String API_STARTED_HUNT = "/api/startedHunts";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -46,6 +46,7 @@ public class HostController implements Controller {
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
   private final JacksonMongoCollection<Task> taskCollection;
+  private final JacksonMongoCollection<StartedHunt> startedHuntCollection;
 
   public HostController(MongoDatabase database) {
     hostCollection = JacksonMongoCollection.builder().build(
@@ -53,15 +54,23 @@ public class HostController implements Controller {
       "hosts",
       Host.class,
        UuidRepresentation.STANDARD);
+
     huntCollection = JacksonMongoCollection.builder().build(
       database,
       "hunts",
       Hunt.class,
        UuidRepresentation.STANDARD);
+
     taskCollection = JacksonMongoCollection.builder().build(
       database,
       "tasks",
       Task.class,
+       UuidRepresentation.STANDARD);
+
+    startedHuntCollection = JacksonMongoCollection.builder().build(
+      database,
+      "startedHunts",
+      StartedHunt.class,
        UuidRepresentation.STANDARD);
   }
 
@@ -247,9 +256,8 @@ public class HostController implements Controller {
     startedHunt.hunt = hunt; // Assign the hunt to the startedHunt
     startedHunt.status = true; // true means the hunt is active
 
-    // Use the id of the hunt instead of hostId
-    huntCollection.findOneAndUpdate(eq("_id", new ObjectId(hunt._id)),
-     new Document("$push", new Document("startedHunts", startedHunt)));
+   // Insert the StartedHunt into the startedHunt collection
+   startedHuntCollection.insertOne(startedHunt);
 
     return startedHunt.accessCode;
   }

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { JoinHuntComponent } from './join-hunt.component';
 
 describe('JoinHuntComponent', () => {
@@ -8,10 +8,10 @@ describe('JoinHuntComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JoinHuntComponent]
+      imports: [JoinHuntComponent, NoopAnimationsModule]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(JoinHuntComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

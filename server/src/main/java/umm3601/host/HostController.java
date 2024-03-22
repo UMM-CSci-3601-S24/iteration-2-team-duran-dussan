@@ -152,9 +152,9 @@ public class HostController implements Controller {
   public void addNewHunt(Context ctx) {
     Hunt newHunt = ctx.bodyValidator(Hunt.class)
     .check(hunt -> hunt.hostId != null && hunt.hostId.length() > 0, "Invalid hostId")
-    .check(hunt -> hunt.name.length() < REASONABLE_NAME_LENGTH_HUNT, "Name must be less than 50 characters")
+    .check(hunt -> hunt.name.length() <= REASONABLE_NAME_LENGTH_HUNT, "Name must be less than 50 characters")
     .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
-    .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH_HUNT,
+    .check(hunt -> hunt.description.length() <= REASONABLE_DESCRIPTION_LENGTH_HUNT,
      "Description must be less than 200 characters")
     .check(hunt -> hunt.est <= REASONABLE_EST_LENGTH_HUNT, "Estimated time must be less than 4 hours")
     .get();
@@ -167,7 +167,7 @@ public class HostController implements Controller {
   public void addNewTask(Context ctx) {
     Task newTask = ctx.bodyValidator(Task.class)
     .check(task -> task.huntId != null && task.huntId.length() > 0, "Invalid huntId")
-    .check(task -> task.name.length() < REASONABLE_NAME_LENGTH_TASK, "Name must be less than 150 characters")
+    .check(task -> task.name.length() <= REASONABLE_NAME_LENGTH_TASK, "Name must be less than 150 characters")
     .check(task -> task.name.length() > 0, "Name must be at least 1 character")
     .get();
 

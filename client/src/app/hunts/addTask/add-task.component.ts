@@ -67,13 +67,13 @@ export class AddTaskComponent {
   this.addTaskForm.value.huntId = this.completeHunt().hunt._id;
     this.addTaskForm.value.status = false;
     this.hostService.addTask(this.addTaskForm.value).subscribe({
-      next: () => {
+      next: taskId => {
         this.snackBar.open(
           `Added task ${this.addTaskForm.value.name}`,
           null,
           { duration: 2000 }
         );
-        this.addTaskForm.value._id = '';
+        this.addTaskForm.value._id = taskId;
         this.completeHunt().tasks.push(this.addTaskForm.value as Task);
         this.completeHunt().hunt.numberOfTasks++;
         this.addTask = false;

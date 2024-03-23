@@ -52,6 +52,7 @@ public class HostControllerSpec {
   private ObjectId frysId;
   private ObjectId huntId;
   private ObjectId taskId;
+  private ObjectId startedHuntId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -71,6 +72,9 @@ public class HostControllerSpec {
 
   @Captor
   private ArgumentCaptor<CompleteHunt> completeHuntCaptor;
+
+  @Captor
+  private ArgumentCaptor<StartedHunt> startedHuntCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -184,6 +188,45 @@ public class HostControllerSpec {
 
     taskDocuments.insertMany(testTasks);
     taskDocuments.insertOne(task);
+
+    MongoCollection<Document> startedHuntsDocuments = db.getCollection("startedHunts");
+    startedHuntsDocuments.drop();
+    List<Document> startedHunts = new ArrayList<>();
+    startedHunts.add(
+      new Document()
+        .append("accessCode", "123456")
+        .append("hunt", new Document()
+          .append("hostId", "frysId")
+          .append("name", "Fry's Hunt")
+          .append("description", "Fry's hunt for the seven leaf clover")
+          .append("est", 20)
+          .append("numberOfTasks", 5)
+        )
+        .append("status", true));
+    startedHunts.add(
+      new Document()
+      .append("accessCode", "654321")
+      .append("hunt", new Document()
+        .append("hostId", "dansId")
+        .append("name", "Dan's Hunt")
+        .append("description", "Dan's hunt for the lost wallet")
+        .append("est", 40)
+        .append("numberOfTasks", 7)
+      )
+      .append("status", false));
+    startedHunts.add(
+      new Document()
+      .append("accessCode", "123459")
+      .append("hunt", new Document()
+        .append("hostId", "patsId")
+        .append("name", "Pat's Hunt")
+        .append("description", "Pat's hunt for the golden egg")
+        .append("est", 60)
+        .append("numberOfTasks", 10)
+      )
+      .append("status", true));
+
+    startedHuntsDocuments.insertMany(startedHunts);
 
     hostController = new HostController(db);
   }
@@ -727,5 +770,51 @@ public class HostControllerSpec {
     hostController.deleteTasks(ctx);
 
     assertEquals(0, db.getCollection("tasks").countDocuments(eq("huntId", testID)));
+  }
+
+  @Test
+  void getStartedHunt() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("123456");
+
+    hostController.getStartedHunt(ctx);
+
+    verify(ctx).json(startedHuntCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals("123456", startedHuntCaptor.getValue().accessCode);
+    assertEquals(true, startedHuntCaptor.getValue().status);
+  }
+
+  @Test
+  void getStartedHuntWithNonExistentAccessCode() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("588935");
+
+    Throwable exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.getStartedHunt(ctx);
+    });
+
+    assertEquals("The requested access code was not found.", exception.getMessage());
+  }
+
+  @Test
+  void getStartedHuntWithBadAccessCode() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("bad");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getStartedHunt(ctx);
+    });
+
+    assertEquals("The requested access code is not a valid access code.", exception.getMessage());
+  }
+
+  @Test
+  void getStartedHuntWithStatusFalse() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("654321");
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getStartedHunt(ctx);
+    });
+
+    assertEquals("The requested hunt is no longer joinable.", exception.getMessage());
   }
 }

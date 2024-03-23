@@ -262,6 +262,25 @@ public class HostController implements Controller {
     return startedHunt.accessCode;
   }
 
+  public void getStartedHunt(Context ctx) {
+    String accessCode = ctx.pathParam("accessCode");
+    StartedHunt startedHunt;
+
+    try {
+      startedHunt = startedHuntCollection.find(eq("accessCode", accessCode)).first();
+    } catch (IllegalArgumentException e) {
+      throw new BadRequestResponse("The requested access code is not a valid access code.");
+    }
+    if (startedHunt == null) {
+      throw new NotFoundResponse("The requested access code was not found.");
+    } else if (!startedHunt.status) {
+      throw new BadRequestResponse("The requested hunt is no longer joinable.");
+    } else {
+      ctx.json(startedHunt);
+      ctx.status(HttpStatus.OK);
+    }
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);
@@ -271,6 +290,7 @@ public class HostController implements Controller {
     server.post(API_TASKS, this::addNewTask);
     server.delete(API_HUNT, this::deleteHunt);
     server.delete(API_TASK, this::deleteTask);
-    server.get(API_STARTED_HUNT, this::startHunt);
+    server.post(API_STARTED_HUNT, this::startHunt);
+    server.get(API_STARTED_HUNT, this::getStartedHunt);
   }
 }

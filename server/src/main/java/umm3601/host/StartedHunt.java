@@ -1,6 +1,5 @@
 package umm3601.host;
 
-
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
 

@@ -44,6 +44,10 @@ public class HostController implements Controller {
 
   static final int REASONABLE_NAME_LENGTH_TASK = 150;
 
+  private static final int ACCESS_CODE_MIN = 100000;
+  private static final int ACCESS_CODE_RANGE = 900000;
+  private static final int ACCESS_CODE_LENGTH = 6;
+
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
   private final JacksonMongoCollection<Task> taskCollection;
@@ -255,7 +259,7 @@ public class HostController implements Controller {
 
     StartedHunt startedHunt = new StartedHunt();
     Random random = new Random();
-    int accessCode = 100000 + random.nextInt(900000); // Generate a random 6-digit number
+    int accessCode = ACCESS_CODE_MIN + random.nextInt(ACCESS_CODE_RANGE); // Generate a random 6-digit number
     startedHunt.accessCode = String.format("%06d", accessCode); // Convert the number to a string
     startedHunt.hunt = hunt; // Assign the hunt to the startedHunt
     startedHunt.status = true; // true means the hunt is active
@@ -273,7 +277,7 @@ public class HostController implements Controller {
     StartedHunt startedHunt;
 
       // Validate the access code
-    if (accessCode.length() != 6 || !accessCode.matches("\\d+")) {
+    if (accessCode.length() != ACCESS_CODE_LENGTH || !accessCode.matches("\\d+")) {
       throw new BadRequestResponse("The requested access code is not a valid access code.");
     }
 

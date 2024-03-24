@@ -25,12 +25,10 @@ export class HuntProfilePage {
 
   deleteHunt() {
     return cy.get('[data-test=removeHuntButton]').click();
-    //return cy.get('[data-test=confirmDeleteHuntButton]').click();
   }
 
   deleteTask() {
     return cy.get('[data-test=removeTaskButton]').first().click();
-    //return cy.get('[data-test=confirmDeleteTaskButton]').click();
   }
 
   addTaskButton() {

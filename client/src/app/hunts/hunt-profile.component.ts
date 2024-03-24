@@ -24,7 +24,7 @@ import { Hunt } from './hunt';
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
   hunt: Hunt;
-  confirmDeleteHunt: boolean =false;
+  confirmDeleteHunt: boolean = false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
 

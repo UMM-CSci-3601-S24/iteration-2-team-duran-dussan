@@ -55,28 +55,28 @@ public class HostController implements Controller {
 
   public HostController(MongoDatabase database) {
     hostCollection = JacksonMongoCollection.builder().build(
-      database,
-      "hosts",
-      Host.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "hosts",
+        Host.class,
+        UuidRepresentation.STANDARD);
 
     huntCollection = JacksonMongoCollection.builder().build(
-      database,
-      "hunts",
-      Hunt.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "hunts",
+        Hunt.class,
+        UuidRepresentation.STANDARD);
 
     taskCollection = JacksonMongoCollection.builder().build(
-      database,
-      "tasks",
-      Task.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "tasks",
+        Task.class,
+        UuidRepresentation.STANDARD);
 
     startedHuntCollection = JacksonMongoCollection.builder().build(
-      database,
-      "startedHunts",
-      StartedHunt.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "startedHunts",
+        StartedHunt.class,
+        UuidRepresentation.STANDARD);
   }
 
   public void getHost(Context ctx) {
@@ -117,9 +117,9 @@ public class HostController implements Controller {
     Bson sortingOrder = constructSortingOrderHunts(ctx);
 
     ArrayList<Hunt> matchingHunts = huntCollection
-      .find(combinedFilter)
-      .sort(sortingOrder)
-      .into(new ArrayList<>());
+        .find(combinedFilter)
+        .sort(sortingOrder)
+        .into(new ArrayList<>());
 
     ctx.json(matchingHunts);
 
@@ -151,9 +151,9 @@ public class HostController implements Controller {
     String targetHunt = ctx.pathParam("id");
 
     ArrayList<Task> matchingTasks = taskCollection
-      .find(eq(HUNT_KEY, targetHunt))
-      .sort(sortingOrder)
-      .into(new ArrayList<>());
+        .find(eq(HUNT_KEY, targetHunt))
+        .sort(sortingOrder)
+        .into(new ArrayList<>());
 
     return matchingTasks;
   }
@@ -166,13 +166,13 @@ public class HostController implements Controller {
 
   public void addNewHunt(Context ctx) {
     Hunt newHunt = ctx.bodyValidator(Hunt.class)
-    .check(hunt -> hunt.hostId != null && hunt.hostId.length() > 0, "Invalid hostId")
-    .check(hunt -> hunt.name.length() < REASONABLE_NAME_LENGTH_HUNT, "Name must be less than 50 characters")
-    .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
-    .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH_HUNT,
-     "Description must be less than 200 characters")
-    .check(hunt -> hunt.est <= REASONABLE_EST_LENGTH_HUNT, "Estimated time must be less than 4 hours")
-    .get();
+        .check(hunt -> hunt.hostId != null && hunt.hostId.length() > 0, "Invalid hostId")
+        .check(hunt -> hunt.name.length() < REASONABLE_NAME_LENGTH_HUNT, "Name must be less than 50 characters")
+        .check(hunt -> hunt.name.length() > 0, "Name must be at least 1 character")
+        .check(hunt -> hunt.description.length() < REASONABLE_DESCRIPTION_LENGTH_HUNT,
+            "Description must be less than 200 characters")
+        .check(hunt -> hunt.est <= REASONABLE_EST_LENGTH_HUNT, "Estimated time must be less than 4 hours")
+        .get();
 
     huntCollection.insertOne(newHunt);
     ctx.json(Map.of("id", newHunt._id));
@@ -181,10 +181,10 @@ public class HostController implements Controller {
 
   public void addNewTask(Context ctx) {
     Task newTask = ctx.bodyValidator(Task.class)
-    .check(task -> task.huntId != null && task.huntId.length() > 0, "Invalid huntId")
-    .check(task -> task.name.length() < REASONABLE_NAME_LENGTH_TASK, "Name must be less than 150 characters")
-    .check(task -> task.name.length() > 0, "Name must be at least 1 character")
-    .get();
+        .check(task -> task.huntId != null && task.huntId.length() > 0, "Invalid huntId")
+        .check(task -> task.name.length() < REASONABLE_NAME_LENGTH_TASK, "Name must be less than 150 characters")
+        .check(task -> task.name.length() > 0, "Name must be at least 1 character")
+        .get();
 
     taskCollection.insertOne(newTask);
     increaseTaskCount(newTask.huntId);
@@ -195,7 +195,7 @@ public class HostController implements Controller {
   public void increaseTaskCount(String huntId) {
     try {
       huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
-       new Document("$inc", new Document("numberOfTasks", 1)));
+          new Document("$inc", new Document("numberOfTasks", 1)));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -207,9 +207,9 @@ public class HostController implements Controller {
     if (deleteResult.getDeletedCount() != 1) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
-        "Was unable to delete ID "
-          + id
-          + "; perhaps illegal ID or an ID for an item not in the system?");
+          "Was unable to delete ID "
+              + id
+              + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     deleteTasks(ctx);
     ctx.status(HttpStatus.OK);
@@ -224,9 +224,9 @@ public class HostController implements Controller {
     } catch (Exception e) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
-        "Was unable to delete ID "
-          + id
-          + "; perhaps illegal ID or an ID for an item not in the system?");
+          "Was unable to delete ID "
+              + id
+              + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     ctx.status(HttpStatus.OK);
   }
@@ -234,7 +234,7 @@ public class HostController implements Controller {
   public void decreaseTaskCount(String huntId) {
     try {
       huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
-       new Document("$inc", new Document("numberOfTasks", -1)));
+          new Document("$inc", new Document("numberOfTasks", -1)));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -255,13 +255,15 @@ public class HostController implements Controller {
   }
 
   public String startHunt(Context ctx) {
-    Hunt hunt = getHunt(ctx); // Get the hunt from the database
+    CompleteHunt completeHunt = new CompleteHunt();
+    completeHunt.hunt = getHunt(ctx);
+    completeHunt.tasks = getTasks(ctx);
 
     StartedHunt startedHunt = new StartedHunt();
     Random random = new Random();
     int accessCode = ACCESS_CODE_MIN + random.nextInt(ACCESS_CODE_RANGE); // Generate a random 6-digit number
     startedHunt.accessCode = String.format("%06d", accessCode); // Convert the number to a string
-    startedHunt.hunt = hunt; // Assign the hunt to the startedHunt
+    startedHunt.completeHunt = completeHunt; // Assign the completeHunt to the startedHunt
     startedHunt.status = true; // true means the hunt is active
 
     // Insert the StartedHunt into the startedHunt collection
@@ -276,7 +278,7 @@ public class HostController implements Controller {
     String accessCode = ctx.pathParam("accessCode");
     StartedHunt startedHunt;
 
-      // Validate the access code
+    // Validate the access code
     if (accessCode.length() != ACCESS_CODE_LENGTH || !accessCode.matches("\\d+")) {
       throw new BadRequestResponse("The requested access code is not a valid access code.");
     }

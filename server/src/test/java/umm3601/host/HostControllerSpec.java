@@ -86,10 +86,10 @@ public class HostControllerSpec {
     String mongoAddr = System.getenv().getOrDefault("MONGO_ADDR", "localhost");
 
     mongoClient = MongoClients.create(
-      MongoClientSettings.builder()
-        .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress(mongoAddr))))
-        .build());
-      db = mongoClient.getDatabase("test");
+        MongoClientSettings.builder()
+            .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress(mongoAddr))))
+            .build());
+    db = mongoClient.getDatabase("test");
   }
 
   @AfterAll
@@ -106,10 +106,10 @@ public class HostControllerSpec {
     hostDocuments.drop();
     frysId = new ObjectId();
     Document fry = new Document()
-      .append("_id", frysId)
-      .append("name", "Fry")
-      .append("userName", "fry")
-      .append("email", "fry@email");
+        .append("_id", frysId)
+        .append("name", "Fry")
+        .append("userName", "fry")
+        .append("email", "fry@email");
 
     hostDocuments.insertOne(fry);
 
@@ -117,42 +117,42 @@ public class HostControllerSpec {
     huntDocuments.drop();
     List<Document> testHunts = new ArrayList<>();
     testHunts.add(
-      new Document()
-        .append("hostId", "frysId")
-        .append("name", "Fry's Hunt")
-        .append("description", "Fry's hunt for the seven leaf clover")
-        .append("est", 20)
-        .append("numberOfTasks", 5));
+        new Document()
+            .append("hostId", "frysId")
+            .append("name", "Fry's Hunt")
+            .append("description", "Fry's hunt for the seven leaf clover")
+            .append("est", 20)
+            .append("numberOfTasks", 5));
     testHunts.add(
-      new Document()
-        .append("hostId", "frysId")
-        .append("name", "Fry's Hunt 2")
-        .append("description", "Fry's hunt for Morris")
-        .append("est", 30)
-        .append("numberOfTasks", 2));
+        new Document()
+            .append("hostId", "frysId")
+            .append("name", "Fry's Hunt 2")
+            .append("description", "Fry's hunt for Morris")
+            .append("est", 30)
+            .append("numberOfTasks", 2));
     testHunts.add(
-      new Document()
-        .append("hostId", "frysId")
-        .append("name", "Fry's Hunt 3")
-        .append("description", "Fry's hunt for money")
-        .append("est", 40)
-        .append("numberOfTasks", 1));
+        new Document()
+            .append("hostId", "frysId")
+            .append("name", "Fry's Hunt 3")
+            .append("description", "Fry's hunt for money")
+            .append("est", 40)
+            .append("numberOfTasks", 1));
     testHunts.add(
-      new Document()
-        .append("hostId", "differentId")
-        .append("name", "Different's Hunt")
-        .append("description", "Different's hunt for money")
-        .append("est", 60)
-        .append("numberOfTasks", 10));
+        new Document()
+            .append("hostId", "differentId")
+            .append("name", "Different's Hunt")
+            .append("description", "Different's hunt for money")
+            .append("est", 60)
+            .append("numberOfTasks", 10));
 
-        huntId = new ObjectId();
+    huntId = new ObjectId();
     Document hunt = new Document()
-      .append("_id", huntId)
-      .append("hostId", "frysId")
-      .append("name", "Best Hunt")
-      .append("description", "This is the best hunt")
-      .append("est", 20)
-      .append("numberOfTasks", 3);
+        .append("_id", huntId)
+        .append("hostId", "frysId")
+        .append("name", "Best Hunt")
+        .append("description", "This is the best hunt")
+        .append("est", 20)
+        .append("numberOfTasks", 3);
 
     huntDocuments.insertMany(testHunts);
     huntDocuments.insertOne(hunt);
@@ -161,32 +161,32 @@ public class HostControllerSpec {
     taskDocuments.drop();
     List<Document> testTasks = new ArrayList<>();
     testTasks.add(
-      new Document()
-        .append("huntId", huntId.toHexString())
-        .append("name", "Take a picture of a cat")
-        .append("status", false));
+        new Document()
+            .append("huntId", huntId.toHexString())
+            .append("name", "Take a picture of a cat")
+            .append("status", false));
     testTasks.add(
-      new Document()
-        .append("huntId", huntId.toHexString())
-        .append("name", "Take a picture of a dog")
-        .append("status", false));
+        new Document()
+            .append("huntId", huntId.toHexString())
+            .append("name", "Take a picture of a dog")
+            .append("status", false));
     testTasks.add(
-      new Document()
-        .append("huntId", huntId.toHexString())
-        .append("name", "Take a picture of a park")
-        .append("status", true));
+        new Document()
+            .append("huntId", huntId.toHexString())
+            .append("name", "Take a picture of a park")
+            .append("status", true));
     testTasks.add(
-      new Document()
-        .append("huntId", "differentId")
-        .append("name", "Take a picture of a moose")
-        .append("status", true));
+        new Document()
+            .append("huntId", "differentId")
+            .append("name", "Take a picture of a moose")
+            .append("status", true));
 
-        taskId = new ObjectId();
-        Document task = new Document()
-          .append("_id", taskId)
-          .append("huntId", "someId")
-          .append("name", "Best Task")
-          .append("status", false);
+    taskId = new ObjectId();
+    Document task = new Document()
+        .append("_id", taskId)
+        .append("huntId", "someId")
+        .append("name", "Best Task")
+        .append("status", false);
 
     taskDocuments.insertMany(testTasks);
     taskDocuments.insertOne(task);
@@ -195,38 +195,28 @@ public class HostControllerSpec {
     startedHuntsDocuments.drop();
     List<Document> startedHunts = new ArrayList<>();
     startedHunts.add(
-      new Document()
-        .append("accessCode", "123456")
-        .append("hunt", new Document()
-          .append("hostId", "frysId")
-          .append("name", "Fry's Hunt")
-          .append("description", "Fry's hunt for the seven leaf clover")
-          .append("est", 20)
-          .append("numberOfTasks", 5)
-        )
-        .append("status", true));
+        new Document()
+            .append("accessCode", "123456")
+            .append("completeHunt", new Document()
+                .append("hunt", testHunts.get(0))
+                .append("tasks", testTasks.subList(0, 2)))
+            .append("status", true));
+
     startedHunts.add(
-      new Document()
-      .append("accessCode", "654321")
-      .append("hunt", new Document()
-        .append("hostId", "dansId")
-        .append("name", "Dan's Hunt")
-        .append("description", "Dan's hunt for the lost wallet")
-        .append("est", 40)
-        .append("numberOfTasks", 7)
-      )
-      .append("status", false));
+        new Document()
+            .append("accessCode", "654321")
+            .append("completeHunt", new Document()
+                .append("hunt", testHunts.get(1))
+                .append("tasks", testTasks.subList(2, 3)))
+            .append("status", false));
+
     startedHunts.add(
-      new Document()
-      .append("accessCode", "123459")
-      .append("hunt", new Document()
-        .append("hostId", "patsId")
-        .append("name", "Pat's Hunt")
-        .append("description", "Pat's hunt for the golden egg")
-        .append("est", 60)
-        .append("numberOfTasks", 10)
-      )
-      .append("status", true));
+        new Document()
+            .append("accessCode", "123459")
+            .append("completeHunt", new Document()
+                .append("hunt", testHunts.get(2))
+                .append("tasks", testTasks.subList(0, 3)))
+            .append("status", true));
 
     startedHuntsDocuments.insertMany(startedHunts);
 
@@ -265,7 +255,7 @@ public class HostControllerSpec {
     assertEquals("The requested host id wasn't a legal Mongo Object ID.", exception.getMessage());
   }
 
-    @Test
+  @Test
   void getHostWithNonexistentId() throws IOException {
     String id = "588935f5c668650dc77df581";
     when(ctx.pathParam("id")).thenReturn(id);
@@ -283,7 +273,7 @@ public class HostControllerSpec {
     queryParams.put("hostId", Collections.singletonList("frysId"));
     when(ctx.queryParamMap()).thenReturn(queryParams);
     when(ctx.queryParamAsClass("hostId", String.class))
-    .thenReturn(Validator.create(String.class, "frysId", "hostId"));
+        .thenReturn(Validator.create(String.class, "frysId", "hostId"));
 
     hostController.getHunts(ctx);
 
@@ -318,7 +308,7 @@ public class HostControllerSpec {
     assertEquals("The requested hunt id wasn't a legal Mongo Object ID.", exception.getMessage());
   }
 
-    @Test
+  @Test
   void getHuntWithNonexistentId() throws IOException {
     String id = "588935f5c668650dc77df581";
     when(ctx.pathParam("id")).thenReturn(id);
@@ -774,42 +764,44 @@ public class HostControllerSpec {
     assertEquals(0, db.getCollection("tasks").countDocuments(eq("huntId", testID)));
   }
 
-@Test
-void startHuntCreatesNewStartedHunt() throws IOException {
-  String testID = huntId.toHexString();
-  when(ctx.pathParam("id")).thenReturn(testID);
+  @Test
+  void startHuntCreatesNewStartedHunt() throws IOException {
+    String testID = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
 
-  Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testID))).first();
-  assertNotNull(hunt);
+    Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testID))).first();
+    assertNotNull(hunt);
 
-  hostController.startHunt(ctx);
-
-  verify(ctx).status(HttpStatus.CREATED);
-
-  Document startedHunt = db.getCollection("startedHunts").find(eq("hunt._id", new ObjectId(testID))).first();
-  assertNotNull(startedHunt);
-  assertEquals(hunt.get("_id"), startedHunt.get("hunt", Document.class).get("_id"));
-  assertTrue(startedHunt.getBoolean("status"));
-  assertNotNull(startedHunt.getString("accessCode"));
-}
-
-@Test
-void startHuntThrowsExceptionWhenHuntNotFound() throws IOException {
-  String testID = "507f1f77bcf86cd799439011";
-  when(ctx.pathParam("id")).thenReturn(testID);
-
-  Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testID))).first();
-  assertNull(hunt);
-
-  Exception exception = assertThrows(NotFoundResponse.class, () -> {
     hostController.startHunt(ctx);
-  });
 
-  assertEquals("The requested hunt was not found", exception.getMessage());
+    verify(ctx).status(HttpStatus.CREATED);
 
-  Document startedHunt = db.getCollection("startedHunts").find(eq("hunt._id", new ObjectId(testID))).first();
-  assertNull(startedHunt);
-}
+    Document startedHunt = db.getCollection("startedHunts").find(eq("completeHunt.hunt._id", new ObjectId(testID)))
+        .first();
+    assertNotNull(startedHunt);
+    assertEquals(hunt.get("_id"),
+        startedHunt.get("completeHunt", Document.class).get("hunt", Document.class).get("_id"));
+    assertTrue(startedHunt.getBoolean("status"));
+    assertNotNull(startedHunt.getString("accessCode"));
+  }
+
+  @Test
+  void startHuntThrowsExceptionWhenHuntNotFound() throws IOException {
+    String testID = "507f1f77bcf86cd799439011";
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testID))).first();
+    assertNull(hunt);
+
+    Exception exception = assertThrows(NotFoundResponse.class, () -> {
+      hostController.startHunt(ctx);
+    });
+
+    assertEquals("The requested hunt was not found", exception.getMessage());
+
+    Document startedHunt = db.getCollection("startedHunts").find(eq("hunt._id", new ObjectId(testID))).first();
+    assertNull(startedHunt);
+  }
 
   @Test
   void getStartedHunt() throws IOException {

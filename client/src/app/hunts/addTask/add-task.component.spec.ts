@@ -10,7 +10,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { MockHostService } from 'src/testing/host.service.mock';
 import { HostService } from 'src/app/hosts/host.service';
 import { HuntProfileComponent } from '../hunt-profile.component';
@@ -142,7 +142,7 @@ describe('AddTaskComponent#submitForm()', () => {
   beforeEach(() => {
     component.addTaskForm.controls.name.setValue('Take a picture of a dog');
     component.addTaskForm.controls.huntId.setValue('1');
-    component.huntId = input('1');
+    component.completeHunt = input({ hunt: { _id: '1', hostId: '', name: '', description: '', est: 0, numberOfTasks: 0 }, tasks: [] });
   });
 
   it('should call addTask() and handle error response', () => {
@@ -155,7 +155,6 @@ describe('AddTaskComponent#submitForm()', () => {
     expect(addTaskSpy).toHaveBeenCalledWith(component.addTaskForm.value);
     expect(location.path()).toBe(path);
   });
-
 
   it('should return true when the control is invalid and either dirty or touched', () => {
     const controlName = 'name';
@@ -176,5 +175,29 @@ describe('AddTaskComponent#submitForm()', () => {
     expect(component.formControlHasError(controlName)).toBeFalsy();
   });
 
+  it('should call hostService.addTask and update completeHunt', () => {
+    const task = {
+      huntId: 'huntId',
+      status: false,
+      name: 'Task Name',
+      _id: ''
+    };
+
+    component.addTaskForm.setValue(task);
+    const completeHuntSpy = spyOn(component, 'completeHunt').and.returnValue({
+      hunt: { _id: 'huntId', hostId: '', name: '', description: '', est: 0, numberOfTasks: 0 },
+      tasks: []
+    });
+
+    const addTaskSpy = spyOn(hostService, 'addTask').and.returnValue(of(''));
+    const resetSpy = spyOn(component.addTaskForm, 'reset');
+
+    component.submitForm();
+
+    expect(addTaskSpy).toHaveBeenCalledWith(task);
+    expect(resetSpy).toHaveBeenCalled();
+    expect(completeHuntSpy().tasks.length).toBe(1);
+    expect(completeHuntSpy().hunt.numberOfTasks).toBe(1);
+  });
 });
 

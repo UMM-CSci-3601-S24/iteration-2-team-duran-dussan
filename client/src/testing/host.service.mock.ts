@@ -117,8 +117,6 @@ export class MockHostService extends HostService {
       return of(MockHostService.testCompleteHunts[0]);
     } else if (id === MockHostService.testCompleteHunts[1].hunt._id) {
       return of(MockHostService.testCompleteHunts[1]);
-    } else if (id === MockHostService.testCompleteHunts[2].hunt._id) {
-      return of(MockHostService.testCompleteHunts[2]);
     } else {
       return of(null);
     }

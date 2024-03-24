@@ -24,7 +24,7 @@ import { DeleteTaskDialogComponent } from './deleteTask/delete-task-dialog.compo
     imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
-  confirmDeleteHunt: boolean =false;
+  confirmDeleteHunt: boolean = false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
 

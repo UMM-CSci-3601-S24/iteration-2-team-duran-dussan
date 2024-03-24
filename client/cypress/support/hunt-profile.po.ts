@@ -24,13 +24,11 @@ export class HuntProfilePage {
   }
 
   deleteHunt() {
-    cy.get('[data-test=removeHuntButton]').click();
-    return cy.get('[data-test=confirmDeleteHuntButton]').click();
+    return cy.get('[data-test=removeHuntButton]').click();
   }
 
   deleteTask() {
-    cy.get('[data-test=removeTaskButton]').first().click();
-    return cy.get('[data-test=confirmDeleteTaskButton]').click();
+    return cy.get('[data-test=removeTaskButton]').first().click();
   }
 
   addTaskButton() {

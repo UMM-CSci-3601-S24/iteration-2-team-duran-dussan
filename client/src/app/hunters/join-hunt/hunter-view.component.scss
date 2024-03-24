@@ -1,0 +1,40 @@
+.hunt-information-card, .task-table {
+  width: 100%;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+  border: 1px solid black;
+  padding: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// .custom-file-upload img {
+//   width: 50px;
+//   height: 50px;
+// }
+// .custom-file-upload {
+//   padding: 2px;
+//   cursor: pointer;
+//   background-color: #4CAF50;
+//   color: white;
+//   border: none;
+//   text-align: center;
+//   text-decoration: none;
+//   display: inline-block;
+//   font-size: 12px;
+//   margin: 4px 2px;
+//   transition-duration: 0.4s;
+// }
+
+// .custom-file-upload:hover {
+//   background-color: white;
+//   color: black;
+//   border: 2px solid #4CAF50;
+// }

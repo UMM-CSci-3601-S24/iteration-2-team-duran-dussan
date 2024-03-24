@@ -1,0 +1,28 @@
+<mat-card class="hunt-information-card">
+  <mat-card-header class="header-content">
+    <mat-card-title class="hunt-title">You are in {{ completeHunt.hunt.name }}</mat-card-title>
+    <mat-card-content class="hunt-content">
+      <mat-card-subtitle class="hunt">Estimate time: {{ completeHunt.hunt.est }}</mat-card-subtitle>
+      <mat-card-subtitle class="hunt">Number of Tasks: {{ completeHunt.hunt.numberOfTasks }}</mat-card-subtitle>
+    </mat-card-content>
+  </mat-card-header>
+</mat-card>
+
+<div class="task-table">
+  <div class="flex-row header-row">
+    <div class="flex-1">Submit Picture</div>
+    <div class="flex-1">The Task</div>
+    <div class="flex-1">Task Status</div>
+  </div>
+  <div class="flex-row" *ngFor="let task of tasks">
+    <div class="flex-1">
+      <label for="file-upload" class="custom-file-upload">
+        Upload Picture
+      </label>
+      <input id="file-upload" type="file" style="display:none;" (change)="onFileSelected($event)">
+
+    </div>
+    <div class="flex-1">{{ task.name }}</div>
+    <div class="flex-1"><input type="checkbox"></div>
+  </div>
+</div>

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { HostProfileComponent } from './hosts/host-profile.component';
 import { HuntProfileComponent } from './hunts/hunt-profile.component';
+import { HunterViewComponent } from './hunters/join-hunt/hunter-view.component';
 import { HuntCardComponent } from './hunts/hunt-card.component';
 import { AddHuntComponent } from './hunts/addHunt/add-hunt.component';
 import { JoinHuntComponent } from './hunters/join-hunt/join-hunt.component';
@@ -16,7 +17,9 @@ const routes: Routes = [
   {path: 'hunts/new', component: AddHuntComponent, title: 'Add Hunt'},
   {path: 'hunts/:id', component: HuntProfileComponent, title: 'Hunts Profile'},
   {path: 'hunts', component: HuntCardComponent, title: 'Hunts'},
-  {path: 'hunters', component: JoinHuntComponent, title: 'Join Hunt'}
+  {path: 'hunters', component: JoinHuntComponent, title: 'Join Hunt'},
+  {path: 'hunter-view/:id', component: HunterViewComponent}
+
 ];
 
 @NgModule({

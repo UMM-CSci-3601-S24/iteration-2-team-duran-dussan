@@ -13,8 +13,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteHuntDialogComponent } from './deleteHunt/delete-hunt-dialog.component';
-import { DeleteTaskDialogComponent } from './deleteTask/delete-task-dialog.component';
+import { Hunt } from './hunt';
 
 @Component({
     selector: 'app-hunt-profile',
@@ -24,6 +23,7 @@ import { DeleteTaskDialogComponent } from './deleteTask/delete-task-dialog.compo
     imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
+  hunt: Hunt;
   confirmDeleteHunt: boolean =false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };
@@ -71,32 +71,18 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDeleteHuntDialog(huntId: string): void {
-    const dialogRef = this.dialog.open(DeleteHuntDialogComponent, {
-      width: '400px',
-      height: '300px',
-      data: { huntId }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'confirm') {
-        this.deleteHunt(huntId);
-      }
-    });
+  onHuntDeleteClick(event: Event, huntId: string) {
+    event.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this hunt?')) {
+      this.deleteHunt(huntId)
+    }
   }
 
-  openDeleteTaskDialog(taskId: string): void {
-    const dialogRef = this.dialog.open(DeleteTaskDialogComponent, {
-      width: '400px',
-      height: '300px',
-      data: { taskId }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'confirm') {
-        this.deleteTask(taskId);
-      }
-    });
+  onTaskDeleteClick(event: Event, taskId: string) {
+    event.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      this.deleteTask(taskId)
+    }
   }
 
   ngOnDestroy() {

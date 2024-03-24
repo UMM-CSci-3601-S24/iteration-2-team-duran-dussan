@@ -17,7 +17,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CompleteHunt } from './completeHunt';
 import { HttpClientModule } from '@angular/common/http';
 import { Location } from '@angular/common';
-import { Hunt } from './hunt';
 
 
 describe('HuntProfileComponent', () => {
@@ -158,7 +157,6 @@ describe('DeleteHunt()', () => {
     const event = new Event('click');
     const huntId = '123';
     const deleteHuntSpy = spyOn(hostService, 'deleteHunt').and.callThrough();
-    component.hunt = { _id: '123' } as Hunt;
 
     spyOn(window, 'confirm').and.returnValue(true);
 

@@ -13,7 +13,6 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { Hunt } from './hunt';
 
 @Component({
     selector: 'app-hunt-profile',
@@ -23,7 +22,6 @@ import { Hunt } from './hunt';
     imports: [HuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule]
 })
 export class HuntProfileComponent implements OnInit, OnDestroy {
-  hunt: Hunt;
   confirmDeleteHunt: boolean = false;
   completeHunt: CompleteHunt;
   error: { help: string, httpResponse: string, message: string };

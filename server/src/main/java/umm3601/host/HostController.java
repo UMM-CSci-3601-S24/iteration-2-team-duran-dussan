@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -250,14 +251,19 @@ public class HostController implements Controller {
   }
 
   public String startHunt(Context ctx) {
-    StartedHunt startedHunt = new StartedHunt();
-    startedHunt.accessCode = java.util.UUID.randomUUID().toString(); // Generate a random access code
     Hunt hunt = getHunt(ctx); // Get the hunt from the database
+
+    StartedHunt startedHunt = new StartedHunt();
+    Random random = new Random();
+    int accessCode = 100000 + random.nextInt(900000); // Generate a random 6-digit number
+    startedHunt.accessCode = String.format("%06d", accessCode); // Convert the number to a string
     startedHunt.hunt = hunt; // Assign the hunt to the startedHunt
     startedHunt.status = true; // true means the hunt is active
 
-   // Insert the StartedHunt into the startedHunt collection
-   startedHuntCollection.insertOne(startedHunt);
+    // Insert the StartedHunt into the startedHunt collection
+    startedHuntCollection.insertOne(startedHunt);
+
+    ctx.status(HttpStatus.CREATED);
 
     return startedHunt.accessCode;
   }
@@ -266,11 +272,13 @@ public class HostController implements Controller {
     String accessCode = ctx.pathParam("accessCode");
     StartedHunt startedHunt;
 
-    try {
-      startedHunt = startedHuntCollection.find(eq("accessCode", accessCode)).first();
-    } catch (IllegalArgumentException e) {
+      // Validate the access code
+    if (accessCode.length() != 6 || !accessCode.matches("\\d+")) {
       throw new BadRequestResponse("The requested access code is not a valid access code.");
     }
+
+    startedHunt = startedHuntCollection.find(eq("accessCode", accessCode)).first();
+
     if (startedHunt == null) {
       throw new NotFoundResponse("The requested access code was not found.");
     } else if (!startedHunt.status) {

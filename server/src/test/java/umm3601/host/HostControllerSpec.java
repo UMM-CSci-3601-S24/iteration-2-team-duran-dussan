@@ -3,7 +3,10 @@ package umm3601.host;
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -52,7 +55,6 @@ public class HostControllerSpec {
   private ObjectId frysId;
   private ObjectId huntId;
   private ObjectId taskId;
-  private ObjectId startedHuntId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -772,6 +774,43 @@ public class HostControllerSpec {
     assertEquals(0, db.getCollection("tasks").countDocuments(eq("huntId", testID)));
   }
 
+@Test
+void startHuntCreatesNewStartedHunt() throws IOException {
+  String testID = huntId.toHexString();
+  when(ctx.pathParam("id")).thenReturn(testID);
+
+  Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testID))).first();
+  assertNotNull(hunt);
+
+  hostController.startHunt(ctx);
+
+  verify(ctx).status(HttpStatus.CREATED);
+
+  Document startedHunt = db.getCollection("startedHunts").find(eq("hunt._id", new ObjectId(testID))).first();
+  assertNotNull(startedHunt);
+  assertEquals(hunt.get("_id"), startedHunt.get("hunt", Document.class).get("_id"));
+  assertTrue(startedHunt.getBoolean("status"));
+  assertNotNull(startedHunt.getString("accessCode"));
+}
+
+@Test
+void startHuntThrowsExceptionWhenHuntNotFound() throws IOException {
+  String testID = "507f1f77bcf86cd799439011";
+  when(ctx.pathParam("id")).thenReturn(testID);
+
+  Document hunt = db.getCollection("hunts").find(eq("_id", new ObjectId(testID))).first();
+  assertNull(hunt);
+
+  Exception exception = assertThrows(NotFoundResponse.class, () -> {
+    hostController.startHunt(ctx);
+  });
+
+  assertEquals("The requested hunt was not found", exception.getMessage());
+
+  Document startedHunt = db.getCollection("startedHunts").find(eq("hunt._id", new ObjectId(testID))).first();
+  assertNull(startedHunt);
+}
+
   @Test
   void getStartedHunt() throws IOException {
     when(ctx.pathParam("accessCode")).thenReturn("123456");
@@ -797,8 +836,19 @@ public class HostControllerSpec {
   }
 
   @Test
-  void getStartedHuntWithBadAccessCode() throws IOException {
-    when(ctx.pathParam("accessCode")).thenReturn("bad");
+  void getStartedHuntWithInvalidAccessCode() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("12345"); // 5-digit number
+
+    Throwable exception = assertThrows(BadRequestResponse.class, () -> {
+      hostController.getStartedHunt(ctx);
+    });
+
+    assertEquals("The requested access code is not a valid access code.", exception.getMessage());
+  }
+
+  @Test
+  void getStartedHuntWithNonNumericAccessCode() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("123abc"); // Access code with non-numeric characters
 
     Throwable exception = assertThrows(BadRequestResponse.class, () -> {
       hostController.getStartedHunt(ctx);

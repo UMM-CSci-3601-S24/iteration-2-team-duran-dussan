@@ -153,27 +153,30 @@ describe('DeleteHunt()', () => {
     expect(deleteTaskSpy).toHaveBeenCalledWith(fryId);
   });
 
-  it('should open delete hunt dialog and delete hunt on confirmation', () => {
-    const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed : of('confirm'), close: null });
-    spyOn(component.dialog, 'open').and.returnValue(dialogRefSpyObj);
-    const deleteHuntSpy = spyOn(component, 'deleteHunt');
+  it('should call deleteTask when onHuntDeleteClick is confirmed', () => {
+    const event = new Event('click');
+    const huntId = '123';
+    const deleteHuntSpy = spyOn(hostService, 'deleteHunt').and.callThrough();
 
-    component.openDeleteHuntDialog('testHuntId');
+    spyOn(window, 'confirm').and.returnValue(true);
 
-    expect(component.dialog.open).toHaveBeenCalled();
-    expect(deleteHuntSpy).toHaveBeenCalledWith('testHuntId');
+    component.onHuntDeleteClick(event, huntId);
+
+    expect(deleteHuntSpy).toHaveBeenCalledWith('123');
   });
 
-  it('should open delete task dialog and delete task on confirmation', () => {
-    const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed : of('confirm'), close: null });
-    spyOn(component.dialog, 'open').and.returnValue(dialogRefSpyObj);
-    const deleteTaskSpy = spyOn(component, 'deleteTask');
+  it('should call deleteTask when onTaskDeleteClick is confirmed', () => {
+    const event = new Event('click');
+    const taskId = '123';
+    const deleteTaskSpy = spyOn(hostService, 'deleteTask').and.callThrough();
 
-    component.openDeleteTaskDialog('testTaskId');
+    spyOn(window, 'confirm').and.returnValue(true);
 
-    expect(component.dialog.open).toHaveBeenCalled();
-    expect(deleteTaskSpy).toHaveBeenCalledWith('testTaskId');
+    component.onTaskDeleteClick(event, taskId);
+
+    expect(deleteTaskSpy).toHaveBeenCalledWith('123');
   });
+
 });
 
 

@@ -1,16 +1,19 @@
 <div class="container">
+  <div class="access-code-inputs">
+    <mat-form-field class="half-width">
+      <mat-label>Access</mat-label>
+      <input matInput [formControl]="accessCodePart1Control" type="text" pattern="[0-9]{3}" maxlength="3" (keypress)="numericOnly($event)">
+    </mat-form-field>
+    <span>-</span>
+    <mat-form-field class="half-width">
+      <mat-label>Code</mat-label>
+      <input matInput [formControl]="accessCodePart2Control" type="text" pattern="[0-9]{3}" maxlength="3" (keypress)="numericOnly($event)">
+    </mat-form-field>
+  </div>
   <mat-card class="card">
-    <mat-card-content>
-      <mat-card-actions>
-        <mat-form-field class="full-width">
-          <mat-label>Access Code</mat-label>
-          <input matInput [formControl]="accessCodeControl" type="text" pattern="[0-9]{6}" maxlength="6" (keypress)="numericOnly($event)">
-        </mat-form-field>
-      </mat-card-actions>
-      <a mat-raised-button color="accent" class="link-button center-button" name="join-button" routerLink="/hunter-view/:id"
-        routerLinkActive="drawer-list-item-active" [disabled]="!isAccessCodeValid">
-        <span class="button-text">Join</span>
-      </a>
-    </mat-card-content>
+    <a mat-raised-button color="accent" class="link-button center-button" name="join-button" routerLink="/hunter-view/:id"
+      routerLinkActive="drawer-list-item-active" [disabled]="!isAccessCodeValid">
+      <span class="button-text">Join Hunt</span>
+    </a>
   </mat-card>
 </div>

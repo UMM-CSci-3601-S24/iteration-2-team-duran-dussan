@@ -14,6 +14,7 @@ export class HostService {
   readonly hostUrl: string = `${environment.apiUrl}hosts`;
   readonly huntUrl: string = `${environment.apiUrl}hunts`;
   readonly taskUrl: string = `${environment.apiUrl}tasks`;
+  readonly startHuntUrl: string = `${environment.apiUrl}startHunt`;
   readonly startedHuntUrl: string = `${environment.apiUrl}startedHunts`;
 
   constructor(private httpClient: HttpClient){
@@ -44,8 +45,8 @@ export class HostService {
     return this.httpClient.delete<void>(`/api/tasks/${id}`);
   }
 
-  startHunt(id: string): Observable<string> {
-    return this.httpClient.post<{id: string}>(this.startedHuntUrl, {id}).pipe(map(result => result.id));
+  startHunt(id: string): Observable<StartedHunt> {
+    return this.httpClient.get<StartedHunt>(`${this.startHuntUrl}/${id}`);
   }
 
   getStartedHunt(accessCode: string): Observable<StartedHunt> {

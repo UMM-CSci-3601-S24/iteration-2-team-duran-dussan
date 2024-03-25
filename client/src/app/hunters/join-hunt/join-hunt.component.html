@@ -1,19 +1,13 @@
-<div class="container">
+<div class="app-join-hunt">
+<mat-card class="container">
+  <mat-card-title class="title">Type Invite Code</mat-card-title>
   <div class="access-code-inputs">
-    <mat-form-field class="half-width">
-      <mat-label>Access</mat-label>
-      <input matInput [formControl]="accessCodePart1Control" type="text" pattern="[0-9]{3}" maxlength="3" (keypress)="numericOnly($event)">
-    </mat-form-field>
-    <span>-</span>
-    <mat-form-field class="half-width">
-      <mat-label>Code</mat-label>
-      <input matInput [formControl]="accessCodePart2Control" type="text" pattern="[0-9]{3}" maxlength="3" (keypress)="numericOnly($event)">
-    </mat-form-field>
+    <ngx-otp-input #otpInput [config]="otpInputConfig" (otpChange)="handleOtpChange($event)" ></ngx-otp-input>
   </div>
-  <mat-card class="card">
-    <a mat-raised-button color="accent" class="link-button center-button" name="join-button" routerLink="/hunter-view/:id"
+
+    <a mat-raised-button [ngClass]="{'join-button-enabled': isAccessCodeValid}" class="link-button center-button" name="join-button" routerLink="/hunter-view/:id"
       routerLinkActive="drawer-list-item-active" [disabled]="!isAccessCodeValid">
       <span class="button-text">Join Hunt</span>
     </a>
-  </mat-card>
+</mat-card>
 </div>

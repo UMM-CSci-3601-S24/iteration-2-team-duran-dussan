@@ -2,28 +2,47 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   flex-direction: column;
+  padding: 20px;
+  height: wrap-content;
+  width: 400px;
 }
-.card {
-  width: 300px;
-}
-.full-width {
-  width: 100%;
-}
+
 .center-button {
   display: flex;
   justify-content: center;
   width: 100%;
   height: 80px;
   font-size: 30px;
+  border-radius: 50px;
+  width: 300px;
+
 }
 .access-code-inputs {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  width: 50%;
+  padding-bottom: 20px;
 }
-.half-width {
-  width: 45%; // Adjust as needed
+
+.app-join-hunt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: wrap-content;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: aquamarine;
+}
+
+.join-button-enabled {
+  background-color: aqua !important;
+  color: black !important;
+
+  // Don't remove the !important, it's necessary to override the default color.
 }

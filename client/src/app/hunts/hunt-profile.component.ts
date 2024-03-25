@@ -63,12 +63,6 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteTask(id: string): void {
-    this.hostService.deleteTask(id).subscribe(() => {
-      location.reload();
-    });
-  }
-
   onHuntDeleteClick(event: Event, huntId: string) {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to delete this hunt?')) {
@@ -76,11 +70,21 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  deleteTask(id: string): void {
+    this.hostService.deleteTask(id).subscribe(() => {
+      location.reload();
+    });
+  }
+
   onTaskDeleteClick(event: Event, taskId: string) {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to delete this task?')) {
       this.deleteTask(taskId)
     }
+  }
+
+  startHunt(id: string): void {
+    this.router.navigate(['/start-hunt', id]);
   }
 
   ngOnDestroy() {

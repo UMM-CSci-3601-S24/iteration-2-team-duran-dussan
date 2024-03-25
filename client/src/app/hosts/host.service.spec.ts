@@ -217,26 +217,23 @@ describe('When getHunts() is called', () => {
   });
 
   describe('Starting a hunt using `startHunt()`', () => {
-    it('talks to the right endpoint and is called once', waitForAsync(() => {
-      const hunt_id = 'hunt_id';
-      const started_hunt_id = 'started_hunt_id';
-      const expected_http_response = { id: started_hunt_id } ;
+    it('calls api/startHunt/id with the correct ID', waitForAsync(() => {
+      const targetStartedHunt: StartedHunt = testStartedHunts[1];
+      const targetId: string = targetStartedHunt.completeHunt.hunt._id;
 
-      const mockedMethod = spyOn(httpClient, 'post')
-        .and
-        .returnValue(of(expected_http_response));
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetStartedHunt));
 
-      hostService.startHunt(hunt_id).subscribe((new_started_hunt_id) => {
-        expect(new_started_hunt_id).toBe(started_hunt_id);
-        expect(mockedMethod)
-          .withContext('one call')
-          .toHaveBeenCalledTimes(1);
-        expect(mockedMethod)
-          .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith(hostService.startedHuntUrl, {id: hunt_id});
-      });
-    }));
-  });
+        hostService.startHunt(targetId).subscribe(() => {
+          expect(mockedMethod)
+            .withContext('one call')
+            .toHaveBeenCalledTimes(1);
+
+          expect(mockedMethod)
+            .withContext('talks to the correct endpoint')
+            .toHaveBeenCalledWith(`${hostService.startHuntUrl}/${targetId}`);
+        });
+      }));
+    });
 
   describe('When getStartedHunt() is given an ID', () => {
     it('calls api/startedHunts/id with the correct ID', waitForAsync(() => {

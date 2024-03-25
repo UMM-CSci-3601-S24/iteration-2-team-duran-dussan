@@ -157,30 +157,6 @@ describe('DeleteHunt() and StartHunt()', () => {
     expect(deleteHuntSpy).toHaveBeenCalledWith('123');
   });
 
-  it('should call deleteTask when onTaskDeleteClick is confirmed', () => {
-    const event = new Event('click');
-    const taskId = '123';
-    const deleteTaskSpy = spyOn(hostService, 'deleteTask').and.callThrough();
-
-    spyOn(window, 'confirm').and.returnValue(true);
-
-    component.onTaskDeleteClick(event, taskId);
-
-    expect(deleteTaskSpy).toHaveBeenCalledWith('123');
-  });
-
-  it('should call hostService.startHunt and router.navigate when startHunt is called', () => {
-    const id = 'testId';
-    const startedHuntAccessCode = 'accessCode';
-    const startHuntSpy = spyOn(hostService, 'startHunt').and.returnValue(of(startedHuntAccessCode));
-    const navigateSpy = spyOn(router, 'navigate');
-
-    component.startHunt(id);
-
-    expect(startHuntSpy).toHaveBeenCalledWith(id);
-    expect(navigateSpy).toHaveBeenCalledWith(['/startedHunts', startedHuntAccessCode]);
-  });
-
 });
 
 

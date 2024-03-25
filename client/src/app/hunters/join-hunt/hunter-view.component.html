@@ -10,13 +10,13 @@
 
 <div class="task-table">
   <div class="flex-row header-row">
-    <div class="flex-1">Submit Picture</div>
-    <div class="flex-1">The Task</div>
-    <div class="flex-1">Task Status</div>
+    <div class="flex-1"> Your Picture </div>
+    <div class="flex-2"> Your Task </div>
+    <div class="flex-3"> Status </div>
   </div>
   <div class="flex-row" *ngFor="let task of tasks">
-    <div class="flex-1">
-      <img [src]="imageUrls[task._id] || url" alt="Profile Picture" title="Profile Picture" height="50px" width="50px" />
+    <div class="image-upload">
+      <img [src]="imageUrls[task._id] || 'assets/icons8-upload-picture-64.png'" alt="Profile Picture" title="Profile Picture" height="100px" width="100px" />
       <input
         type="file"
         id="img-{{task._id}}"
@@ -26,7 +26,7 @@
       />
       <label for="img-{{task._id}}">Upload Image</label>
     </div>
-    <div class="flex-1">{{ task.name }}</div>
-    <div class="flex-1"><input type="checkbox"></div>
+    <div class="task-list">{{ task.name }}</div>
+    <div class="checkbox"><input type="checkbox"></div>
   </div>
 </div>

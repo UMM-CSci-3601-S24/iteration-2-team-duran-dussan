@@ -4,15 +4,84 @@
 
 .flex-row {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .flex-1 {
-  flex: 1;
+  flex: 2;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 1px solid black;
   padding: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: auto;
+  color: aqua;
+  background-color: darkslategray;
+}
+
+.image-upload {
+  display: flex;
+  flex: 2;
+  border: 1px solid black;
+  padding: 10px;
   white-space: nowrap;
+  overflow: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-2 {
+  flex: 3;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  padding: 10px;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: auto;
+  color: aqua;
+  background-color: darkslategray;
+}
+
+.task-list {
+  flex: 3;
+  border: 1px solid black;
+  padding: 10px;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: auto;
+}
+
+.flex-3 {
+  flex: 2;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  padding: 10px;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: auto;
+  color: aqua;
+  background-color: darkslategray;
+}
+
+.checkbox {
+  flex: 2;
+  border: 1px solid black;
+  padding: 10px;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: auto;
 }
 
 input[type="file"] {

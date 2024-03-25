@@ -6,7 +6,7 @@ describe('App', () => {
   beforeEach(() => page.navigateTo());
 
   it('should display welcome message', () => {
-    page.getAppTitle().should('contain', 'Scav-n-Snap');
+    page.getAppTitle().should('contain', 'Scav-a-Snap');
   });
 
   it('should navigate to host and back', () => {

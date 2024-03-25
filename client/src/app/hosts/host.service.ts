@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { Hunt } from '../hunts/hunt';
 import { Task } from '../hunts/task';
 import { CompleteHunt } from '../hunts/completeHunt';
+import { StartedHunt } from '../startHunt/startedHunt';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,10 @@ export class HostService {
 
   startHunt(id: string): Observable<string> {
     return this.httpClient.post<{id: string}>(this.startedHuntUrl, {id}).pipe(map(result => result.id));
+  }
+
+  getStartedHunt(accessCode: string): Observable<StartedHunt> {
+    return this.httpClient.get<StartedHunt>(`${this.startedHuntUrl}/${accessCode}`);
   }
 
 }

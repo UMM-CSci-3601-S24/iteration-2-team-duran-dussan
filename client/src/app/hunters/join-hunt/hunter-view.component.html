@@ -16,11 +16,15 @@
   </div>
   <div class="flex-row" *ngFor="let task of tasks">
     <div class="flex-1">
-      <label for="file-upload" class="custom-file-upload">
-        Upload Picture
-      </label>
-      <input id="file-upload" type="file" style="display:none;" (change)="onFileSelected($event)">
-
+      <img [src]="imageUrls[task._id] || url" alt="Profile Picture" title="Profile Picture" height="50px" width="50px" />
+      <input
+        type="file"
+        id="img-{{task._id}}"
+        style="display:none"
+        accept="image/*"
+        (change)="onFileSelected($event, task)"
+      />
+      <label for="img-{{task._id}}">Upload Image</label>
     </div>
     <div class="flex-1">{{ task.name }}</div>
     <div class="flex-1"><input type="checkbox"></div>

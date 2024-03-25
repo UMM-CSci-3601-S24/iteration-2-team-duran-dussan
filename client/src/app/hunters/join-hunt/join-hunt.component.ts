@@ -4,7 +4,8 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-join-hunt',
@@ -21,12 +22,17 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 })
 export class JoinHuntComponent {
 
-  accessCodeControl = new FormControl('');
+  accessCodePart1Control = new FormControl('', [Validators.required, Validators.pattern('[0-9]{3}')]);
+  accessCodePart2Control = new FormControl('', [Validators.required, Validators.pattern('[0-9]{3}')]);
   isAccessCodeValid = false;
 
   constructor() {
-    this.accessCodeControl.valueChanges.subscribe(value => {
-      this.isAccessCodeValid = value.length === 6;
+    this.accessCodePart1Control.valueChanges.subscribe(value => {
+      this.isAccessCodeValid = this.accessCodePart1Control.valid && this.accessCodePart2Control.valid;
+    });
+
+    this.accessCodePart2Control.valueChanges.subscribe(value => {
+      this.isAccessCodeValid = this.accessCodePart1Control.valid && this.accessCodePart2Control.valid;
     });
   }
 

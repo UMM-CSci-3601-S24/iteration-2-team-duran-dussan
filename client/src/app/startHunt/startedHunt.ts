@@ -1,6 +1,7 @@
 import { CompleteHunt } from "../hunts/completeHunt";
 
 export interface StartedHunt {
-  hunt: CompleteHunt;
+  _id: string;
+  completeHunt: CompleteHunt;
   accessCode: string;
 }

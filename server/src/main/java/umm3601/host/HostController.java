@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -32,6 +33,7 @@ public class HostController implements Controller {
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASK = "/api/tasks/{id}";
   private static final String API_TASKS = "/api/tasks";
+  private static final String API_STARTED_HUNT = "/api/startedHunts";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -42,26 +44,39 @@ public class HostController implements Controller {
 
   static final int REASONABLE_NAME_LENGTH_TASK = 150;
 
+  private static final int ACCESS_CODE_MIN = 100000;
+  private static final int ACCESS_CODE_RANGE = 900000;
+  private static final int ACCESS_CODE_LENGTH = 6;
+
   private final JacksonMongoCollection<Host> hostCollection;
   private final JacksonMongoCollection<Hunt> huntCollection;
   private final JacksonMongoCollection<Task> taskCollection;
+  private final JacksonMongoCollection<StartedHunt> startedHuntCollection;
 
   public HostController(MongoDatabase database) {
     hostCollection = JacksonMongoCollection.builder().build(
-      database,
-      "hosts",
-      Host.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "hosts",
+        Host.class,
+        UuidRepresentation.STANDARD);
+
     huntCollection = JacksonMongoCollection.builder().build(
-      database,
-      "hunts",
-      Hunt.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "hunts",
+        Hunt.class,
+        UuidRepresentation.STANDARD);
+
     taskCollection = JacksonMongoCollection.builder().build(
-      database,
-      "tasks",
-      Task.class,
-       UuidRepresentation.STANDARD);
+        database,
+        "tasks",
+        Task.class,
+        UuidRepresentation.STANDARD);
+
+    startedHuntCollection = JacksonMongoCollection.builder().build(
+        database,
+        "startedHunts",
+        StartedHunt.class,
+        UuidRepresentation.STANDARD);
   }
 
   public void getHost(Context ctx) {
@@ -102,9 +117,9 @@ public class HostController implements Controller {
     Bson sortingOrder = constructSortingOrderHunts(ctx);
 
     ArrayList<Hunt> matchingHunts = huntCollection
-      .find(combinedFilter)
-      .sort(sortingOrder)
-      .into(new ArrayList<>());
+        .find(combinedFilter)
+        .sort(sortingOrder)
+        .into(new ArrayList<>());
 
     ctx.json(matchingHunts);
 
@@ -136,9 +151,9 @@ public class HostController implements Controller {
     String targetHunt = ctx.pathParam("id");
 
     ArrayList<Task> matchingTasks = taskCollection
-      .find(eq(HUNT_KEY, targetHunt))
-      .sort(sortingOrder)
-      .into(new ArrayList<>());
+        .find(eq(HUNT_KEY, targetHunt))
+        .sort(sortingOrder)
+        .into(new ArrayList<>());
 
     return matchingTasks;
   }
@@ -180,7 +195,7 @@ public class HostController implements Controller {
   public void increaseTaskCount(String huntId) {
     try {
       huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
-       new Document("$inc", new Document("numberOfTasks", 1)));
+          new Document("$inc", new Document("numberOfTasks", 1)));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -192,9 +207,9 @@ public class HostController implements Controller {
     if (deleteResult.getDeletedCount() != 1) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
-        "Was unable to delete ID "
-          + id
-          + "; perhaps illegal ID or an ID for an item not in the system?");
+          "Was unable to delete ID "
+              + id
+              + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     deleteTasks(ctx);
     ctx.status(HttpStatus.OK);
@@ -209,9 +224,9 @@ public class HostController implements Controller {
     } catch (Exception e) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new NotFoundResponse(
-        "Was unable to delete ID "
-          + id
-          + "; perhaps illegal ID or an ID for an item not in the system?");
+          "Was unable to delete ID "
+              + id
+              + "; perhaps illegal ID or an ID for an item not in the system?");
     }
     ctx.status(HttpStatus.OK);
   }
@@ -219,7 +234,7 @@ public class HostController implements Controller {
   public void decreaseTaskCount(String huntId) {
     try {
       huntCollection.findOneAndUpdate(eq("_id", new ObjectId(huntId)),
-       new Document("$inc", new Document("numberOfTasks", -1)));
+          new Document("$inc", new Document("numberOfTasks", -1)));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -239,6 +254,47 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
+  public String startHunt(Context ctx) {
+    CompleteHunt completeHunt = new CompleteHunt();
+    completeHunt.hunt = getHunt(ctx);
+    completeHunt.tasks = getTasks(ctx);
+
+    StartedHunt startedHunt = new StartedHunt();
+    Random random = new Random();
+    int accessCode = ACCESS_CODE_MIN + random.nextInt(ACCESS_CODE_RANGE); // Generate a random 6-digit number
+    startedHunt.accessCode = String.format("%06d", accessCode); // Convert the number to a string
+    startedHunt.completeHunt = completeHunt; // Assign the completeHunt to the startedHunt
+    startedHunt.status = true; // true means the hunt is active
+
+    // Insert the StartedHunt into the startedHunt collection
+    startedHuntCollection.insertOne(startedHunt);
+
+    ctx.status(HttpStatus.CREATED);
+
+    return startedHunt.accessCode;
+  }
+
+  public void getStartedHunt(Context ctx) {
+    String accessCode = ctx.pathParam("accessCode");
+    StartedHunt startedHunt;
+
+    // Validate the access code
+    if (accessCode.length() != ACCESS_CODE_LENGTH || !accessCode.matches("\\d+")) {
+      throw new BadRequestResponse("The requested access code is not a valid access code.");
+    }
+
+    startedHunt = startedHuntCollection.find(eq("accessCode", accessCode)).first();
+
+    if (startedHunt == null) {
+      throw new NotFoundResponse("The requested access code was not found.");
+    } else if (!startedHunt.status) {
+      throw new BadRequestResponse("The requested hunt is no longer joinable.");
+    } else {
+      ctx.json(startedHunt);
+      ctx.status(HttpStatus.OK);
+    }
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);
@@ -248,5 +304,7 @@ public class HostController implements Controller {
     server.post(API_TASKS, this::addNewTask);
     server.delete(API_HUNT, this::deleteHunt);
     server.delete(API_TASK, this::deleteTask);
+    server.post(API_STARTED_HUNT, this::startHunt);
+    server.get(API_STARTED_HUNT, this::getStartedHunt);
   }
 }

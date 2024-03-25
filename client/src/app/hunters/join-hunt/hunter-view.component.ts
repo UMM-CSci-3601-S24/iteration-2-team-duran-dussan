@@ -22,6 +22,8 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   completeHunt: CompleteHunt;
   tasks: Task[] = [];
   error: { help: string, httpResponse: string, message: string };
+  imageUrls = {};
+  url = 'https://img.icons8.com/ios/100/000000/contract-job.png';
 
   private ngUnsubscribe = new Subject<void>();
 
@@ -56,8 +58,17 @@ export class HunterViewComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  onFileSelected(event) {
-    console.log(event);
+  onFileSelected(event, task: Task): void {
+    const fileType = event.target.files[0].type;
+    if (fileType.match(/image\/*/)) {
+      const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        this.imageUrls[task._id] = event.target.result.toString();
+      };
+    } else {
+      window.alert('Please select correct image format');
+    }
   }
 
 }

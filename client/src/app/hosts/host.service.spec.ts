@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { Hunt } from '../hunts/hunt';
 import { Task } from '../hunts/task';
 import { HostService } from './host.service';
+import { StartedHunt } from '../startHunt/startedHunt';
 
 describe('HostService', () => {
 const testHunts: Hunt[] = [
@@ -54,6 +55,32 @@ const testTasks: Task[] = [
     status: false
   },
 ];
+
+const testStartedHunts: StartedHunt[] = [
+  {
+    completeHunt: {
+      hunt: testHunts[0],
+      tasks: testTasks
+    },
+    accessCode: "1234",
+  },
+  {
+    completeHunt: {
+      hunt: testHunts[1],
+      tasks: testTasks
+    },
+    accessCode: "5678",
+  },
+  {
+    completeHunt: {
+      hunt: testHunts[2],
+      tasks: testTasks
+    },
+    accessCode: "9012",
+  },
+
+];
+
 let hostService: HostService;
 let httpClient: HttpClient;
 let httpTestingController: HttpTestingController;
@@ -207,6 +234,25 @@ describe('When getHunts() is called', () => {
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
           .toHaveBeenCalledWith(hostService.startedHuntUrl, {id: hunt_id});
+      });
+    }));
+  });
+
+  describe('When getStartedHunt() is given an ID', () => {
+    it('calls api/startedHunts/id with the correct ID', waitForAsync(() => {
+      const targetStartedHunt: StartedHunt = testStartedHunts[1];
+      const targetAccessCode: string = targetStartedHunt.accessCode;
+
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetStartedHunt));
+
+      hostService.getStartedHunt(targetAccessCode).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.startedHuntUrl}/${targetAccessCode}`);
       });
     }));
   });

@@ -4,13 +4,16 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxOtpInputModule } from 'ngx-otp-input';
+import { NgxOtpInputConfig } from 'ngx-otp-input';
 
 
 @Component({
   selector: 'app-join-hunt',
   standalone: true,
   imports: [
+    NgxOtpInputModule,
     MatInputModule,
     MatCardModule,
     CommonModule,
@@ -22,27 +25,38 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 })
 export class JoinHuntComponent {
 
-  accessCodePart1Control = new FormControl('', [Validators.required, Validators.pattern('[0-9]{3}')]);
-  accessCodePart2Control = new FormControl('', [Validators.required, Validators.pattern('[0-9]{3}')]);
   isAccessCodeValid = false;
 
-  constructor() {
-    this.accessCodePart1Control.valueChanges.subscribe(value => {
-      this.isAccessCodeValid = this.accessCodePart1Control.valid && this.accessCodePart2Control.valid;
-    });
-
-    this.accessCodePart2Control.valueChanges.subscribe(value => {
-      this.isAccessCodeValid = this.accessCodePart1Control.valid && this.accessCodePart2Control.valid;
-    });
-  }
-
-  numericOnly(event): boolean {
-    const charCode = (event.which) ? event.which : event.keyCode;
-    if ((charCode < 48 || charCode > 57)) {
-      event.preventDefault();
-      return false;
+  accessCode = '';
+  otpInputConfig:NgxOtpInputConfig = {
+    otpLength: 6,
+    autofocus: true,
+    classList: {
+      inputBox: 'my-super-box-class',
+      input: 'my-super-class',
+      inputFilled: 'my-super-filled-class',
+      inputDisabled: 'my-super-disabled-class',
+      inputSuccess: 'my-super-success-class',
+      inputError: 'my-super-error-class'
     }
-    return true;
+  };
+
+  handleOtpChange(value:string[]) : void {
+    this.accessCode = value.join('');
+    this.isAccessCodeValid = this.accessCode.length === 6;
   }
+
+  // handleFillEvent(value:string) : void {
+  //   console.log(value);
+  // }
+
+  // numericOnly(event): boolean {
+  //   const charCode = (event.which) ? event.which : event.keyCode;
+  //   if ((charCode < 48 || charCode > 57)) {
+  //     event.preventDefault();
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
 }

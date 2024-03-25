@@ -13,6 +13,7 @@ export class HostService {
   readonly hostUrl: string = `${environment.apiUrl}hosts`;
   readonly huntUrl: string = `${environment.apiUrl}hunts`;
   readonly taskUrl: string = `${environment.apiUrl}tasks`;
+  readonly startedHuntUrl: string = `${environment.apiUrl}startedHunts`;
 
   constructor(private httpClient: HttpClient){
   }
@@ -40,6 +41,10 @@ export class HostService {
 
   deleteTask(id: string): Observable<void> {
     return this.httpClient.delete<void>(`/api/tasks/${id}`);
+  }
+
+  startHunt(id: string): Observable<string> {
+    return this.httpClient.post<{id: string}>(this.startedHuntUrl, {id}).pipe(map(result => result.id));
   }
 
 }

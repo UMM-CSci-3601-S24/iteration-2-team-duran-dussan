@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -14,7 +15,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-hunter-view',
   standalone: true,
-  imports: [HuntCardComponent, CommonModule, MatCardModule],
+  imports: [HuntCardComponent, CommonModule, MatCardModule, MatIconModule],
   templateUrl: './hunter-view.component.html',
   styleUrl: './hunter-view.component.scss'
 })

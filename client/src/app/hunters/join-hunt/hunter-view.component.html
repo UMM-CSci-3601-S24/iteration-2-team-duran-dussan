@@ -1,11 +1,7 @@
 <mat-card class="hunt-information-card">
-  <mat-card-header class="header-content">
     <mat-card-title class="hunt-title">You are in {{ completeHunt.hunt.name }}</mat-card-title>
-    <mat-card-content class="hunt-content">
-      <mat-card-subtitle class="hunt">Estimate time: {{ completeHunt.hunt.est }}</mat-card-subtitle>
-      <mat-card-subtitle class="hunt">Number of Tasks: {{ completeHunt.hunt.numberOfTasks }}</mat-card-subtitle>
-    </mat-card-content>
-  </mat-card-header>
+    <mat-card-title class="hunt"> <mat-icon matListItemIcon>av_timer</mat-icon> {{ completeHunt.hunt.est }} min </mat-card-title>
+    <mat-card-title class="hunt"> <mat-icon matListItemIcon>checklist</mat-icon> {{ completeHunt.hunt.numberOfTasks }} tasks </mat-card-title>
 </mat-card>
 
 <div class="task-table">

@@ -4,11 +4,11 @@
       <mat-card-actions>
         <mat-form-field class="full-width">
           <mat-label>Access Code</mat-label>
-          <input matInput type="text" pattern="[0-9]{6}" maxlength="6" (keypress)="numericOnly($event)">
+          <input matInput [formControl]="accessCodeControl" type="text" pattern="[0-9]{6}" maxlength="6" (keypress)="numericOnly($event)">
         </mat-form-field>
       </mat-card-actions>
-      <a mat-raised-button color="accent" class="link-button center-button" name="join-button"
-        routerLinkActive="drawer-list-item-active">
+      <a mat-raised-button color="accent" class="link-button center-button" name="join-button" routerLink="/hunter-view/:id"
+        routerLinkActive="drawer-list-item-active" [disabled]="!isAccessCodeValid">
         <span class="button-text">Join</span>
       </a>
     </mat-card-content>

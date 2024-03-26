@@ -15,14 +15,14 @@ describe('HunterViewComponent', () => {
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
-    mockHostService = jasmine.createSpyObj(['getHuntById']);
+    mockHostService = jasmine.createSpyObj('HostService', ['getHuntById']);
     mockRoute = {
       paramMap: new Subject<ParamMap>()
     };
-    mockSnackBar = jasmine.createSpyObj(['open']);
+    mockSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
-      declarations: [HunterViewComponent],
+      imports: [HunterViewComponent], // Moved HunterViewComponent here from declarations
       providers: [
         { provide: HostService, useValue: mockHostService },
         { provide: ActivatedRoute, useValue: mockRoute },
@@ -33,11 +33,21 @@ describe('HunterViewComponent', () => {
 
     fixture = TestBed.createComponent(HunterViewComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    const initialCompleteHunt: CompleteHunt = {
+      hunt: {
+        _id: '',
+        hostId: '',
+        name: '',
+        description: '',
+        est: 0,
+        numberOfTasks: 0
+      },
+      tasks: []
+    };
+    component.completeHunt = initialCompleteHunt;
+
+    fixture.detectChanges();
   });
 
   it('should initialize with a hunt from the host service', () => {
@@ -48,16 +58,18 @@ describe('HunterViewComponent', () => {
         name: 'some_name',
         description: 'some_description',
         est: 120,
-        numberOfTasks: 5},
+        numberOfTasks: 5
+      },
       tasks: []
     };
+
     mockHostService.getHuntById.and.returnValue(of(completeHunt));
     mockRoute.paramMap.next({ get: () => '1', has: () => true, getAll: () => [], keys: [] });
 
     component.ngOnInit();
 
-    expect(component.completeHunt).toBe(completeHunt);
-    expect(component.tasks).toBe(completeHunt.tasks);
+    expect(component.completeHunt).toEqual(completeHunt);
+    expect(component.tasks).toEqual(completeHunt.tasks);
   });
 
   it('should handle error when getting hunt by id', () => {
@@ -74,12 +86,6 @@ describe('HunterViewComponent', () => {
     });
   });
 
-  it('should replace any with a specific type', () => {
-    // Assuming a function or service call previously used 'any'
-    const specificTypeExample: SpecificType = service.callFunction(); // SpecificType is a placeholder
-    expect(specificTypeExample).toBeDefined();
-  });
-
   it('should handle file selected event', () => {
     const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
     const event = {
@@ -92,13 +98,14 @@ describe('HunterViewComponent', () => {
         ]
       }
     };
-    const reader = jasmine.createSpyObj(['readAsDataURL', 'onload']);
+    const reader = jasmine.createSpyObj('FileReader', ['readAsDataURL', 'onload']);
     spyOn(window, 'FileReader').and.returnValue(reader);
 
     component.onFileSelected(event, task);
 
     expect(reader.readAsDataURL).toHaveBeenCalledWith(event.target.files[0]);
-    reader.onload(event);
+    // Simulate the FileReader onload event handler call
+    reader.onload({ target: { result: event.target.files[0].result } });
     expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
   });
 });

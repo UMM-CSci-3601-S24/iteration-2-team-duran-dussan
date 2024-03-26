@@ -169,6 +169,17 @@ describe('DeleteHunt() and StartHunt()', () => {
     expect(deleteTaskSpy).toHaveBeenCalledWith('123');
   });
 
+  it('should delete a task and remove it from the tasks array', () => {
+    const taskId = '123';
+    const deleteTaskSpy = spyOn(hostService, 'deleteTask').and.returnValue(of(null));
+    component.completeHunt = MockHostService.testCompleteHunts[0];
+
+    component.deleteTask(taskId);
+
+    expect(deleteTaskSpy).toHaveBeenCalledWith(taskId);
+    expect(component.completeHunt.tasks).not.toContain(jasmine.objectContaining({ _id: taskId }));
+  });
+
 });
 
 

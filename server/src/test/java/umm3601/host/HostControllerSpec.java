@@ -55,6 +55,7 @@ public class HostControllerSpec {
   private ObjectId frysId;
   private ObjectId huntId;
   private ObjectId taskId;
+  private ObjectId startedHuntId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -77,6 +78,9 @@ public class HostControllerSpec {
 
   @Captor
   private ArgumentCaptor<StartedHunt> startedHuntCaptor;
+
+  @Captor
+  private ArgumentCaptor<ArrayList<StartedHunt>> startedHuntArrayListCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -218,7 +222,17 @@ public class HostControllerSpec {
                 .append("tasks", testTasks.subList(0, 3)))
             .append("status", true));
 
+    startedHuntId = new ObjectId();
+    Document startedHunt = new Document()
+        .append("_id", startedHuntId)
+        .append("accessCode", "123456")
+        .append("completeHunt", new Document()
+                .append("hunt", testHunts.get(2))
+                .append("tasks", testTasks.subList(0, 3)))
+            .append("status", true);
+
     startedHuntsDocuments.insertMany(startedHunts);
+    startedHuntsDocuments.insertOne(startedHunt);
 
     hostController = new HostController(db);
   }
@@ -858,5 +872,45 @@ public class HostControllerSpec {
     });
 
     assertEquals("The requested hunt is no longer joinable.", exception.getMessage());
+  }
+
+  @Test
+  void getEndedHunts() throws IOException {
+    hostController.getEndedHunts(ctx);
+
+    verify(ctx).json(startedHuntArrayListCaptor.capture());
+
+    assertEquals(1, startedHuntArrayListCaptor.getValue().size());
+    for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
+      assertEquals(false, startedHunt.status);
+    }
+  }
+
+  @Test
+  void endStartedHunt() throws IOException {
+    when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());
+
+    hostController.endStartedHunt(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+
+    hostController.getEndedHunts(ctx);
+
+    verify(ctx).json(startedHuntArrayListCaptor.capture());
+
+    assertEquals(2, startedHuntArrayListCaptor.getValue().size());
+    for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
+      assertEquals(false, startedHunt.status);
+    }
+    assertTrue(startedHuntArrayListCaptor.getValue().get(1).accessCode.equals("1"));
+  }
+
+  @Test
+  void getEndedHuntsisNull() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("588935f57546a2daea54de8c");
+
+    assertThrows(NotFoundResponse.class, () -> {
+      hostController.endStartedHunt(ctx);
+    });
   }
 }

@@ -295,6 +295,27 @@ public class HostController implements Controller {
     }
   }
 
+  public void getEndedHunts(Context ctx) {
+    List<StartedHunt> endedHunts = startedHuntCollection.find(eq("status", false)).into(new ArrayList<>());
+    ctx.json(endedHunts);
+    ctx.status(HttpStatus.OK);
+  }
+
+  public void endStartedHunt(Context ctx) {
+    String id = ctx.pathParam("id");
+    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(id))).first();
+
+    if (startedHunt == null) {
+      throw new NotFoundResponse("The requested started hunt was not found.");
+    } else {
+      startedHunt.status = false;
+      startedHunt.accessCode = "1";
+      startedHuntCollection.save(startedHunt);
+      ctx.status(HttpStatus.OK);
+    }
+
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);

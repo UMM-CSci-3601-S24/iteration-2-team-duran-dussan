@@ -65,13 +65,15 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   onFileSelected(event, task: Task): void {
     const fileType = event.target.files[0].type;
     if (fileType.match(/image\/*/)) {
+      if (this.imageUrls[task._id] && !window.confirm('An image has already been uploaded for this task. Are you sure you want to replace it?')) {
+        return;
+      }
+
       const reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
       reader.onload = (event: ProgressEvent<FileReader>) => {
         this.imageUrls[task._id] = event.target.result.toString();
       };
-    } else {
-      window.alert('Please select correct image format');
     }
   }
 

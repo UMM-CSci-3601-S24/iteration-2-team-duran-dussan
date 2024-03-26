@@ -1,0 +1,48 @@
+.access-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 50vh;
+}
+
+.access-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.access-code-title {
+  font-size: 4em;
+}
+
+.access-code-number {
+  font-size: 3em;
+  margin-top: 20px;
+}
+
+.begin-hunt-button {
+  width: 100%;
+  text-align: center;
+  background-color: #007bff6e;
+  border-radius: 10px;
+  padding: 20px 40px;
+  font-size: 2em;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
+}
+
+.begin-hunt-button:hover {
+  background-color: #0056b3;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #00ccff;
+  }
+}

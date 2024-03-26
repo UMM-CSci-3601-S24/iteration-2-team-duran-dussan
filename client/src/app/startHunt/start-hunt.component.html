@@ -1,12 +1,9 @@
-
-@if (this.startedHunt) {
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Access Code</h2>
-        <h1>{{ this.startedHunt.accessCode }}</h1>
-      </div>
-    </div>
-    <button mat-raised-button>Begin Hunt!</button>
-  </div>
-}
+<mat-card class="access-card">
+  <mat-card-content class="access-content">
+    <h2 class="access-code-title">Access Code</h2>
+    <h1 class="access-code-number">{{ this.startedHunt.accessCode }}</h1>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button class = "begin-hunt-button">Begin Hunt!</button>
+  </mat-card-actions>
+</mat-card>

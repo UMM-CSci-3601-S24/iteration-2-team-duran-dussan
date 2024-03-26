@@ -72,7 +72,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   deleteTask(id: string): void {
     this.hostService.deleteTask(id).subscribe(() => {
-      location.reload();
+      this.completeHunt.tasks = this.completeHunt.tasks.filter(task => task._id !== id);
     });
   }
 

@@ -91,7 +91,7 @@ describe("Hunt list", () => {
   });
 });
 
-describe('HostProfileComponent', () => {
+describe('Misbehaving Hunt List', () => {
   let component: HostProfileComponent;
   let hostService: HostService;
   let snackBar: MatSnackBar;

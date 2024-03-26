@@ -22,8 +22,8 @@ export class HuntCardComponent {
   constructor(private hostService: HostService, private router: Router) {}
 
   startHunt(id: string): void {
-    this.hostService.startHunt(id).subscribe((startedHunt) => {
-      this.router.navigate(['/startedHunts/', startedHunt.accessCode]);
+    this.hostService.startHunt(id).subscribe((accessCode) => {
+      this.router.navigate(['/startedHunts/', accessCode]);
     });
   }
 }

@@ -2,7 +2,7 @@
 <mat-card class="access-card">
   <mat-card-content class="access-content">
     <h2 class="access-code-title">Access Code</h2>
-    <h1 class="access-code-number">{{ this.startedHunt.accessCode }}</h1>
+    <h1 class="access-code-number">{{ startedHunt?.accessCode }}</h1>
   </mat-card-content>
   <mat-card-actions>
     <button mat-raised-button class = "begin-hunt-button" (click)="beginHunt()">Begin Hunt!</button>

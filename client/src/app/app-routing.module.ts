@@ -19,7 +19,7 @@ const routes: Routes = [
   {path: 'hunts/:id', component: HuntProfileComponent, title: 'Hunts Profile'},
   {path: 'hunts', component: HuntCardComponent, title: 'Hunts'},
   {path: 'hunters', component: JoinHuntComponent, title: 'Join Hunt'},
-  {path: 'hunter-view/:id', component: HunterViewComponent},
+  {path: 'hunter-view/:accessCode', component: HunterViewComponent},
   {path: 'startedHunts/:accessCode', component: StartHuntComponent, title: 'Started Hunt'},
 ];
 

@@ -5,7 +5,7 @@
     <ngx-otp-input #otpInput [config]="otpInputConfig" (otpChange)="handleOtpChange($event)" ></ngx-otp-input>
   </div>
 
-    <a mat-raised-button [ngClass]="{'join-button-enabled': isAccessCodeValid}" class="link-button center-button" name="join-button" routerLink="/hunter-view/:id"
+    <a mat-raised-button [ngClass]="{'join-button-enabled': isAccessCodeValid}" class="link-button center-button" name="join-button" [routerLink]="['/hunter-view', this.accessCode]"
       routerLinkActive="drawer-list-item-active" [disabled]="!isAccessCodeValid">
       <span class="button-text">Join Hunt</span>
     </a>

@@ -5,11 +5,7 @@ import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { Subject, map, switchMap, takeUntil } from "rxjs";
 import { HostService } from "../hosts/host.service";
 import { StartedHunt } from "./startedHunt";
-import { MatCardModule } from "@angular/material/card";
-import { HttpClientModule } from "@angular/common/http";
-import { MatIconButton } from "@angular/material/button";
-import { MatDivider } from "@angular/material/divider";
-import { MatIcon } from "@angular/material/icon";
+import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
 
 @Component({
   selector: 'app-start-hunt-component',
@@ -17,7 +13,7 @@ import { MatIcon } from "@angular/material/icon";
   styleUrls: ['./start-hunt.component.scss'],
   providers: [],
   standalone: true,
-  imports: [MatCardModule, MatDivider, MatIconButton, MatIcon, HttpClientModule]
+  imports: [MatCard, MatCardContent, MatCardActions]
 })
 
 export class StartHuntComponent implements OnInit, OnDestroy {

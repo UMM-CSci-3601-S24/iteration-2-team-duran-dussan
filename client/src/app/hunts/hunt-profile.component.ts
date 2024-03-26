@@ -83,12 +83,6 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  startHunt(id: string): void {
-    this.hostService.startHunt(id).subscribe((startedHuntAccessCode) => {
-      this.router.navigate(['/startedHunts', startedHuntAccessCode]);
-    });
-  }
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

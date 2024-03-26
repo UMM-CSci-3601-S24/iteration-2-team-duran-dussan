@@ -81,7 +81,7 @@ describe('HunterViewComponent', () => {
     component.ngOnInit();
     expect(component.startedHunt).toEqual(startedHunt);
 
-  })
+  });
 
   it('should handle error when getting hunt by access code', () => {
     const error = { message: 'Error', error: { title: 'Error Title' } };

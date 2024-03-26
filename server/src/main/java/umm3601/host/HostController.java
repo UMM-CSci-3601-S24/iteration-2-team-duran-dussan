@@ -270,7 +270,7 @@ public class HostController implements Controller {
     // Insert the StartedHunt into the startedHunt collection
     startedHuntCollection.insertOne(startedHunt);
 
-    ctx.json(startedHunt);
+    ctx.json(startedHunt.accessCode);
     ctx.status(HttpStatus.CREATED);
   }
 

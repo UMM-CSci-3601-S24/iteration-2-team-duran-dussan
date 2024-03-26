@@ -2,14 +2,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { CompleteHunt } from 'src/app/hunts/completeHunt';
+import { StartedHunt } from 'src/app/startHunt/startedHunt';
 import { Task } from 'src/app/hunts/task';
 import { HuntCardComponent } from 'src/app/hunts/hunt-card.component';
 import { HostService } from 'src/app/hosts/host.service';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './hunter-view.component.scss'
 })
 export class HunterViewComponent implements OnInit, OnDestroy {
-  completeHunt: CompleteHunt;
+  startedHunt: StartedHunt;
   tasks: Task[] = [];
   error: { help: string, httpResponse: string, message: string };
   imageUrls = {};
@@ -30,18 +31,21 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   constructor(
     private hostService: HostService,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
       this.route.paramMap.pipe(
-        map((params: ParamMap) => params.get('id')),
-        switchMap((id: string) => this.hostService.getHuntById(id)),
+        map((params: ParamMap) => params.get('accessCode')),
+        switchMap((accessCode: string) => this.hostService.getStartedHunt(accessCode)),
+
         takeUntil(this.ngUnsubscribe)
         ).subscribe({
-          next: (completeHunt: CompleteHunt) => {
-            this.completeHunt = completeHunt;
-            this.tasks = completeHunt.tasks;
+          next: startedHunt => {
+            this.startedHunt = startedHunt;
+            return;
           },
           error: _err => {
             this.error = {

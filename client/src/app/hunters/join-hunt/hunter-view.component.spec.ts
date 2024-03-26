@@ -14,8 +14,6 @@ describe('HunterViewComponent', () => {
   let mockRoute: { paramMap: Subject<ParamMap> };
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
 
-/*   const mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt']);
- */
   beforeEach(async () => {
     mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt']);
     mockRoute = {
@@ -24,7 +22,7 @@ describe('HunterViewComponent', () => {
     mockSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
 
     await TestBed.configureTestingModule({
-      imports: [HunterViewComponent], // Moved HunterViewComponent here from declarations
+      imports: [HunterViewComponent],
       providers: [
         { provide: HostService, useValue: mockHostService },
         { provide: ActivatedRoute, useValue: mockRoute },
@@ -80,11 +78,7 @@ describe('HunterViewComponent', () => {
     mockHostService.getStartedHunt.and.returnValue(of(startedHunt));
     // Emit a paramMap event to trigger the hunt retrieval
     mockRoute.paramMap.next({ get: () => '123456', has: () => true, getAll: () => [], keys: [] });
-
-    // Trigger ngOnInit which should retrieve the hunt
     component.ngOnInit();
-
-    // Verify that the hunt is retrieved correctly
     expect(component.startedHunt).toEqual(startedHunt);
 
   })
@@ -94,11 +88,7 @@ describe('HunterViewComponent', () => {
     mockHostService.getStartedHunt.and.returnValue(throwError(error));
     // Emit a paramMap event to trigger the hunt retrieval
     mockRoute.paramMap.next({ get: () => '1', has: () => true, getAll: () => [], keys: [] });
-
-    // Trigger ngOnInit which should handle the error
     component.ngOnInit();
-
-    // Verify that the error is handled properly
     expect(component.error).toEqual({
       help: 'There is an error trying to load the tasks - Please try to run the hunt again',
       httpResponse: error.message,

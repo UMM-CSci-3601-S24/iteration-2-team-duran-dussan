@@ -10,7 +10,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatListModule } from "@angular/material/list";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
@@ -19,8 +19,7 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { HuntCardComponent } from "../hunts/hunt-card.component";
 import { HostService } from "./host.service";
 import { MockHostService } from "src/testing/host.service.mock";
-import { Observable } from "rxjs";
-import { Hunt } from "../hunts/hunt";
+import { throwError } from "rxjs";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 const COMMON_IMPORTS: unknown[] = [
@@ -93,49 +92,35 @@ describe("Hunt list", () => {
 });
 
 describe('Misbehaving Hunt List', () => {
-  let huntList: HostProfileComponent;
-  let fixture: ComponentFixture<HostProfileComponent>;
-
-  let huntServiceStub: {
-    getHunts: () => Observable<Hunt[]>;
-  };
+  let component: HostProfileComponent;
+  let hostService: HostService;
+  let snackBar: MatSnackBar;
 
   beforeEach(() => {
-    huntServiceStub = {
-      getHunts: () => new Observable(observer => {
-        observer.error('getHunts() Observer generates an error');
-      }),
-    };
+    hostService = jasmine.createSpyObj('HostService', ['getHunts']);
+    snackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
 
-    TestBed.configureTestingModule({
-    imports: [COMMON_IMPORTS, HostProfileComponent],
-    providers: [{ provide: HostService, useValue: huntServiceStub }]
-});
+    component = new HostProfileComponent(hostService, snackBar, null);
   });
 
-  beforeEach(waitForAsync(() => {
-    TestBed.compileComponents().then(() => {
-      fixture = TestBed.createComponent(HostProfileComponent);
-      huntList = fixture.componentInstance;
-      fixture.detectChanges();
-    });
-  }));
+  it('should set errMsg and call snackBar.open when getHunts throws a client error', () => {
+    const errorEvent = new ErrorEvent('Test Error');
+    (hostService.getHunts as jasmine.Spy).and.returnValue(throwError({ error: errorEvent }));
 
-  it('generates an error if we don\'t set up a HostProfileService', () => {
-    const mockedMethod = spyOn(huntList, 'getHuntsFromServer').and.callThrough();
-    expect(huntList.serverHunts)
-      .withContext('service can\'t give values to the list if it\'s not there')
-      .toBeUndefined();
-    expect(huntList.getHuntsFromServer)
-      .withContext('will generate the right error if we try to getHostsFromServer')
-      .toThrow();
-    expect(mockedMethod)
-      .withContext('will be called')
-      .toHaveBeenCalled();
-    expect(huntList.errMsg)
-      .withContext('the error message will be')
-      .toContain('Problem contacting the server – Error Code:');
-      console.log(huntList.errMsg);
+    component.getHuntsFromServer();
+
+    expect(component.errMsg).toBe(`Problem in the client – Error: ${errorEvent.message}`);
+    expect(snackBar.open).toHaveBeenCalledWith(component.errMsg, 'OK', { duration: 6000 });
+  });
+
+  it('should set errMsg and call snackBar.open when getHunts throws a server error', () => {
+    const error = { status: 500, message: 'Server Error' };
+    (hostService.getHunts as jasmine.Spy).and.returnValue(throwError(error));
+
+    component.getHuntsFromServer();
+
+    expect(component.errMsg).toBe(`Problem contacting the server – Error Code: ${error.status}\nMessage: ${error.message}`);
+    expect(snackBar.open).toHaveBeenCalledWith(component.errMsg, 'OK', { duration: 6000 });
   });
 });
 

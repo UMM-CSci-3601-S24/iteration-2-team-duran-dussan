@@ -4,6 +4,7 @@ import { AppComponent } from 'src/app/app.component';
 import { Hunt } from '../app/hunts/hunt';
 import { HostService } from '../app/hosts/host.service';
 import { CompleteHunt } from 'src/app/hunts/completeHunt';
+import { StartedHunt } from 'src/app/startHunt/startedHunt';
 
 @Injectable({
   providedIn: AppComponent
@@ -39,7 +40,7 @@ export class MockHostService extends HostService {
   static testCompleteHunts: CompleteHunt[] = [
     {
       hunt: MockHostService.testHunts[0],
-      tasks: [  {
+      tasks: [{
         "_id": "588935f57546a2daea54de8c",
         "huntId": "ann_id",
         "name": "Take a picture of a bird",
@@ -60,7 +61,7 @@ export class MockHostService extends HostService {
     },
     {
       hunt: MockHostService.testHunts[1],
-      tasks: [  {
+      tasks: [{
         "_id": "588935f57556a2daea54de8c",
         "huntId": "fran_id",
         "name": "Take a picture of a restaurant",
@@ -71,11 +72,11 @@ export class MockHostService extends HostService {
         "huntId": "fran_id",
         "name": "Take a picture of a cat",
         "status": false
-      },]
+      }]
     },
     {
       hunt: MockHostService.testHunts[2],
-      tasks: [ {
+      tasks: [{
         "_id": "588933f57556a3daea54de8c",
         "huntId": "jan_id",
         "name": "Take a picture of a red car",
@@ -102,6 +103,81 @@ export class MockHostService extends HostService {
     }
   ];
 
+  static testStartedHunts: StartedHunt[] = [
+    {
+      accessCode: "ann_code",
+      completeHunt: {
+        hunt: MockHostService.testHunts[0],
+        tasks: [{
+          "_id": "588935f57546a2daea54de8c",
+          "huntId": "ann_id",
+          "name": "Take a picture of a bird",
+          "status": false
+        },
+        {
+          "_id": "588935f57546a2daea54de9c",
+          "huntId": "ann_id",
+          "name": "Take a picture of a dog",
+          "status": false
+        },
+        {
+          "_id": "588935f57546a3daea54de8c",
+          "huntId": "ann_id",
+          "name": "Take a picture of a Stop sign",
+          "status": false
+        }]
+      }
+    },
+    {
+      accessCode: "fran_code",
+      completeHunt: {
+          hunt: MockHostService.testHunts[1],
+          tasks: [{
+            "_id": "588935f57556a2daea54de8c",
+            "huntId": "fran_id",
+            "name": "Take a picture of a restaurant",
+            "status": false
+          },
+          {
+            "_id": "588935f56536a3daea54de8c",
+            "huntId": "fran_id",
+            "name": "Take a picture of a cat",
+            "status": false
+          }]
+      }
+    },
+    {
+      accessCode: "jan_code",
+      completeHunt: {
+        hunt: MockHostService.testHunts[2],
+        tasks: [{
+          "_id": "588933f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a red car",
+          "status": false
+        },
+        {
+          "_id": "588535f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a slide",
+          "status": false
+        },
+        {
+          "_id": "583935f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a Yield sign",
+          "status": false
+        },
+        {
+          "_id": "548935f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a football field",
+          "status": false
+        }]
+      }
+    }
+  ];
+
   constructor() {
     super(null);
   }
@@ -117,6 +193,16 @@ export class MockHostService extends HostService {
       return of(MockHostService.testCompleteHunts[0]);
     } else if (id === MockHostService.testCompleteHunts[1].hunt._id) {
       return of(MockHostService.testCompleteHunts[1]);
+    } else {
+      return of(null);
+    }
+  }
+
+  getStartedHunt(accessCode: string): Observable<StartedHunt> {
+    if (accessCode === MockHostService.testStartedHunts[0].accessCode) {
+      return of(MockHostService.testStartedHunts[0]);
+    } else if (accessCode === MockHostService.testStartedHunts[1].accessCode) {
+      return of(MockHostService.testStartedHunts[1]);
     } else {
       return of(null);
     }

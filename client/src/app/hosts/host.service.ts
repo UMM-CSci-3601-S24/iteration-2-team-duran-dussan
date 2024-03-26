@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { Hunt } from '../hunts/hunt';
 import { Task } from '../hunts/task';
 import { CompleteHunt } from '../hunts/completeHunt';
+import { StartedHunt } from '../startHunt/startedHunt';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ export class HostService {
   readonly hostUrl: string = `${environment.apiUrl}hosts`;
   readonly huntUrl: string = `${environment.apiUrl}hunts`;
   readonly taskUrl: string = `${environment.apiUrl}tasks`;
+  readonly startHuntUrl: string = `${environment.apiUrl}startHunt`;
+  readonly startedHuntUrl: string = `${environment.apiUrl}startedHunts`;
 
   constructor(private httpClient: HttpClient){
   }
@@ -40,6 +43,14 @@ export class HostService {
 
   deleteTask(id: string): Observable<void> {
     return this.httpClient.delete<void>(`/api/tasks/${id}`);
+  }
+
+  startHunt(id: string): Observable<string> {
+    return this.httpClient.get<string>(`${this.startHuntUrl}/${id}`);
+  }
+
+  getStartedHunt(accessCode: string): Observable<StartedHunt> {
+    return this.httpClient.get<StartedHunt>(`${this.startedHuntUrl}/${accessCode}`);
   }
 
 }

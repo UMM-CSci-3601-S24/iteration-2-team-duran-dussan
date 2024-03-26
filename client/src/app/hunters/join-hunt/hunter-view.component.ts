@@ -24,7 +24,6 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
   error: { help: string, httpResponse: string, message: string };
   imageUrls = {};
-  url = 'https://img.icons8.com/ios/100/000000/contract-job.png';
 
   private ngUnsubscribe = new Subject<void>();
 

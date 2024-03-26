@@ -14,7 +14,11 @@
         @else {
           <mat-card-actions>
             <button mat-button [routerLink]="['/hosts']" class="return-to-hunts">Return to Hunts</button>
-          </mat-card-actions>}
+           </mat-card-actions>
+           <mat-card-actions>
+            <button mat-button (click)="startHunt(hunt()._id)" class="begin-hunt">Begin Hunt</button>
+           </mat-card-actions>
+        }
         <mat-card-title class="hunt-card-task icon-center bot-right">
           <div>
             <mat-icon matListItemIcon>checklist</mat-icon>

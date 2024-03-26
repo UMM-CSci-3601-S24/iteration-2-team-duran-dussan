@@ -151,5 +151,31 @@ describe('HunterViewComponent', () => {
 
     expect(reader.readAsDataURL).not.toHaveBeenCalled();
   });
+
+  it('should replace image if user choose ok', () => {
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const event = {
+      target: {
+        files: [
+          {
+            type: 'image/png',
+            result: 'data:image/png;base64,'
+          }
+        ]
+      }
+    };
+    const reader = jasmine.createSpyObj('FileReader', ['readAsDataURL', 'onload']);
+    spyOn(window, 'FileReader').and.returnValue(reader);
+
+    component.imageUrls[task._id] = 'data:image/png;base64,';
+    spyOn(window, 'confirm').and.returnValue(true);
+
+    component.onFileSelected(event, task);
+
+    expect(reader.readAsDataURL).toHaveBeenCalledWith(event.target.files[0]);
+    // Simulate the FileReader onload event handler call
+    reader.onload({ target: { result: event.target.files[0].result } });
+    expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
+  });
 });
 

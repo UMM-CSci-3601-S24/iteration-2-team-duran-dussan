@@ -18,6 +18,7 @@ import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card"
 
 export class StartHuntComponent implements OnInit, OnDestroy {
   startedHunt: StartedHunt;
+  huntBegun = false;
   error: { help: string, httpResponse: string, message: string };
 
   private ngUnsubscribe = new Subject<void>();
@@ -46,6 +47,10 @@ export class StartHuntComponent implements OnInit, OnDestroy {
         };
       }
     });
+  }
+
+  beginHunt() {
+    this.huntBegun = true;
   }
 
   ngOnDestroy() {

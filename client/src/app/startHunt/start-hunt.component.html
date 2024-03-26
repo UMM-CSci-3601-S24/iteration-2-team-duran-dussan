@@ -5,7 +5,7 @@
     <h1 class="access-code-number">{{ this.startedHunt.accessCode }}</h1>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button class = "begin-hunt-button">Begin Hunt!</button>
+    <button mat-raised-button class = "begin-hunt-button" (click)="beginHunt()">Begin Hunt!</button>
   </mat-card-actions>
 </mat-card>
 }

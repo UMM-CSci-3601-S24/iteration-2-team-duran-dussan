@@ -16,7 +16,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CompleteHunt } from './completeHunt';
 import { HttpClientModule } from '@angular/common/http';
-import { Location } from '@angular/common';
 
 
 describe('HuntProfileComponent', () => {
@@ -94,18 +93,12 @@ describe('HuntProfileComponent', () => {
   });
 });
 
-describe('DeleteHunt()', () => {
+describe('DeleteHunt() and StartHunt()', () => {
   let component: HuntProfileComponent;
   let fixture: ComponentFixture<HuntProfileComponent>;
   let hostService: HostService;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let location: Location;
   let router: Router;
   const fryId = 'fry_id';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const activatedRoute: ActivatedRouteStub = new ActivatedRouteStub({
-    id : fryId
-  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -127,7 +120,6 @@ describe('DeleteHunt()', () => {
     fixture = TestBed.createComponent(HuntProfileComponent);
     component = fixture.componentInstance;
     hostService = TestBed.inject(HostService);
-    location = TestBed.inject(Location);
     router = TestBed.inject(Router);
   });
 

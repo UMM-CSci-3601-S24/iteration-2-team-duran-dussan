@@ -33,7 +33,8 @@ public class HostController implements Controller {
   private static final String API_HUNTS = "/api/hunts";
   private static final String API_TASK = "/api/tasks/{id}";
   private static final String API_TASKS = "/api/tasks";
-  private static final String API_STARTED_HUNT = "/api/startedHunts";
+  private static final String API_START_HUNT = "/api/startHunt/{id}";
+  private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -254,7 +255,7 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
-  public String startHunt(Context ctx) {
+  public void startHunt(Context ctx) {
     CompleteHunt completeHunt = new CompleteHunt();
     completeHunt.hunt = getHunt(ctx);
     completeHunt.tasks = getTasks(ctx);
@@ -269,9 +270,8 @@ public class HostController implements Controller {
     // Insert the StartedHunt into the startedHunt collection
     startedHuntCollection.insertOne(startedHunt);
 
+    ctx.json(startedHunt.accessCode);
     ctx.status(HttpStatus.CREATED);
-
-    return startedHunt.accessCode;
   }
 
   public void getStartedHunt(Context ctx) {
@@ -304,7 +304,7 @@ public class HostController implements Controller {
     server.post(API_TASKS, this::addNewTask);
     server.delete(API_HUNT, this::deleteHunt);
     server.delete(API_TASK, this::deleteTask);
-    server.post(API_STARTED_HUNT, this::startHunt);
+    server.get(API_START_HUNT, this::startHunt);
     server.get(API_STARTED_HUNT, this::getStartedHunt);
   }
 }

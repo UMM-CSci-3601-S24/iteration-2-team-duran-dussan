@@ -124,7 +124,7 @@ describe('HunterViewComponent', () => {
     component.onFileSelected(event, task);
 
     expect(reader.readAsDataURL).toHaveBeenCalledWith(event.target.files[0]);
-    // Simulate the FileReader onload event handler call
+
     reader.onload({ target: { result: event.target.files[0].result } });
     expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
   });
@@ -173,7 +173,7 @@ describe('HunterViewComponent', () => {
     component.onFileSelected(event, task);
 
     expect(reader.readAsDataURL).toHaveBeenCalledWith(event.target.files[0]);
-    // Simulate the FileReader onload event handler call
+
     reader.onload({ target: { result: event.target.files[0].result } });
     expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
   });

@@ -157,6 +157,18 @@ describe('DeleteHunt() and StartHunt()', () => {
     expect(deleteHuntSpy).toHaveBeenCalledWith('123');
   });
 
+  it('should call deleteTask when onTaskDeleteClick is confirmed', () => {
+    const event = new Event('click');
+    const taskId = '123';
+    const deleteTaskSpy = spyOn(hostService, 'deleteTask').and.callThrough();
+
+    spyOn(window, 'confirm').and.returnValue(true);
+
+    component.onTaskDeleteClick(event, taskId);
+
+    expect(deleteTaskSpy).toHaveBeenCalledWith('123');
+  });
+
 });
 
 

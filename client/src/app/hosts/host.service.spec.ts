@@ -221,7 +221,7 @@ describe('When getHunts() is called', () => {
       const targetStartedHunt: StartedHunt = testStartedHunts[1];
       const targetId: string = targetStartedHunt.completeHunt.hunt._id;
 
-      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetStartedHunt));
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(targetStartedHunt.accessCode));
 
         hostService.startHunt(targetId).subscribe(() => {
           expect(mockedMethod)

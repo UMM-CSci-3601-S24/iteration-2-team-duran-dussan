@@ -26,12 +26,12 @@ describe('HuntCardComponent', () => {
 
   it('should call hostService.startHunt and router.navigate when startHunt is called', () => {
     const id = 'testId';
-    const startedHunt = { accessCode: 'accessCode' };
-    (hostService.startHunt as jasmine.Spy).and.returnValue(of(startedHunt));
+    const accessCode = 'accessCode';
+    (hostService.startHunt as jasmine.Spy).and.returnValue(of(accessCode));
 
     component.startHunt(id);
 
     expect(hostService.startHunt).toHaveBeenCalledWith(id);
-    expect(router.navigate).toHaveBeenCalledWith(['/startedHunts/', startedHunt.accessCode]);
+    expect(router.navigate).toHaveBeenCalledWith(['/startedHunts/', accessCode]);
   });
 });

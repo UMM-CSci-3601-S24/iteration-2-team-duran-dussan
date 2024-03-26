@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { HunterViewComponent } from './hunter-view.component';
 import { HostService } from 'src/app/hosts/host.service';
-import { CompleteHunt } from 'src/app/hunts/completeHunt';
+import { StartedHunt } from 'src/app/startHunt/startedHunt'
 import { Task } from 'src/app/hunts/task';
 
 describe('HunterViewComponent', () => {
@@ -14,8 +14,10 @@ describe('HunterViewComponent', () => {
   let mockRoute: { paramMap: Subject<ParamMap> };
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
 
+/*   const mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt']);
+ */
   beforeEach(async () => {
-    mockHostService = jasmine.createSpyObj('HostService', ['getHuntById']);
+    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt']);
     mockRoute = {
       paramMap: new Subject<ParamMap>()
     };
@@ -29,50 +31,53 @@ describe('HunterViewComponent', () => {
         { provide: MatSnackBar, useValue: mockSnackBar }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(HunterViewComponent);
     component = fixture.componentInstance;
 
-    const initialCompleteHunt: CompleteHunt = {
-      hunt: {
-        _id: '',
-        hostId: '',
-        name: '',
-        description: '',
-        est: 0,
-        numberOfTasks: 0
+    const initialStartedHunt: StartedHunt = {
+      completeHunt: {
+        hunt: {
+          _id: '',
+          hostId: '',
+          name: '',
+          description: '',
+          est: 0,
+          numberOfTasks: 0
+        },
+        tasks: []
       },
-      tasks: []
+      accessCode: ''
     };
-    component.completeHunt = initialCompleteHunt;
+    component.startedHunt = initialStartedHunt;
 
     fixture.detectChanges();
   });
 
   it('should initialize with a hunt from the host service', () => {
-    const completeHunt: CompleteHunt = {
-      hunt: {
-        _id: 'some_id',
-        hostId: 'some_hostId',
-        name: 'some_name',
-        description: 'some_description',
-        est: 120,
-        numberOfTasks: 5
+    const exampleHunt: StartedHunt = {
+      completeHunt: {
+        hunt: {
+          _id: 'some_id',
+          hostId: 'some_hostId',
+          name: 'some_name',
+          description: 'some_description',
+          est: 120,
+          numberOfTasks: 5
+        },
+        tasks: []
       },
-      tasks: []
+      accessCode: "some_accessCode"
     };
+    // Mock the getStartedHunt method to return the exampleHunt
+    mockHostService.getStartedHunt.and.returnValue(of(exampleHunt));
 
-    mockHostService.getHuntById.and.returnValue(of(completeHunt));
-    mockRoute.paramMap.next({ get: () => '1', has: () => true, getAll: () => [], keys: [] });
-
-    component.ngOnInit();
-
-    expect(component.completeHunt).toEqual(completeHunt);
-    expect(component.tasks).toEqual(completeHunt.tasks);
+    expect(component.startedHunt.completeHunt).toEqual(exampleHunt.completeHunt);
+    expect(component.tasks).toEqual(exampleHunt.completeHunt.tasks);
   });
 
-  it('should handle error when getting hunt by id', () => {
+  it('should handle error when getting hunt by access code', () => {
     const error = { message: 'Error', error: { title: 'Error Title' } };
     mockHostService.getHuntById.and.returnValue(throwError(error));
     mockRoute.paramMap.next({ get: () => '1', has: () => true, getAll: () => [], keys: [] });

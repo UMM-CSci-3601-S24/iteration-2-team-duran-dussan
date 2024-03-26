@@ -55,35 +55,50 @@ describe('HunterViewComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should initialize with a hunt from the host service', () => {
-    const exampleHunt: StartedHunt = {
+  it('should navigate to the right hunt page by access code',() => {
+    const startedHunt: StartedHunt = {
       completeHunt: {
         hunt: {
-          _id: 'some_id',
-          hostId: 'some_hostId',
-          name: 'some_name',
-          description: 'some_description',
-          est: 120,
-          numberOfTasks: 5
+          _id: '1',
+          hostId: '1',
+          name: 'Hunt 1',
+          description: 'Hunt 1 Description',
+          est: 10,
+          numberOfTasks: 1
         },
-        tasks: []
+        tasks: [
+          {
+            _id: '1',
+            huntId: '1',
+            name: 'Task 1',
+            status: true
+          }
+        ]
       },
-      accessCode: "some_accessCode"
+      accessCode: '123456'
     };
-    // Mock the getStartedHunt method to return the exampleHunt
-    mockHostService.getStartedHunt.and.returnValue(of(exampleHunt));
+    mockHostService.getStartedHunt.and.returnValue(of(startedHunt));
+    // Emit a paramMap event to trigger the hunt retrieval
+    mockRoute.paramMap.next({ get: () => '123456', has: () => true, getAll: () => [], keys: [] });
 
-    expect(component.startedHunt.completeHunt).toEqual(exampleHunt.completeHunt);
-    expect(component.tasks).toEqual(exampleHunt.completeHunt.tasks);
-  });
+    // Trigger ngOnInit which should retrieve the hunt
+    component.ngOnInit();
+
+    // Verify that the hunt is retrieved correctly
+    expect(component.startedHunt).toEqual(startedHunt);
+
+  })
 
   it('should handle error when getting hunt by access code', () => {
     const error = { message: 'Error', error: { title: 'Error Title' } };
-    mockHostService.getHuntById.and.returnValue(throwError(error));
+    mockHostService.getStartedHunt.and.returnValue(throwError(error));
+    // Emit a paramMap event to trigger the hunt retrieval
     mockRoute.paramMap.next({ get: () => '1', has: () => true, getAll: () => [], keys: [] });
 
+    // Trigger ngOnInit which should handle the error
     component.ngOnInit();
 
+    // Verify that the error is handled properly
     expect(component.error).toEqual({
       help: 'There is an error trying to load the tasks - Please try to run the hunt again',
       httpResponse: error.message,
@@ -114,3 +129,4 @@ describe('HunterViewComponent', () => {
     expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
   });
 });
+

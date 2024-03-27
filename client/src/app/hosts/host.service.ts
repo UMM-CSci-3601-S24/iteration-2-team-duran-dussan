@@ -53,4 +53,9 @@ export class HostService {
     return this.httpClient.get<StartedHunt>(`${this.startedHuntUrl}/${accessCode}`);
   }
 
+  // This is a put request that ends the hunt by setting its status to false
+  endStartedHunt(accessCode: string): Observable<void> {
+    return this.httpClient.put<void>(`${this.startedHuntUrl}/${accessCode}`, null);
+  }
+
 }

@@ -4,6 +4,9 @@ export class JoinHuntPage {
   private readonly joinHuntButtonSelector = '[name="join-button"]';
   private readonly accessCodeInputSelector = '.access-code-inputs';
   private readonly accessCodeInput = '.access-code-inputs input';
+  private readonly appPageTitle = '.app-title';
+  private readonly HomeButton = '[name="home-button"]';
+  private readonly HunterButton = '[name="hunter-button"]';
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -43,5 +46,32 @@ export class JoinHuntPage {
    */
   getAccessCodeInput() {
     return cy.get(this.accessCodeInput);
+  }
+
+  /**
+   * Get the app page title when visiting the `/app` page.
+   *
+   * @returns the value of the element with the ID `.app-title`
+   */
+  getAppTitle(){
+    return cy.get(this.appPageTitle);
+  }
+
+  /**
+   * Get the Home button DOM element.
+   *
+   * @returns the value of the element with the ID `.home-button`
+   */
+  getHomeButton(){
+    return cy.get(this.HomeButton);
+  }
+
+  /**
+   * Get the Hunter button DOM element.
+   *
+   * @returns the value of the element with the class `.hunter-button`
+   */
+  getHunterButton(){
+    return cy.get(this.HunterButton);
   }
 }

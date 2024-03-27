@@ -1,8 +1,8 @@
 export class JoinHuntPage {
-  private readonly baseUrl = '/join-hunt';
-  private readonly pageTitle = '.join-hunt-title';
-  private readonly joinHuntButtonSelector = '[data-test=joinHuntButton]';
-
+  private readonly baseUrl = '/hunters';
+  private readonly pageTitle = '.title';
+  private readonly joinHuntButtonSelector = '[name="join-button"]';
+  private readonly accessCodeInputSelector = '.access-code-inputs';
   navigateTo() {
     return cy.visit(this.baseUrl);
   }
@@ -14,5 +14,23 @@ export class JoinHuntPage {
    */
   getJoinHuntTitle() {
     return cy.get(this.pageTitle);
-}
+  }
+
+/**
+ * Get the join-hunt button DOM element.
+ *
+ * @returns an iterable (`Cypress.Chainable`) containing the `join-hunt` DOM element.
+ */
+  getJoinHuntButton() {
+    return cy.get(this.joinHuntButtonSelector);
+  }
+
+  /**
+   * Get the access code input field DOM element.
+   *
+   * @returns an iterable (`Cypress.Chainable`) containing the `access-code-input` DOM element.
+   */
+  getAccessCodeInput() {
+    return cy.get(this.accessCodeInputSelector);
+  }
 }

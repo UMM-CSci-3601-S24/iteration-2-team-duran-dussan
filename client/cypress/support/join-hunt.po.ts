@@ -3,6 +3,8 @@ export class JoinHuntPage {
   private readonly pageTitle = '.title';
   private readonly joinHuntButtonSelector = '[name="join-button"]';
   private readonly accessCodeInputSelector = '.access-code-inputs';
+  private readonly accessCodeInput = '.access-code-inputs input';
+
   navigateTo() {
     return cy.visit(this.baseUrl);
   }
@@ -30,7 +32,16 @@ export class JoinHuntPage {
    *
    * @returns an iterable (`Cypress.Chainable`) containing the `access-code-input` DOM element.
    */
-  getAccessCodeInput() {
+  getAccessCodeInputField() {
     return cy.get(this.accessCodeInputSelector);
+  }
+
+  /**
+   * Type in the access code input field.
+   *
+   * @param accessCode The access code to type in the input field.
+   */
+  getAccessCodeInput() {
+    return cy.get(this.accessCodeInput);
   }
 }

@@ -7,6 +7,7 @@ import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import umm3601.Controller;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.ArrayList;
@@ -114,18 +115,30 @@ public class HostController implements Controller {
   }
 
   public void getHunts(Context ctx) {
+    Bson combinedFilter = constructFilterHunts(ctx);
     Bson sortingOrder = constructSortingOrderHunts(ctx);
 
-    String targetHost = ctx.queryParamAsClass(HOST_KEY, String.class).get();
-
     ArrayList<Hunt> matchingHunts = huntCollection
-        .find(eq(HOST_KEY, targetHost))
+        .find(combinedFilter)
         .sort(sortingOrder)
         .into(new ArrayList<>());
 
     ctx.json(matchingHunts);
 
     ctx.status(HttpStatus.OK);
+  }
+
+  private Bson constructFilterHunts(Context ctx) {
+    List<Bson> filters = new ArrayList<>();
+
+    if (ctx.queryParamMap().containsKey(HOST_KEY)) {
+      String targetHost = ctx.queryParamAsClass(HOST_KEY, String.class).get();
+      filters.add(eq(HOST_KEY, targetHost));
+    }
+
+    Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
+
+    return combinedFilter;
   }
 
   private Bson constructSortingOrderHunts(Context ctx) {

@@ -10,6 +10,7 @@ export class HunterViewPage {
   private readonly profileButtonSelector = '[data-test=viewProfileButton]';
   private readonly beginHuntButton = '.begin-hunt';
   private readonly huntAccessCode = '.col-md-12 h1';
+  private readonly UploadImageButton = '.image-upload input[type="file"]';
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -108,5 +109,14 @@ export class HunterViewPage {
    */
   getHunterUploadImage() {
     return cy.get(this.hunterUploadImage);
+  }
+
+  /**
+   * Clicks the "upload image" button in the hunter view table.
+   *
+   * @return the value of the element with the class `.image-upload input[type="file"]`
+   */
+  clickUploadImage() {
+    return cy.get(this.UploadImageButton).first().click({force: true});
   }
 }

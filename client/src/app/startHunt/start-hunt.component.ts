@@ -59,7 +59,7 @@ export class StartHuntComponent implements OnInit, OnDestroy {
           this.snackBar.open('Hunt ended successfully', 'Close', {
             duration: 2000,
           });
-          this.router.navigate(['/']); // Navigate to home page after ending the hunt
+          this.router.navigate(['/hosts']); // Navigate to home page after ending the hunt
         },
         error: _err => {
           this.error = {

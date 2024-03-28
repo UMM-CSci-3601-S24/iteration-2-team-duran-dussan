@@ -53,6 +53,13 @@ export class StartHuntComponent implements OnInit, OnDestroy {
     this.huntBegun = true;
   }
 
+  onEndHuntClick(event: Event) {
+    event.stopPropagation();
+    if (window.confirm('Are you sure you want to end this hunt?')) {
+      //this.deleteTask(taskId)
+    }
+  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

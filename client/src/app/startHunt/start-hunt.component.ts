@@ -53,7 +53,7 @@ export class StartHuntComponent implements OnInit, OnDestroy {
   }
 
   endHunt(): void {
-    this.hostService.endStartedHunt(this.startedHunt.accessCode)
+    this.hostService.endStartedHunt(this.startedHunt._id)
       .subscribe({
         next: () => {
           this.snackBar.open('Hunt ended successfully', 'Close', {

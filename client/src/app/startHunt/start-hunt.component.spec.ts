@@ -88,6 +88,7 @@ describe('StartHuntComponent', () => {
   });
 
   it('should end the hunt successfully', () => {
+    const id = 'fran_id'; // Use the accessCode from the mock data
     const accessCode = 'fran_code'; // Use the accessCode from the mock data
     const endStartedHuntSpy = spyOn(mockHostService, 'endStartedHunt').and.returnValue(of(null));
     const router = TestBed.inject(Router); // Get the router from the testing module
@@ -95,29 +96,30 @@ describe('StartHuntComponent', () => {
     const snackBar = TestBed.inject(MatSnackBar); // Get the snackBar from the testing module
     const snackBarSpy = spyOn(snackBar, 'open');
 
-    component.startedHunt = { accessCode: accessCode, completeHunt: {
+    component.startedHunt = { _id: id, accessCode: accessCode, completeHunt: {
       hunt: undefined,
       tasks: []
     } };
     component.endHunt();
 
-    expect(endStartedHuntSpy).toHaveBeenCalledWith(accessCode);
+    expect(endStartedHuntSpy).toHaveBeenCalledWith(id);
     expect(navigateSpy).toHaveBeenCalledWith(['/']);
     expect(snackBarSpy).toHaveBeenCalledWith('Hunt ended successfully', 'Close', { duration: 2000 });
   });
 
   it('should handle error when ending the hunt fails', () => {
+    const id = 'fran_id';
     const accessCode = 'fran_code'; // Use the accessCode from the mock data
     const errorResponse = { message: 'Test Error', error: { title: 'Error Title' } };
     const endStartedHuntSpy = spyOn(mockHostService, 'endStartedHunt').and.returnValue(throwError(() => errorResponse));
 
-    component.startedHunt = { accessCode: accessCode, completeHunt: {
+    component.startedHunt = {_id: id, accessCode: accessCode, completeHunt: {
       hunt: undefined,
       tasks: []
     } };
     component.endHunt();
 
-    expect(endStartedHuntSpy).toHaveBeenCalledWith(accessCode);
+    expect(endStartedHuntSpy).toHaveBeenCalledWith(id);
     expect(component.error).toEqual({
       help: 'There was a problem ending the hunt – try again.',
       httpResponse: errorResponse.message,

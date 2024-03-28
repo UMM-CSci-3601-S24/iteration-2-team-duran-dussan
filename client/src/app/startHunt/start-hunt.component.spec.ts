@@ -103,7 +103,7 @@ describe('StartHuntComponent', () => {
     component.endHunt();
 
     expect(endStartedHuntSpy).toHaveBeenCalledWith(id);
-    expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/hosts']);
     expect(snackBarSpy).toHaveBeenCalledWith('Hunt ended successfully', 'Close', { duration: 2000 });
   });
 

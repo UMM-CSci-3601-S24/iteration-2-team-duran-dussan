@@ -4,7 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+//import { ReactiveFormsModule } from '@angular/forms';
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
 
@@ -19,7 +19,7 @@ import { NgxOtpInputConfig } from 'ngx-otp-input';
     CommonModule,
     MatButtonModule,
     RouterModule,
-  ReactiveFormsModule],
+  ],
   templateUrl: './join-hunt.component.html',
   styleUrl: './join-hunt.component.scss'
 })

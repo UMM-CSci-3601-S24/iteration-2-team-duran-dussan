@@ -54,7 +54,7 @@ errorMessage: string;
           this.isAccessCodeValid = true;
           this.router.navigate(['hunt', startedHunt.accessCode]);
         },
-        error: err => {
+        error: () => {
           this.isAccessCodeValid = false;
           this.snackBar.open('Invalid access code. No hunt was found.', 'Close', {
             duration: 6000,

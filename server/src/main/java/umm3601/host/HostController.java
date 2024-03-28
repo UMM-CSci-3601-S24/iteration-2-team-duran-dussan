@@ -303,14 +303,14 @@ public class HostController implements Controller {
   }
 
   public void endStartedHunt(Context ctx) {
-    String id = ctx.pathParam("id");
-    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(id))).first();
+    String accessCode = ctx.pathParam("accessCode");
+    StartedHunt startedHunt = startedHuntCollection.find(eq("accessCode", accessCode)).first();
 
     if (startedHunt == null) {
       throw new NotFoundResponse("The requested started hunt was not found.");
     } else {
       startedHunt.status = false;
-      startedHunt.accessCode = "1";
+      //startedHunt.accessCode = "1";
       startedHuntCollection.save(startedHunt);
       ctx.status(HttpStatus.OK);
     }

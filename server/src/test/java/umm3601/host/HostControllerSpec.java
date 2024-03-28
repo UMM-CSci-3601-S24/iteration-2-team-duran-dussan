@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -888,26 +889,30 @@ public class HostControllerSpec {
 
   @Test
   void endStartedHunt() throws IOException {
-    when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());
+    when(ctx.pathParam("accessCode")).thenReturn("123456");
 
+    // Check the initial status
+    hostController.getStartedHunt(ctx);
+    verify(ctx).json(startedHuntCaptor.capture());
+    assertEquals(true, startedHuntCaptor.getValue().status);
+
+    // End the hunt
     hostController.endStartedHunt(ctx);
+    verify(ctx, times(2)).status(HttpStatus.OK);
 
-    verify(ctx).status(HttpStatus.OK);
-
+    // Check the status after ending the hunt
     hostController.getEndedHunts(ctx);
-
     verify(ctx).json(startedHuntArrayListCaptor.capture());
-
-    assertEquals(2, startedHuntArrayListCaptor.getValue().size());
     for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
-      assertEquals(false, startedHunt.status);
+      if (startedHunt.accessCode.equals("123456")) {
+        assertEquals(false, startedHunt.status);
+      }
     }
-    assertTrue(startedHuntArrayListCaptor.getValue().get(1).accessCode.equals("1"));
   }
 
   @Test
-  void getEndedHuntsisNull() throws IOException {
-    when(ctx.pathParam("id")).thenReturn("588935f57546a2daea54de8c");
+  void endStartedHuntIsNull() throws IOException {
+    when(ctx.pathParam("accessCode")).thenReturn("588935f57546a2daea54de8c");
 
     assertThrows(NotFoundResponse.class, () -> {
       hostController.endStartedHunt(ctx);

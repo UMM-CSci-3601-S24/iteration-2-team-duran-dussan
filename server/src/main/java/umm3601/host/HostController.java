@@ -315,7 +315,7 @@ public class HostController implements Controller {
       ctx.status(HttpStatus.OK);
     }
   }
-    
+
   public void deleteStartedHunt(Context ctx) {
     String id = ctx.pathParam("id");
     DeleteResult deleteResult = startedHuntCollection.deleteOne(eq("_id", new ObjectId(id)));
@@ -328,7 +328,6 @@ public class HostController implements Controller {
      }
     ctx.status(HttpStatus.OK);
   }
-}
 
   @Override
   public void addRoutes(Javalin server) {

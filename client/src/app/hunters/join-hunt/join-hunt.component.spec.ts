@@ -40,7 +40,10 @@ describe('JoinHuntComponent', () => {
 
   it('should handle OTP change with valid access code', () => {
     const otp = ['1', '2', '3', '4', '5', '6'];
-    const startedHunt: StartedHunt = { accessCode: '123456', completeHunt: null };
+    const startedHunt: StartedHunt = {
+      accessCode: '123456', completeHunt: null,
+      _id: ''
+    };
     hostService.getStartedHunt.and.returnValue(of(startedHunt));
     component.handleOtpChange(otp);
     expect(component.isAccessCodeValid).toEqual(true);

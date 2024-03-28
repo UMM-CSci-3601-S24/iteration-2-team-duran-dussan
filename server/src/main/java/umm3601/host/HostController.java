@@ -35,6 +35,7 @@ public class HostController implements Controller {
   private static final String API_TASKS = "/api/tasks";
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
+  private static final String API_END_HUNT = "/api/endHunt/{id}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -295,6 +296,27 @@ public class HostController implements Controller {
     }
   }
 
+  public void getEndedHunts(Context ctx) {
+    List<StartedHunt> endedHunts = startedHuntCollection.find(eq("status", false)).into(new ArrayList<>());
+    ctx.json(endedHunts);
+    ctx.status(HttpStatus.OK);
+  }
+
+  public void endStartedHunt(Context ctx) {
+    String id = ctx.pathParam("id");
+    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(id))).first();
+
+    if (startedHunt == null) {
+      throw new NotFoundResponse("The requested started hunt was not found.");
+    } else {
+      startedHunt.status = false;
+      startedHunt.accessCode = "1";
+      startedHuntCollection.save(startedHunt);
+      ctx.status(HttpStatus.OK);
+    }
+
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);
@@ -306,5 +328,6 @@ public class HostController implements Controller {
     server.delete(API_TASK, this::deleteTask);
     server.get(API_START_HUNT, this::startHunt);
     server.get(API_STARTED_HUNT, this::getStartedHunt);
+    server.put(API_END_HUNT, this::endStartedHunt);
   }
 }

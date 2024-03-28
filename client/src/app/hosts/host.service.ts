@@ -16,6 +16,7 @@ export class HostService {
   readonly taskUrl: string = `${environment.apiUrl}tasks`;
   readonly startHuntUrl: string = `${environment.apiUrl}startHunt`;
   readonly startedHuntUrl: string = `${environment.apiUrl}startedHunts`;
+  readonly endHuntUrl: string = `${environment.apiUrl}endHunt`;
 
   constructor(private httpClient: HttpClient){
   }
@@ -51,6 +52,11 @@ export class HostService {
 
   getStartedHunt(accessCode: string): Observable<StartedHunt> {
     return this.httpClient.get<StartedHunt>(`${this.startedHuntUrl}/${accessCode}`);
+  }
+
+  // This is a put request that ends the hunt by setting its status to false
+  endStartedHunt(id: string): Observable<void> {
+    return this.httpClient.put<void>(`${this.endHuntUrl}/${id}`, null);
   }
 
 }

@@ -105,6 +105,7 @@ export class MockHostService extends HostService {
 
   static testStartedHunts: StartedHunt[] = [
     {
+      _id: "ann_id",
       accessCode: "ann_code",
       completeHunt: {
         hunt: MockHostService.testHunts[0],
@@ -129,6 +130,7 @@ export class MockHostService extends HostService {
       }
     },
     {
+      _id: "fran_id",
       accessCode: "fran_code",
       completeHunt: {
           hunt: MockHostService.testHunts[1],
@@ -147,6 +149,7 @@ export class MockHostService extends HostService {
       }
     },
     {
+      _id: "jan_id",
       accessCode: "jan_code",
       completeHunt: {
         hunt: MockHostService.testHunts[2],

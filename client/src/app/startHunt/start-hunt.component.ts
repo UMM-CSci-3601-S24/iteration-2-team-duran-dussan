@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { Subject, map, switchMap, takeUntil } from "rxjs";
 import { HostService } from "../hosts/host.service";
 import { StartedHunt } from "./startedHunt";
+import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
 
 @Component({
   selector: 'app-start-hunt-component',
@@ -12,11 +13,12 @@ import { StartedHunt } from "./startedHunt";
   styleUrls: ['./start-hunt.component.scss'],
   providers: [],
   standalone: true,
-  imports: []
+  imports: [MatCard, MatCardContent, MatCardActions]
 })
 
 export class StartHuntComponent implements OnInit, OnDestroy {
   startedHunt: StartedHunt;
+  huntBegun = false;
   error: { help: string, httpResponse: string, message: string };
 
   private ngUnsubscribe = new Subject<void>();
@@ -47,8 +49,38 @@ export class StartHuntComponent implements OnInit, OnDestroy {
     });
   }
 
+  beginHunt() {
+    this.huntBegun = true;
+  }
+
+  onEndHuntClick(event: Event) {
+    event.stopPropagation();
+    if (window.confirm('Are you sure you want to end this hunt?')) {
+      //this.deleteTask(taskId)
+    }
+  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  endHunt(): void {
+    this.hostService.endStartedHunt(this.startedHunt._id)
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Hunt ended successfully', 'Close', {
+            duration: 2000,
+          });
+          this.router.navigate(['/hosts']); // Navigate to home page after ending the hunt
+        },
+        error: _err => {
+          this.error = {
+            help: 'There was a problem ending the hunt – try again.',
+            httpResponse: _err.message,
+            message: _err.error?.title,
+          };
+        }
+      });
   }
 }

@@ -1,12 +1,20 @@
-
-@if (this.startedHunt) {
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Access Code</h2>
-        <h1>{{ this.startedHunt.accessCode }}</h1>
-      </div>
-    </div>
-    <button mat-raised-button>Begin Hunt!</button>
-  </div>
+@if (this.huntBegun === false) {
+<mat-card class="access-card">
+  <mat-card-content class="access-content">
+    <h2 class="access-code-title">Access Code</h2>
+    <h1 class="access-code-number">{{ startedHunt?.accessCode }}</h1>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button class = "begin-hunt-button" (click)="beginHunt()">Begin Hunt!</button>
+  </mat-card-actions>
+</mat-card>
+} @else {
+  <mat-card class="running-hunt-card">
+    <mat-card-content class="running-hunt-content">
+      <h2 class="running-hunt-title">Track Progress</h2>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button class = "end-hunt-button" (click)="endHunt()">End Hunt</button>
+    </mat-card-actions>
+  </mat-card>
 }

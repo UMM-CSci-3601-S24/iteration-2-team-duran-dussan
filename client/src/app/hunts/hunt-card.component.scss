@@ -76,9 +76,10 @@
   .return-to-hunts {
     background-color: #007bff6e;
     border-radius: 5px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    margin-right: 10px;
 
     @media (prefers-color-scheme: dark) {
       background-color: #00ccff;
@@ -86,6 +87,27 @@
   }
 
   .return-to-hunts:hover {
+    background-color: #0056b3;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
+  }
+
+  .begin-hunt {
+    background-color: #007bff6e;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: #00ccff;
+    }
+  }
+
+  .begin-hunt:hover {
     background-color: #0056b3;
 
     @media (prefers-color-scheme: dark) {
@@ -116,4 +138,16 @@
 
   .hunt-card-name {
     margin-right: 60px;
+  }
+
+  .button-container {
+    display: flex;
+    align-items: center;
+    button {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+    }
   }

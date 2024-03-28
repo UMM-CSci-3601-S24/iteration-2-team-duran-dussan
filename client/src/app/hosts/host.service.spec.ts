@@ -58,6 +58,7 @@ const testTasks: Task[] = [
 
 const testStartedHunts: StartedHunt[] = [
   {
+    _id: "1234",
     completeHunt: {
       hunt: testHunts[0],
       tasks: testTasks
@@ -65,6 +66,7 @@ const testStartedHunts: StartedHunt[] = [
     accessCode: "1234",
   },
   {
+    _id: "5678",
     completeHunt: {
       hunt: testHunts[1],
       tasks: testTasks
@@ -72,6 +74,7 @@ const testStartedHunts: StartedHunt[] = [
     accessCode: "5678",
   },
   {
+    _id: "9012",
     completeHunt: {
       hunt: testHunts[2],
       tasks: testTasks
@@ -250,6 +253,25 @@ describe('When getHunts() is called', () => {
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
           .toHaveBeenCalledWith(`${hostService.startedHuntUrl}/${targetAccessCode}`);
+      });
+    }));
+  });
+
+  describe('Ending a hunt using `endStartedHunt()`', () => {
+    it('calls api/startedHunts/id with the correct ID', waitForAsync(() => {
+      const targetStartedHunt: StartedHunt = testStartedHunts[1];
+      const targetId: string = targetStartedHunt._id;
+
+      const mockedMethod = spyOn(httpClient, 'put').and.returnValue(of(undefined));
+
+      hostService.endStartedHunt(targetId).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.endHuntUrl}/${targetId}`, null);
       });
     }));
   });

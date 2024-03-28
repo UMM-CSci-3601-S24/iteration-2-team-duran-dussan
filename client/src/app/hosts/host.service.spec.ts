@@ -253,4 +253,23 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('Ending a hunt using `endStartedHunt()`', () => {
+    it('calls api/startedHunts/id with the correct ID', waitForAsync(() => {
+      const targetStartedHunt: StartedHunt = testStartedHunts[1];
+      const targetAccessCode: string = targetStartedHunt.accessCode;
+
+      const mockedMethod = spyOn(httpClient, 'put').and.returnValue(of(undefined));
+
+      hostService.endStartedHunt(targetAccessCode).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.startedHuntUrl}/${targetAccessCode}`, null);
+      });
+    }));
+  });
 });

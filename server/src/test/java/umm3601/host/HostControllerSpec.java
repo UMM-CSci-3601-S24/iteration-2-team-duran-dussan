@@ -688,6 +688,7 @@ public class HostControllerSpec {
 
     verify(ctx).status(HttpStatus.OK);
 
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
     assertEquals(0, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
   }
 
@@ -917,5 +918,35 @@ public class HostControllerSpec {
     assertThrows(NotFoundResponse.class, () -> {
       hostController.endStartedHunt(ctx);
     });
+  }
+
+  @Test
+  void deleteFoundStartedHunt() throws IOException {
+    String testID = startedHuntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    assertEquals(1, db.getCollection("startedHunts").countDocuments(eq("_id", new ObjectId(testID))));
+
+    hostController.deleteStartedHunt(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(0, db.getCollection("startedHunts").countDocuments(eq("_id", new ObjectId(testID))));
+  }
+
+  @Test
+  void tryToDeleteNotFoundStartedHunt() throws IOException {
+    String testID = startedHuntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    hostController.deleteStartedHunt(ctx);
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
+
+    assertThrows(NotFoundResponse.class, () -> {
+      hostController.deleteStartedHunt(ctx);
+    });
+
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
   }
 }

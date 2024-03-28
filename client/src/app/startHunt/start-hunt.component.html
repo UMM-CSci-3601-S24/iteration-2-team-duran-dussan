@@ -9,11 +9,12 @@
   </mat-card-actions>
 </mat-card>
 } @else {
-  <div>
-    Hunt has begun!
-  </div>
-
-  <!-- <mat-card-actions>
-    <button mat-raised-button class = "end-hunt-button" (click)="endHunt()">End Hunt</button>
-  </mat-card-actions> -->
+  <mat-card class="running-hunt-card">
+    <mat-card-content class="running-hunt-content">
+      <h2 class="running-hunt-title">Track Progress</h2>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button class = "end-hunt-button" (click)="endHunt()">End Hunt</button>
+    </mat-card-actions>
+  </mat-card>
 }

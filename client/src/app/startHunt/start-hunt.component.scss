@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 50vh;
+  height: 60vh;
 }
 
 .access-content {
@@ -17,6 +17,7 @@
 
 .access-code-title {
   font-size: 5em;
+  line-height: 1.0;
 }
 
 .access-code-number {
@@ -29,7 +30,7 @@
   text-align: center;
   background-color: #007bff6e;
   border-radius: 10px;
-  padding: 20px 40px;
+  padding: 20px 30px;
   font-size: 2em;
   font-weight: bold;
   transition: background-color 0.3s ease;
@@ -62,10 +63,14 @@
   align-items: center;
   text-align: center;
   flex-grow: 1;
+
+  @media (max-width: 600px) {
+  }
 }
 
 .running-hunt-title {
   font-size: 5em;
+  line-height: 1.0;
 }
 
 .end-hunt-button {

@@ -51,4 +51,23 @@ export class StartHuntComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
+
+  endHunt(): void {
+    this.hostService.endStartedHunt(this.startedHunt.accessCode)
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Hunt ended successfully', 'Close', {
+            duration: 2000,
+          });
+          this.router.navigate(['/']); // Navigate to home page after ending the hunt
+        },
+        error: _err => {
+          this.error = {
+            help: 'There was a problem ending the hunt – try again.',
+            httpResponse: _err.message,
+            message: _err.error?.title,
+          };
+        }
+      });
+  }
 }

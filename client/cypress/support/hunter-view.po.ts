@@ -1,13 +1,15 @@
 export class HunterViewPage {
   private readonly baseUrl = '/';
   private readonly huntTitle = '.hunt-title';
+  private readonly huntNofTasksEst = '.hunt';
+  private readonly huntTaskList = '.task-list';
+  private readonly hunterUploadImage = '.image-upload';
   private readonly HunterButton = '[name="hunter-button"]';
   private readonly HostButton = '[name="host-button"]';
   private readonly hostCardSelector = '.hunt-cards-container app-hunt-card';
   private readonly profileButtonSelector = '[data-test=viewProfileButton]';
   private readonly beginHuntButton = '.begin-hunt';
   private readonly huntAccessCode = '.col-md-12 h1';
-
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -81,4 +83,30 @@ export class HunterViewPage {
     return cy.get(this.huntAccessCode).invoke('text').as('accessCode');
   }
 
+  /**
+   * Get the number of tasks and estimated time of the hunt as hunter-view.
+   *
+   * @returns the value of the element with the class `.hunt`
+   */
+  getHuntNofTasksEst() {
+    return cy.get(this.huntNofTasksEst);
+  }
+
+  /**
+   * Get the task list of the hunt as hunter-view.
+   *
+   * @return the value of the element with the class `.task-list`
+   */
+  getHuntTaskList() {
+    return cy.get(this.huntTaskList);
+  }
+
+  /**
+   * Get the upload image button and the image input field.
+   *
+   * @return the value of the element with the class `.image-upload`
+   */
+  getHunterUploadImage() {
+    return cy.get(this.hunterUploadImage);
+  }
 }

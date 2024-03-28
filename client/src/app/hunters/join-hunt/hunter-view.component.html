@@ -11,7 +11,7 @@
   </div>
   <div class="flex-row" *ngFor="let task of startedHunt.completeHunt.tasks">
     <div class="image-upload">
-      <img [src]="imageUrls[task._id] || 'assets/icons8-upload-picture-64.png'" alt="Profile Picture" title="Profile Picture" height="100px" width="100px" />
+      <img [src]="imageUrls[task._id] || 'assets/icons8-upload-picture-64.png'" alt="Upload Picture" title="Upload Picture" height="100px" width="100px" />
       <input
         type="file"
         id="img-{{task._id}}"

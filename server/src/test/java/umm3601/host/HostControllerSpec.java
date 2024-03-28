@@ -886,9 +886,9 @@ public class HostControllerSpec {
       assertEquals(false, startedHunt.status);
     }
   }
-
   @Test
   void endStartedHunt() throws IOException {
+    when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());
     when(ctx.pathParam("accessCode")).thenReturn("123456");
 
     // Check the initial status
@@ -904,7 +904,7 @@ public class HostControllerSpec {
     hostController.getEndedHunts(ctx);
     verify(ctx).json(startedHuntArrayListCaptor.capture());
     for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
-      if (startedHunt.accessCode.equals("123456")) {
+      if (startedHunt._id.equals("123456")) {
         assertEquals(false, startedHunt.status);
       }
     }
@@ -912,7 +912,7 @@ public class HostControllerSpec {
 
   @Test
   void endStartedHuntIsNull() throws IOException {
-    when(ctx.pathParam("accessCode")).thenReturn("588935f57546a2daea54de8c");
+    when(ctx.pathParam("id")).thenReturn("588935f57546a2daea54de8c");
 
     assertThrows(NotFoundResponse.class, () -> {
       hostController.endStartedHunt(ctx);

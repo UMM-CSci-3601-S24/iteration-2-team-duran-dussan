@@ -45,6 +45,14 @@ export class HunterViewComponent implements OnInit, OnDestroy {
         ).subscribe({
           next: startedHunt => {
             this.startedHunt = startedHunt;
+            if (this.startedHunt.completeHunt.tasks.length == 0) {
+              console.log('Tasks array is empty, navigating to hunters route');  // Log before navigation
+              this.router.navigate(['hunters']).then(success => {
+                console.log('Navigation success:', success);  // Log whether the navigation was successful
+              }).catch(error => {
+                console.error('Navigation error:', error);  // Log any navigation errors
+              });
+            }
             return;
           },
           error: _err => {

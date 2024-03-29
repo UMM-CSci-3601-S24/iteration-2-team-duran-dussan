@@ -8,12 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +49,7 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
+import io.javalin.http.UploadedFile;
 import io.javalin.json.JavalinJackson;
 import io.javalin.validation.BodyValidator;
 import io.javalin.validation.ValidationException;
@@ -949,4 +954,99 @@ public class HostControllerSpec {
     verify(ctx).status(HttpStatus.NOT_FOUND);
     assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
   }
+
+  @Test
+  void testGetFileExtensionWithExtension() {
+    String filename = "test.txt";
+
+    String extension = hostController.getFileExtension(filename);
+
+    assertEquals("txt", extension);
+  }
+
+  @Test
+  void testGetFileExtensionWithoutExtension() {
+    String filename = "test";
+
+    String extension = hostController.getFileExtension(filename);
+
+    assertEquals("", extension);
+  }
+
+  @Test
+  void testUploadPhotoWithPhoto() throws IOException {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    String id = hostController.uploadPhoto(ctx);
+
+    verify(ctx).status(200);
+    verify(ctx).result(startsWith("Photo uploaded successfully with ID: "));
+    hostController.deletePhoto(id, ctx);
+  }
+
+  @Test
+  void testUploadPhotoWithoutPhoto() {
+
+    when(ctx.uploadedFile("photo")).thenReturn(null);
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    hostController.uploadPhoto(ctx);
+
+    verify(ctx).status(400);
+    verify(ctx).result(startsWith("No photo uploaded"));
+  }
+
+  @Test
+  void testUploadPhotoWithException() throws IOException {
+
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenThrow(new RuntimeException("Test Exception"));
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    hostController.uploadPhoto(ctx);
+
+    verify(ctx).status(500);
+    verify(ctx).result(startsWith("Photo upload failed: "));
+  }
+
+  @Test
+  void testDeletePhotoWithPhoto() throws IOException, InterruptedException {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    String id = hostController.uploadPhoto(ctx);
+
+    verify(ctx).status(200);
+    verify(ctx).result(startsWith("Photo uploaded successfully with ID: "));
+
+    hostController.deletePhoto(id, ctx);
+
+    verify(ctx).result(startsWith("Photo deleted successfully"));
+  }
+
+  @Test
+  void testDeletePhotoWithoutPhoto() {
+
+    when(ctx.uploadedFile("photo")).thenReturn(null);
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    hostController.deletePhoto("test", ctx);
+
+    verify(ctx).status(500);
+    verify(ctx).result(startsWith("Photo deletion failed: "));
+  }
+
 }

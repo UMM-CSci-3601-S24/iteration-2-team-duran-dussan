@@ -56,7 +56,7 @@ export class StartHuntComponent implements OnInit, OnDestroy {
   onEndHuntClick(event: Event) {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to end this hunt?')) {
-      //this.deleteTask(taskId)
+      this.endHunt()
     }
   }
 

@@ -329,6 +329,15 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
+  public String getFileExtension(String filename) {
+    int dotIndex = filename.lastIndexOf('.');
+    if (dotIndex >= 0) {
+      return filename.substring(dotIndex + 1);
+    } else {
+      return ""; // No extension
+    }
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);

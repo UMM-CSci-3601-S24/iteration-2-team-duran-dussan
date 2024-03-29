@@ -949,4 +949,22 @@ public class HostControllerSpec {
     verify(ctx).status(HttpStatus.NOT_FOUND);
     assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
   }
+
+  @Test
+  void testGetFileExtensionWithExtension() {
+    String filename = "test.txt";
+
+    String extension = hostController.getFileExtension(filename);
+
+    assertEquals("txt", extension);
+  }
+
+  @Test
+  void testGetFileExtensionWithoutExtension() {
+    String filename = "test";
+
+    String extension = hostController.getFileExtension(filename);
+
+    assertEquals("", extension);
+  }
 }

@@ -37,6 +37,13 @@ export class JoinHuntComponent {
   @ViewChild('input5') input5: ElementRef;
   @ViewChild('input6') input6: ElementRef;
 
+  /**
+   * This is for typing in the access code input and moving to
+   * the next input box when a number is typed in.
+   *
+   * @param event
+   * @param inputNumber
+   */
   onKeyUp(event, inputNumber) {
     if (event.target.value.length) {
       switch (inputNumber) {
@@ -50,6 +57,13 @@ export class JoinHuntComponent {
     }
   }
 
+  /**
+   * This is for deleting in access code input and move to
+   * the next input box when a number is deleted.
+   *
+   * @param event
+   * @param inputNumber
+   */
   onKeyDown(event, inputNumber) {
     if (event.key === 'Backspace' && !event.target.value.length) {
       switch (inputNumber) {
@@ -62,6 +76,10 @@ export class JoinHuntComponent {
     }
   }
 
+  /**
+   * This is for pasting in access code input and prevent not
+   * number access code being pasted in.
+   */
   onPaste(event: ClipboardEvent) {
     // Get the pasted data as a string
     event.preventDefault();
@@ -80,9 +98,12 @@ export class JoinHuntComponent {
     if (characters.length >= 6) this.input6.nativeElement.value = characters[5];
   }
 
+  /**
+   * This is for preventing typing in character access code.
+   * This will do nothing if the access code being typed in is number.
+   */
   numericOnly(event: KeyboardEvent) {
     if (!/\d/.test(event.key)) {
-      // Prevent the default action
       event.preventDefault();
     }
   }

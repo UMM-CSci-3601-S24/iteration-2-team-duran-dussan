@@ -106,4 +106,55 @@ describe('JoinHuntComponent', () => {
     component.onKeyDown({ key: 'Backspace', target: { value: '' } }, 6);
     expect(component.input5.nativeElement.focus).toHaveBeenCalled();
   })
+
+  it('should paste access code in right order', () => {
+    component.input1 = { nativeElement: { focus: jasmine.createSpy() } };
+    component.input2 = { nativeElement: { focus: jasmine.createSpy() } };
+    component.input3 = { nativeElement: { focus: jasmine.createSpy() } };
+    component.input4 = { nativeElement: { focus: jasmine.createSpy() } };
+    component.input5 = { nativeElement: { focus: jasmine.createSpy() } };
+    component.input6 = { nativeElement: { focus: jasmine.createSpy() } };
+
+    component.input1 = { nativeElement: { value: '' } };
+    component.input2 = { nativeElement: { value: '' } };
+    component.input3 = { nativeElement: { value: '' } };
+    component.input4 = { nativeElement: { value: '' } };
+    component.input5 = { nativeElement: { value: '' } };
+    component.input6 = { nativeElement: { value: '' } };
+
+    const pasteData = '123456'; // Mock paste data
+    const clipboardEvent = {
+      clipboardData: {
+        getData: () => pasteData
+      },
+      preventDefault: () => {}
+    } as unknown as ClipboardEvent;
+
+    component.onPaste(clipboardEvent);
+
+    expect(component.input1.nativeElement.value).toBe('1');
+    expect(component.input2.nativeElement.value).toBe('2');
+    expect(component.input3.nativeElement.value).toBe('3');
+    expect(component.input4.nativeElement.value).toBe('4');
+    expect(component.input5.nativeElement.value).toBe('5');
+    expect(component.input6.nativeElement.value).toBe('6');
+  });
+
+  it('should prevent default action for non-numeric keys', () => {
+    const event = new KeyboardEvent('keypress', { key: 'a' });
+    spyOn(event, 'preventDefault');
+
+    component.numericOnly(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should not prevent default action for numeric keys', () => {
+    const event = new KeyboardEvent('keypress', { key: '1' });
+    spyOn(event, 'preventDefault');
+
+    component.numericOnly(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+  });
 });

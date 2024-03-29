@@ -35,6 +35,7 @@ describe('HunterViewComponent', () => {
     component = fixture.componentInstance;
 
     const initialStartedHunt: StartedHunt = {
+      _id: '',
       completeHunt: {
         hunt: {
           _id: '',
@@ -55,6 +56,7 @@ describe('HunterViewComponent', () => {
 
   it('should navigate to the right hunt page by access code',() => {
     const startedHunt: StartedHunt = {
+      _id: '',
       completeHunt: {
         hunt: {
           _id: '1',

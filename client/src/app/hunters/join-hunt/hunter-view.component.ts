@@ -37,25 +37,25 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-      this.route.paramMap.pipe(
-        map((params: ParamMap) => params.get('accessCode')),
-        switchMap((accessCode: string) => this.hostService.getStartedHunt(accessCode)),
+    this.route.paramMap.pipe(
+      map((params: ParamMap) => params.get('accessCode')),
+      switchMap((accessCode: string) => this.hostService.getStartedHunt(accessCode)),
 
-        takeUntil(this.ngUnsubscribe)
-        ).subscribe({
-          next: startedHunt => {
-            this.startedHunt = startedHunt;
-            return;
-          },
-          error: _err => {
-            this.error = {
-              help: 'There is an error trying to load the tasks - Please try to run the hunt again',
-              httpResponse: _err.message,
-              message: _err.error?.title,
-            };
-          }
-        });
-    }
+      takeUntil(this.ngUnsubscribe)
+      ).subscribe({
+        next: startedHunt => {
+          this.startedHunt = startedHunt;
+          return;
+        },
+        error: _err => {
+          this.error = {
+            help: 'There is an error trying to load the tasks - Please try to run the hunt again',
+            httpResponse: _err.message,
+            message: _err.error?.title,
+          };
+        }
+      });
+  }
 
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();

@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +56,7 @@ public class HostControllerSpec {
   private ObjectId frysId;
   private ObjectId huntId;
   private ObjectId taskId;
+  private ObjectId startedHuntId;
 
   private static MongoClient mongoClient;
   private static MongoDatabase db;
@@ -77,6 +79,9 @@ public class HostControllerSpec {
 
   @Captor
   private ArgumentCaptor<StartedHunt> startedHuntCaptor;
+
+  @Captor
+  private ArgumentCaptor<ArrayList<StartedHunt>> startedHuntArrayListCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -218,7 +223,17 @@ public class HostControllerSpec {
                 .append("tasks", testTasks.subList(0, 3)))
             .append("status", true));
 
+    startedHuntId = new ObjectId();
+    Document startedHunt = new Document()
+        .append("_id", startedHuntId)
+        .append("accessCode", "123456")
+        .append("completeHunt", new Document()
+                .append("hunt", testHunts.get(2))
+                .append("tasks", testTasks.subList(0, 3)))
+            .append("status", true);
+
     startedHuntsDocuments.insertMany(startedHunts);
+    startedHuntsDocuments.insertOne(startedHunt);
 
     hostController = new HostController(db);
   }
@@ -673,6 +688,7 @@ public class HostControllerSpec {
 
     verify(ctx).status(HttpStatus.OK);
 
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
     assertEquals(0, db.getCollection("tasks").countDocuments(eq("_id", new ObjectId(testID))));
   }
 
@@ -858,5 +874,79 @@ public class HostControllerSpec {
     });
 
     assertEquals("The requested hunt is no longer joinable.", exception.getMessage());
+  }
+
+  @Test
+  void getEndedHunts() throws IOException {
+    hostController.getEndedHunts(ctx);
+
+    verify(ctx).json(startedHuntArrayListCaptor.capture());
+
+    assertEquals(1, startedHuntArrayListCaptor.getValue().size());
+    for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
+      assertEquals(false, startedHunt.status);
+    }
+  }
+  @Test
+  void endStartedHunt() throws IOException {
+    when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());
+    when(ctx.pathParam("accessCode")).thenReturn("123456");
+
+    // Check the initial status
+    hostController.getStartedHunt(ctx);
+    verify(ctx).json(startedHuntCaptor.capture());
+    assertEquals(true, startedHuntCaptor.getValue().status);
+
+    // End the hunt
+    hostController.endStartedHunt(ctx);
+    verify(ctx, times(2)).status(HttpStatus.OK);
+
+    // Check the status after ending the hunt
+    hostController.getEndedHunts(ctx);
+    verify(ctx).json(startedHuntArrayListCaptor.capture());
+    for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
+      if (startedHunt._id.equals("123456")) {
+        assertEquals(false, startedHunt.status);
+      }
+    }
+  }
+
+  @Test
+  void endStartedHuntIsNull() throws IOException {
+    when(ctx.pathParam("id")).thenReturn("588935f57546a2daea54de8c");
+
+    assertThrows(NotFoundResponse.class, () -> {
+      hostController.endStartedHunt(ctx);
+    });
+  }
+
+  @Test
+  void deleteFoundStartedHunt() throws IOException {
+    String testID = startedHuntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    assertEquals(1, db.getCollection("startedHunts").countDocuments(eq("_id", new ObjectId(testID))));
+
+    hostController.deleteStartedHunt(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+
+    assertEquals(0, db.getCollection("startedHunts").countDocuments(eq("_id", new ObjectId(testID))));
+  }
+
+  @Test
+  void tryToDeleteNotFoundStartedHunt() throws IOException {
+    String testID = startedHuntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(testID);
+
+    hostController.deleteStartedHunt(ctx);
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
+
+    assertThrows(NotFoundResponse.class, () -> {
+      hostController.deleteStartedHunt(ctx);
+    });
+
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+    assertEquals(0, db.getCollection("hunts").countDocuments(eq("_id", new ObjectId(testID))));
   }
 }

@@ -49,10 +49,8 @@ errorMessage: string;
     this.accessCode = value.join('');
     if (this.accessCode.length === 6) {
       this.hostService.getStartedHunt(this.accessCode).subscribe({
-        next: startedHunt => {
-          // The access code is valid, enable the "Join Hunt" button
+        next: () => {
           this.isAccessCodeValid = true;
-          this.router.navigate(['hunt', startedHunt.accessCode]);
         },
         error: () => {
           this.isAccessCodeValid = false;

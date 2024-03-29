@@ -47,7 +47,6 @@ describe('JoinHuntComponent', () => {
     hostService.getStartedHunt.and.returnValue(of(startedHunt));
     component.handleOtpChange(otp);
     expect(component.isAccessCodeValid).toEqual(true);
-    expect(router.navigate).toHaveBeenCalledWith(['hunt', startedHunt.accessCode]);
   });
 
 });

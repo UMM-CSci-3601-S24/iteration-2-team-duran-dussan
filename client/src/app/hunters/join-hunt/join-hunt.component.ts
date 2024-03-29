@@ -62,6 +62,31 @@ export class JoinHuntComponent {
     }
   }
 
+  onPaste(event: ClipboardEvent) {
+    // Get the pasted data as a string
+    event.preventDefault();
+    let pasteData = event.clipboardData.getData('text');
+    pasteData = pasteData.replace(/\D/g, '');
+
+    // Split the string into an array of characters
+    const characters = pasteData.split('');
+
+    // Assign the characters to the input fields
+    if (characters.length >= 1) this.input1.nativeElement.value = characters[0];
+    if (characters.length >= 2) this.input2.nativeElement.value = characters[1];
+    if (characters.length >= 3) this.input3.nativeElement.value = characters[2];
+    if (characters.length >= 4) this.input4.nativeElement.value = characters[3];
+    if (characters.length >= 5) this.input5.nativeElement.value = characters[4];
+    if (characters.length >= 6) this.input6.nativeElement.value = characters[5];
+  }
+
+  numericOnly(event: KeyboardEvent) {
+    if (!/\d/.test(event.key)) {
+      // Prevent the default action
+      event.preventDefault();
+    }
+  }
+
   checkAccessCode() {
     this.accessCode = [this.input1.nativeElement.value, this.input2.nativeElement.value, this.input3.nativeElement.value, this.input4.nativeElement.value, this.input5.nativeElement.value, this.input6.nativeElement.value].join('');
     if (this.accessCode.length === 6) {

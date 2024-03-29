@@ -10,11 +10,17 @@ import umm3601.Controller;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -334,9 +340,36 @@ public class HostController implements Controller {
     if (dotIndex >= 0) {
       return filename.substring(dotIndex + 1);
     } else {
-      return ""; // No extension
+      return "";
     }
   }
+
+  private static final int STATUS_OK = 200;
+  private static final int STATUS_BAD_REQUEST = 400;
+  private static final int STATUS_INTERNAL_SERVER_ERROR = 500;
+
+  public void uploadPhoto(Context ctx) {
+  try {
+    var uploadedFile = ctx.uploadedFile("photo");
+    if (uploadedFile != null) {
+      try (InputStream in = uploadedFile.content()) {
+
+        String id = UUID.randomUUID().toString();
+
+        String extension = getFileExtension(uploadedFile.filename());
+        File file = Path.of("photos", id + "." + extension).toFile();
+
+        Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        ctx.status(STATUS_OK).result("Photo uploaded successfully with ID: " + id);
+      }
+    } else {
+      ctx.status(STATUS_BAD_REQUEST).result("No photo uploaded");
+    }
+  } catch (Exception e) {
+    e.printStackTrace();
+    ctx.status(STATUS_INTERNAL_SERVER_ERROR).result("Photo upload failed: " + e.getMessage());
+  }
+}
 
   @Override
   public void addRoutes(Javalin server) {

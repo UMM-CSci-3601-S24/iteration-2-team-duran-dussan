@@ -59,4 +59,9 @@ export class HostService {
     return this.httpClient.put<void>(`${this.endHuntUrl}/${id}`, null);
   }
 
+  // This is a get request that gets all the ended StartedHunts
+  getEndedHunts(): Observable<StartedHunt[]> {
+    return this.httpClient.get<StartedHunt[]>(`${this.endHuntUrl}`);
+  }
+
 }

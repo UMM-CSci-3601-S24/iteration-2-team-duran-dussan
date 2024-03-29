@@ -275,4 +275,20 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('When getEndedHunts() is called', () => {
+    it('calls api/endHunt', waitForAsync(() => {
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testStartedHunts));
+
+      hostService.getEndedHunts().subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.endHuntUrl}`);
+      });
+    }));
+  });
 });

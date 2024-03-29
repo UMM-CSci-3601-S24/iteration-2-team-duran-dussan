@@ -126,4 +126,27 @@ describe('StartHuntComponent', () => {
       message: errorResponse.error.title,
     });
   });
-});
+
+  it('should call endHunt() when onEndHuntClick is confirmed', () => {
+    const event = new Event('click');
+    const id = 'fran_id'; // Use the accessCode from the mock data
+    const accessCode = 'fran_code'; // Use the accessCode from the mock data
+    const endStartedHuntSpy = spyOn(mockHostService, 'endStartedHunt').and.returnValue(of(null));
+    const router = TestBed.inject(Router); // Get the router from the testing module
+    const navigateSpy = spyOn(router, 'navigate');
+    const snackBar = TestBed.inject(MatSnackBar); // Get the snackBar from the testing module
+    const snackBarSpy = spyOn(snackBar, 'open');
+
+    spyOn(window, 'confirm').and.returnValue(true);
+
+    component.startedHunt = { _id: id, accessCode: accessCode, completeHunt: {
+      hunt: undefined,
+      tasks: []
+    } };
+    component.onEndHuntClick(event);
+
+    expect(endStartedHuntSpy).toHaveBeenCalledWith(id);
+    expect(navigateSpy).toHaveBeenCalledWith(['/hosts']);
+    expect(snackBarSpy).toHaveBeenCalledWith('Hunt ended successfully', 'Close', { duration: 2000 });
+  });
+  });

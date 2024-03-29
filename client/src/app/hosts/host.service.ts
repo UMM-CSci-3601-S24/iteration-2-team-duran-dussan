@@ -59,4 +59,10 @@ export class HostService {
     return this.httpClient.put<void>(`${this.endHuntUrl}/${id}`, null);
   }
 
+  submitPhoto(taskId: string, photo: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('photo', photo);
+    return this.httpClient.post<void>(`${this.taskUrl}/${taskId}/photo`, formData);
+  }
+
 }

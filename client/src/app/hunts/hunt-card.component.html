@@ -28,7 +28,12 @@
     <mat-card-title class="hunt-card-time top-right icon-center">
       <div>
         <mat-icon matListItemIcon>av_timer</mat-icon>
-        <span class="time-text">{{ this.hunt().est }} min</span>
+        @if (this.hunt().est > 60) {
+          <span class="time-text">{{ this.estHours(this.hunt().est) }}:{{ this.hunt().est % 60 }}</span>
+        }
+        @else {
+          <span class="time-text">{{ this.hunt().est }} min</span>
+        }
       </div>
     </mat-card-title>
   </mat-card>

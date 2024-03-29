@@ -43,6 +43,7 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
+  private static final String API_PHOTO = "/api/tasks/{id}/photo{filename}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -403,5 +404,6 @@ public void deletePhoto(String id, Context ctx) {
     server.get(API_START_HUNT, this::startHunt);
     server.get(API_STARTED_HUNT, this::getStartedHunt);
     server.put(API_END_HUNT, this::endStartedHunt);
+    server.post(API_PHOTO, this::uploadPhoto);
   }
 }

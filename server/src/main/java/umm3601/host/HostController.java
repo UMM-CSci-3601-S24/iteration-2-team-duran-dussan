@@ -11,6 +11,7 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -348,7 +349,7 @@ public class HostController implements Controller {
   private static final int STATUS_BAD_REQUEST = 400;
   private static final int STATUS_INTERNAL_SERVER_ERROR = 500;
 
-  public void uploadPhoto(Context ctx) {
+  public String uploadPhoto(Context ctx) {
   try {
     var uploadedFile = ctx.uploadedFile("photo");
     if (uploadedFile != null) {
@@ -361,6 +362,7 @@ public class HostController implements Controller {
 
         Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         ctx.status(STATUS_OK).result("Photo uploaded successfully with ID: " + id);
+        return file.toPath().toString();
       }
     } else {
       ctx.status(STATUS_BAD_REQUEST).result("No photo uploaded");
@@ -368,6 +370,24 @@ public class HostController implements Controller {
   } catch (Exception e) {
     e.printStackTrace();
     ctx.status(STATUS_INTERNAL_SERVER_ERROR).result("Photo upload failed: " + e.getMessage());
+  }
+  return null;
+}
+
+public void deletePhoto(String id, Context ctx) {
+  try {
+    // Construct the file path. This assumes that the ID is the filename without the extension.
+    Path filePath = Path.of(id);
+
+    // Delete the file
+    Files.delete(filePath);
+
+    // Respond with a success message
+    ctx.status(STATUS_OK).result("Photo deleted successfully");
+  } catch (IOException e) {
+    // If an exception occurs, print the stack trace and respond with an error message
+    e.printStackTrace();
+    ctx.status(STATUS_INTERNAL_SERVER_ERROR).result("Photo deletion failed: " + e.getMessage());
   }
 }
 

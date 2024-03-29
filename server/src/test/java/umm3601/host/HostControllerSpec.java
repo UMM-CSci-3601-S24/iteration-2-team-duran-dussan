@@ -11,7 +11,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -984,10 +983,11 @@ public class HostControllerSpec {
     when(uploadedFile.filename()).thenReturn("test.jpg");
     when(ctx.status(anyInt())).thenReturn(ctx);
 
-    hostController.uploadPhoto(ctx);
+    String id = hostController.uploadPhoto(ctx);
 
     verify(ctx).status(200);
     verify(ctx).result(startsWith("Photo uploaded successfully with ID: "));
+    hostController.deletePhoto(id, ctx);
   }
 
   @Test
@@ -1016,4 +1016,37 @@ public class HostControllerSpec {
     verify(ctx).status(500);
     verify(ctx).result(startsWith("Photo upload failed: "));
   }
+
+  @Test
+  void testDeletePhotoWithPhoto() throws IOException, InterruptedException {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    String id = hostController.uploadPhoto(ctx);
+
+    verify(ctx).status(200);
+    verify(ctx).result(startsWith("Photo uploaded successfully with ID: "));
+
+    hostController.deletePhoto(id, ctx);
+
+    verify(ctx).result(startsWith("Photo deleted successfully"));
+  }
+
+  @Test
+  void testDeletePhotoWithoutPhoto() {
+
+    when(ctx.uploadedFile("photo")).thenReturn(null);
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    hostController.deletePhoto("test", ctx);
+
+    verify(ctx).status(500);
+    verify(ctx).result(startsWith("Photo deletion failed: "));
+  }
+
 }

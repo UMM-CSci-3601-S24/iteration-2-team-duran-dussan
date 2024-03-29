@@ -277,17 +277,18 @@ describe('When getHunts() is called', () => {
   });
 
   describe('When getEndedHunts() is called', () => {
-    it('calls api/endHunt', waitForAsync(() => {
+    it('calls api/hosts/{id}/endedHunts', waitForAsync(() => {
+      const hostId = 'testHostId';
       const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testStartedHunts));
 
-      hostService.getEndedHunts().subscribe(() => {
+      hostService.getEndedHunts(hostId).subscribe(() => {
         expect(mockedMethod)
           .withContext('one call')
           .toHaveBeenCalledTimes(1);
 
         expect(mockedMethod)
           .withContext('talks to the correct endpoint')
-          .toHaveBeenCalledWith(`${hostService.endHuntUrl}`);
+          .toHaveBeenCalledWith(`${hostService.hostUrl}/${hostId}/endedHunts`);
       });
     }));
   });

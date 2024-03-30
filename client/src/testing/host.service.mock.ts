@@ -178,7 +178,39 @@ export class MockHostService extends HostService {
           "status": false
         }]
       }
+    },
+    {
+      _id: "jan_id",
+      accessCode: "1",
+      completeHunt: {
+        hunt: MockHostService.testHunts[2],
+        tasks: [{
+          "_id": "588933f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a red car",
+          "status": false
+        },
+        {
+          "_id": "588535f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a slide",
+          "status": false
+        },
+        {
+          "_id": "583935f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a Yield sign",
+          "status": false
+        },
+        {
+          "_id": "548935f57556a3daea54de8c",
+          "huntId": "jan_id",
+          "name": "Take a picture of a football field",
+          "status": false
+        }]
+      }
     }
+
   ];
 
   constructor() {
@@ -209,5 +241,9 @@ export class MockHostService extends HostService {
     } else {
       return of(null);
     }
+  }
+
+  getEndedHunts(): Observable<StartedHunt[]> {
+    return of(MockHostService.testStartedHunts);
   }
 }

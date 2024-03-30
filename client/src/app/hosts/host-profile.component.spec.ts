@@ -124,3 +124,29 @@ describe('Misbehaving Hunt List', () => {
   });
 });
 
+describe('Ended Hunt List', () => {
+  let startedHuntList: HostProfileComponent;
+  let fixture: ComponentFixture<HostProfileComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [COMMON_IMPORTS, HostProfileComponent, HuntCardComponent],
+      providers: [{ provide: HostService, useValue: new MockHostService() }]
+    });
+  });
+
+  beforeEach(waitForAsync(() => {
+    TestBed.compileComponents().then(() => {
+      fixture = TestBed.createComponent(HostProfileComponent);
+      startedHuntList = fixture.componentInstance;
+      startedHuntList.serverEndedHunts = []; // Initialize serverEndedHunts
+      fixture.detectChanges();
+    });
+  }));
+
+  it('contains all the ended hunts', () => {
+    expect(startedHuntList.serverEndedHunts.length).toBe(1);
+  });
+
+});
+

@@ -36,7 +36,7 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
-  private static final String API_ENDED_HUNTS = "/api/hosts/endedHunts";
+  private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";

@@ -36,7 +36,7 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
-  private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
+  private static final String API_ENDED_HUNTS = "/api/hosts/endedHunts";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -330,21 +330,6 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
-  public void getHostEndedHunts(Context ctx) {
-    Bson combinedFilter = constructFilterHunts(ctx);
-    Bson statusFilter = eq("status", false);
-    Bson finalFilter = and(combinedFilter, statusFilter);
-    Bson sortingOrder = constructSortingOrderHunts(ctx);
-
-    ArrayList<StartedHunt> matchingHunts = startedHuntCollection
-        .find(finalFilter)
-        .sort(sortingOrder)
-        .into(new ArrayList<>());
-
-    ctx.json(matchingHunts);
-    ctx.status(HttpStatus.OK);
-}
-
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);
@@ -357,6 +342,6 @@ public class HostController implements Controller {
     server.get(API_START_HUNT, this::startHunt);
     server.get(API_STARTED_HUNT, this::getStartedHunt);
     server.put(API_END_HUNT, this::endStartedHunt);
-    server.get(API_ENDED_HUNTS, this::getHostEndedHunts);
+    server.get(API_ENDED_HUNTS, this::getEndedHunts);
   }
 }

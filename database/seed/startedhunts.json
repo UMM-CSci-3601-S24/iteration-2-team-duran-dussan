@@ -1,0 +1,55 @@
+[
+  {
+    "_id": {
+      "$oid": "66076123249d31624af8a170"
+    },
+    "accessCode": "572007",
+    "completeHunt": {
+      "hunt": {
+        "hostId": "588945f57546a2daea44de7c",
+        "name": "Default Hunt 1",
+        "description": "This is the default hunt 1",
+        "est": 20,
+        "numberOfTasks": 4,
+        "_id": {
+          "$oid": "588935f57546a2daea54de7c"
+        }
+      },
+      "tasks": [
+        {
+          "huntId": "588935f57546a2daea54de7c",
+          "name": "Take a picture of a Stop sign",
+          "status": false,
+          "_id": {
+            "$oid": "588935f57546a3daea54de8c"
+          }
+        },
+        {
+          "huntId": "588935f57546a2daea54de7c",
+          "name": "Take a picture of a bird",
+          "status": false,
+          "_id": {
+            "$oid": "588935f57546a2daea54de8c"
+          }
+        },
+        {
+          "huntId": "588935f57546a2daea54de7c",
+          "name": "Take a picture of a dog",
+          "status": false,
+          "_id": {
+            "$oid": "588935f57546a2daea54de9c"
+          }
+        },
+        {
+          "huntId": "588935f57546a2daea54de7c",
+          "name": "Take a picture of a restaurant",
+          "status": false,
+          "_id": {
+            "$oid": "588935f57556a2daea54de8c"
+          }
+        }
+      ]
+    },
+    "status": false
+  }
+]

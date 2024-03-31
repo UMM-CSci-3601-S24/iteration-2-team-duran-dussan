@@ -9,7 +9,7 @@ export class HunterViewPage {
   private readonly hostCardSelector = '.hunt-cards-container app-hunt-card';
   private readonly profileButtonSelector = '[data-test=viewProfileButton]';
   private readonly beginHuntButton = '.begin-hunt';
-  private readonly huntAccessCode = '.col-md-12 h1';
+  private readonly huntAccessCode = '.access-code-number';
   private readonly UploadImageButton = '.image-upload input[type="file"]';
 
   navigateTo() {

@@ -21,30 +21,38 @@ describe('Join Hunt', () => {
   it('should display the join hunt button as disabled with no access code', () => {
     page.getAccessCodeInputField().should('exist');
     page.getAccessCodeInputField().should('have.value', '');
-    page.getAccessCodeInput().should('have.value', '');
     page.getJoinHuntButton().should('exist');
     page.getJoinHuntButton().should('have.class', 'mat-mdc-button-disabled');
     // This check if the JoinHuntButton is disabled if there are no access code.
   });
 
-  it('should display the join hunt button as disabled with invalid access code', () => {
-    page.getAccessCodeInput().first().type('1');
-    page.getAccessCodeInput().eq(1).type('2');
-    page.getAccessCodeInput().eq(2).type('3');
-    page.getAccessCodeInput().eq(3).type('4');
-    // These types in the access code input field.
+  it('should display the join hunt button as disabled, warning message with invalid access code', () => {
+    page.getAccessCodeInput(1).type('1');
+    page.getAccessCodeInput(2).type('2');
+    page.getAccessCodeInput(3).type('3');
+    page.getAccessCodeInput(4).type('4');
     page.getJoinHuntButton().should('have.class', 'mat-mdc-button-disabled');
     // This will check if the JoinHuntButton is disabled if invalid access code is entered.
   });
 
-  it('should display the join hunt button as enabled with valid access code', () => {
-    page.getAccessCodeInput().first().type('1');
-    page.getAccessCodeInput().eq(1).type('2');
-    page.getAccessCodeInput().eq(2).type('3');
-    page.getAccessCodeInput().eq(3).type('4');
-    page.getAccessCodeInput().eq(4).type('5');
-    page.getAccessCodeInput().eq(5).type('6');
-    // These types in the access code input field.
+  it('should display the join hunt button as enabled, no warning message with valid access code', () => {
+    cy.visit(`/hosts/`);
+    page.getHuntCards().first().then(() => {
+      page.clickViewProfile(page.getHuntCards().first());
+      cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
+    });
+
+    page.clickBeginHunt();
+    page.getAccessCode();
+
+    // Those above will navigate to the Hunt, begin it
+
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    });
     page.getJoinHuntButton().should('not.have.class', 'mat-mdc-button-disabled');
     // This will check if the JoinHuntButton is enabled if valid access code (6 digit) is entered.
   });

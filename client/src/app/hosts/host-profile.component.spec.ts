@@ -145,8 +145,41 @@ describe('Ended Hunt List', () => {
   }));
 
   it('contains all the ended hunts', () => {
-    expect(startedHuntList.serverEndedHunts.length).toBe(1);
+    expect(startedHuntList.serverEndedHunts.length).toBe(4);
   });
 
+});
+
+describe('Misbehaving Ended Hunt List', () => {
+  let component: HostProfileComponent;
+  let hostService: HostService;
+  let snackBar: MatSnackBar;
+
+  beforeEach(() => {
+    hostService = jasmine.createSpyObj('HostService', ['getEndedHunts']);
+    snackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
+
+    component = new HostProfileComponent(hostService, snackBar, null);
+  });
+
+  it('should set errMsg and call snackBar.open when getEndedHunts throws a client error', () => {
+    const errorEvent = new ErrorEvent('Test Error');
+    (hostService.getEndedHunts as jasmine.Spy).and.returnValue(throwError({ error: errorEvent }));
+
+    component.getEndedHunts();
+
+    expect(component.errMsg).toBe(`Problem in the client – Error: ${errorEvent.message}`);
+    expect(snackBar.open).toHaveBeenCalledWith(component.errMsg, 'OK', { duration: 6000 });
+  });
+
+  it('should set errMsg and call snackBar.open when getEndedHunts throws a server error', () => {
+    const error = { status: 500, message: 'Server Error' };
+    (hostService.getEndedHunts as jasmine.Spy).and.returnValue(throwError(error));
+
+    component.getEndedHunts();
+
+    expect(component.errMsg).toBe(`Problem contacting the server – Error Code: ${error.status}\nMessage: ${error.message}`);
+    expect(snackBar.open).toHaveBeenCalledWith(component.errMsg, 'OK', { duration: 6000 });
+  });
 });
 

@@ -34,9 +34,17 @@
 
 </div>
 
+@if (serverEndedHunts && serverEndedHunts.length > 0) {
+  <mat-card class="search-card">
+    <mat-card-header class="header-content">
+      <mat-card-title class="hunt-list-title">Ended Hunts</mat-card-title>
+    </mat-card-header>
+  </mat-card>
+}
+
 <div class="flex-row">
 
-  @if (serverHunts) {
+  @if (serverEndedHunts) {
     <div class="flex-1" >
       <div>
         <div class="hunt-cards-container">

@@ -53,6 +53,7 @@ describe('Join Hunt', () => {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
     });
+    cy.wait(1000);
     page.getJoinHuntButton().should('not.have.class', 'mat-mdc-button-disabled');
     // This will check if the JoinHuntButton is enabled if valid access code (6 digit) is entered.
   });

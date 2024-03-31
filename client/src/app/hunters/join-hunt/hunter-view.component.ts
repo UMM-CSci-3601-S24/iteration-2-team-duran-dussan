@@ -63,21 +63,32 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event, task: Task): void {
-    const file = event.target.files[0];
+    const file: File = event.target.files[0];
     const fileType = file.type;
     if (fileType.match(/image\/*/)) {
       if (this.imageUrls[task._id] && !window.confirm('An image has already been uploaded for this task. Are you sure you want to replace it?')) {
         return;
       }
 
-      this.hostService.submitPhoto(task._id, file).subscribe(() => {
-        task.status = true;
-      }, error => {
-        console.error('Error uploading photo', error);
-        this.snackBar.open('Error uploading photo. Please try again', 'Close', {
-          duration: 3000
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        this.imageUrls[task._id] = event.target.result.toString();
+      };
+
+      if (file) {
+        this.hostService.submitPhoto(task._id, file).subscribe(() => {
+          task.status = true;
+          this.snackBar.open('Photo uploaded successfully', 'Close', {
+            duration: 3000
+          });
+        }, error => {
+          console.error('Error uploading photo', error);
+          this.snackBar.open('Error uploading photo. Please try again', 'Close', {
+            duration: 3000
+          });
         });
-      });
+      }
     }
   }
 

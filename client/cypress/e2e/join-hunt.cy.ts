@@ -83,7 +83,7 @@ describe('Join Hunt', () => {
 
     page.getHunterButton().click();
     cy.url().should('match', /\/hunters$/);
-  })
+  });
 
   it('should navigate to the right hunter view page when join hunt is clicked with valid access code', () => {
     cy.visit(`/hosts/`);

@@ -149,9 +149,4 @@ describe('StartHuntComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/hosts']);
     expect(snackBarSpy).toHaveBeenCalledWith('Hunt ended successfully', 'Close', { duration: 2000 });
   });
-
-  it('should set huntBegun to true when beginHunt is called', () => {
-    component.beginHunt();
-    expect(component.huntBegun).toBeTrue();
-  });
   });

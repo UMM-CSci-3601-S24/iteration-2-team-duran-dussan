@@ -18,6 +18,7 @@ import { HostService } from "./host.service";
 import { HuntCardComponent } from "../hunts/hunt-card.component";
 import { Router } from "@angular/router";
 import { StartedHunt } from "../startHunt/startedHunt";
+import { EndedHuntCardComponent } from "../endedHunts/ended-hunt-card.component";
 
 @Component({
   selector: 'app-host-profile-component',
@@ -25,7 +26,7 @@ import { StartedHunt } from "../startHunt/startedHunt";
   styleUrls: ['./host-profile.component.scss'],
   providers: [],
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, MatRadioModule, MatListModule, RouterLink, MatButtonModule, MatTooltipModule, MatIconModule, HuntCardComponent]
+  imports: [EndedHuntCardComponent, MatCardModule, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, MatRadioModule, MatListModule, RouterLink, MatButtonModule, MatTooltipModule, MatIconModule, HuntCardComponent]
 })
 
 export class HostProfileComponent implements OnInit, OnDestroy {
@@ -87,7 +88,7 @@ export class HostProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getHuntsFromServer();
-    //this.getEndedHunts();
+    this.getEndedHunts();
   }
 
   ngOnDestroy() {

@@ -42,8 +42,13 @@ describe('Hunter View', () => {
     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
-      cy.visit(`/hunter-view/${accessCode}`);
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
     });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
     // navigate to the hunter view page with access code.
 
@@ -64,13 +69,18 @@ describe('Hunter View', () => {
     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
-      cy.visit(`/hunter-view/${accessCode}`);
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
     });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
     // navigate to the hunter view page with access code.
 
-    page.getHuntNofTasksEst().contains('min');
-    page.getHuntNofTasksEst().contains('tasks');
+    page.getHuntTimer().contains('min');
+    page.getHuntNofTasks().contains('tasks');
   });
 
   it('should display the hunt tasks list in Your Task column', () => {
@@ -87,8 +97,13 @@ describe('Hunter View', () => {
     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
-      cy.visit(`/hunter-view/${accessCode}`);
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
     });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
     // navigate to the hunter view page with access code.
 
@@ -109,8 +124,13 @@ describe('Hunter View', () => {
     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
-      cy.visit(`/hunter-view/${accessCode}`);
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
     });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
     // navigate to the hunter view page with access code.
 
@@ -131,8 +151,13 @@ describe('Hunter View', () => {
     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
-      cy.visit(`/hunter-view/${accessCode}`);
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
     });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
     // navigate to the hunter view page with access code.
 

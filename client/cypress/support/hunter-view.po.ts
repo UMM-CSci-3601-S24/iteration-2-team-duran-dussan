@@ -1,7 +1,8 @@
 export class HunterViewPage {
   private readonly baseUrl = '/';
   private readonly huntTitle = '.hunt-title';
-  private readonly huntNofTasksEst = '.hunt';
+  private readonly huntNofTasks = '.hunt-Nof-tasks';
+  private readonly huntTimer = '.hunt-timer';
   private readonly huntTaskList = '.task-list';
   private readonly hunterUploadImage = '.image-upload';
   private readonly HunterButton = '[name="hunter-button"]';
@@ -11,6 +12,7 @@ export class HunterViewPage {
   private readonly beginHuntButton = '.begin-hunt';
   private readonly huntAccessCode = '.access-code-number';
   private readonly UploadImageButton = '.image-upload input[type="file"]';
+  private readonly joinHuntButtonSelector = '[name="join-button"]';
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -85,12 +87,21 @@ export class HunterViewPage {
   }
 
   /**
-   * Get the number of tasks and estimated time of the hunt as hunter-view.
+   * Get the number of tasks of the hunt as hunter-view.
    *
    * @returns the value of the element with the class `.hunt`
    */
-  getHuntNofTasksEst() {
-    return cy.get(this.huntNofTasksEst);
+  getHuntNofTasks() {
+    return cy.get(this.huntNofTasks);
+  }
+
+  /**
+   * Get the number of tasks of the hunt as hunter-view.
+   *
+   * @returns the value of the element with the class `.hunt`
+   */
+  getHuntTimer() {
+    return cy.get(this.huntTimer);
   }
 
   /**
@@ -118,5 +129,24 @@ export class HunterViewPage {
    */
   clickUploadImage() {
     return cy.get(this.UploadImageButton).first().click({force: true});
+  }
+
+  /**
+   * Get the position of the box in the access input field.
+   *
+   * @param index
+   * @returns
+   */
+  getAccessCodeInput(index: number) {
+    return cy.get(`.input-container input:nth-child(${index})`);
+  }
+
+  /**
+   * Click the join-hunt button DOM element.
+   *
+   * @returns the value of the element with the class.
+   */
+  clickJoinHuntButton() {
+    return cy.get(this.joinHuntButtonSelector).click();
   }
 }

@@ -30,7 +30,7 @@ export class AddHuntComponent {
     description: new FormControl('', Validators.compose([
       Validators.required,
       Validators.minLength(1),
-      Validators.maxLength(200)
+      Validators.maxLength(100)
     ])),
 
     est: new FormControl<number>(null, Validators.compose([
@@ -49,7 +49,8 @@ export class AddHuntComponent {
     ],
 
     description: [
-      { type: 'maxlength', message: 'Description cannot be more than 200 characters long' }
+      { type: 'maxlength', message: 'Description cannot be more than 100 characters long' },
+      { type: 'required', message: 'Description is required' }
     ],
 
     est: [

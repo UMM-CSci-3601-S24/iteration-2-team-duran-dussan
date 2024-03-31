@@ -18,12 +18,7 @@
   width: 300px;
 
 }
-.access-code-inputs {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 20px;
-}
+
 
 .app-join-hunt {
   display: flex;
@@ -45,4 +40,20 @@
   color: black !important;
 
   // Don't remove the !important, it's necessary to override the default color.
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  input {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #000;
+    margin-right: 10px; // Add space between the boxes
+    &:last-child {
+      margin-right: 0; // Remove the margin from the last box
+    }
+    margin-bottom: 20px;
+  }
 }

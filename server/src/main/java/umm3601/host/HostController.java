@@ -339,6 +339,11 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
+  public void addPhoto(Context ctx) {
+    String id = uploadPhoto(ctx);
+    addPhotoPathToTask(ctx, id);
+  }
+
   public String getFileExtension(String filename) {
     int dotIndex = filename.lastIndexOf('.');
     if (dotIndex >= 0) {
@@ -383,7 +388,6 @@ public class HostController implements Controller {
 
     task.photos.add(photoPath);
     taskCollection.save(task);
-    ctx.status(HttpStatus.OK);
   }
 
   public void deletePhoto(String id, Context ctx) {

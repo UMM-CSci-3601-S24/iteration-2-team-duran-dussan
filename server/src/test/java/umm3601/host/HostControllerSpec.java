@@ -1063,15 +1063,13 @@ public class HostControllerSpec {
 
     hostController.addPhotoPathToTask(ctx, photoPath);
 
-    verify(ctx).status(HttpStatus.OK);
-
     Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
     assertNotNull(updatedTask);
     assertEquals(1, updatedTask.get("photos", List.class).size());
   }
 
   @Test
-  public void testAddPhotoPathToTask_ErrorHandling() {
+  public void testAddPhotoPathToTaskErrorHandling() {
     String id = "588935f56536a3daea54de8c";
     String photoPath = "photoPath";
 
@@ -1079,6 +1077,26 @@ public class HostControllerSpec {
 
     assertThrows(BadRequestResponse.class, () -> hostController.addPhotoPathToTask(ctx, photoPath));
     verify(ctx).status(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  public void testAddPhoto() {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhoto(ctx);
+
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    String id = updatedTask.get("photos", List.class).get(0).toString();
+
+    verify(ctx).status(HttpStatus.OK);
+    hostController.deletePhoto(id, ctx);
   }
 
 }

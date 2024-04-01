@@ -3,3 +3,52 @@
   padding-bottom: 10px;
   padding: 5px;
 }
+
+/* .add-hunt-card {
+  background-color: white;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: white;
+  }
+}
+
+.mat-input {
+  background-color: white;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: white;
+  }
+} */
+
+.add-hunt-card {
+  background-color: white;
+  @media (prefers-color-scheme: dark) {
+    background-color: white;
+  }
+
+  /* This targets the actual input field within the mat-form-field */
+  mat-form-field .mat-input-element {
+    background-color: white;
+    @media (prefers-color-scheme: dark) {
+      background-color: white;
+    }
+  }
+
+  /* This targets the underline of the input field */
+  .mat-form-field-underline {
+    background-color: white;
+    @media (prefers-color-scheme: dark) {
+      background-color: white;
+    }
+  }
+
+  /* This targets the label of the input field */
+  .mat-form-field-label {
+    color: black;
+  }
+
+  /* This targets the ripple of the input field */
+  .mat-form-field-ripple {
+    background-color: black;
+  }
+}

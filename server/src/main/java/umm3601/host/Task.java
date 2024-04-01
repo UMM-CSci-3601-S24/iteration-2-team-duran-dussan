@@ -1,6 +1,6 @@
 package umm3601.host;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
@@ -16,5 +16,5 @@ public class Task {
 
     public String name;
     public boolean status;
-    public ArrayList<String> photos;
+    public List<String> photos;
 }

@@ -1126,7 +1126,7 @@ public class HostControllerSpec {
     task.photos.add(id);
     task.photos.add(id2);
 
-    ArrayList<File> photos = hostController.getPhotosFromTask(task);
+    List<File> photos = hostController.getPhotosFromTask(task);
     assertEquals(2, photos.size());
 
     hostController.deletePhoto(id, ctx);

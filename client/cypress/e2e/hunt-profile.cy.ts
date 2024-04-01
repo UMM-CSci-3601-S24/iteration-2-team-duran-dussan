@@ -39,7 +39,7 @@ describe('Hunt Profile', () => {
     page.getHuntCardBeginHuntButton().should('exist');
     page.getHuntCardBeginHuntButton().click();
     page.getAccessCode().then((accessCode) => {
-      cy.wait(1000);
+      cy.wait(2000);
       cy.url().should('eq', `http://localhost:4200/startedHunts/${accessCode}`);
     });
   })

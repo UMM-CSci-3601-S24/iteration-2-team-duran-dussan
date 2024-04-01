@@ -275,4 +275,21 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('When getEndedHunts() is called', () => {
+    it('calls api/hosts/{id}/endedHunts', waitForAsync(() => {
+      const hostId = 'testHostId';
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testStartedHunts));
+
+      hostService.getEndedHunts(hostId).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.hostUrl}/${hostId}/endedHunts`);
+      });
+    }));
+  });
 });

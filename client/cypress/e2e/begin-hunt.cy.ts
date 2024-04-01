@@ -48,4 +48,5 @@ describe('Begin Hunt', () => {
     cy.url().should('eq', 'http://localhost:4200/hosts');
     cy.on('window:confirm', () => true);
   })
+
 })

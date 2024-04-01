@@ -10,6 +10,8 @@ export class HuntProfilePage {
   private readonly BeginHuntButton = '.begin-hunt';
   private readonly huntAccessCode = '.access-code-number';
   private readonly HomeButton = '[name="home-button"]';
+  private readonly huntDescription = '.hunt-card-description';
+  private readonly huntName = '.hunt-card-name'
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -55,14 +57,14 @@ export class HuntProfilePage {
    * @returns The hunt card title
    */
   getHuntCardTitle() {
-    return cy.get('.hunt-card-name');
+    return cy.get(this.huntName);
   }
 
   /**
    * @returns The hunt card description
    */
   getHuntCardDescription() {
-    return cy.get('.hunt-card-description');
+    return cy.get(this.huntDescription);
   }
 
   /**

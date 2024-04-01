@@ -431,7 +431,7 @@ public class HostController implements Controller {
     server.get(API_START_HUNT, this::startHunt);
     server.get(API_STARTED_HUNT, this::getStartedHunt);
     server.put(API_END_HUNT, this::endStartedHunt);
+    server.post(API_PHOTO_UPLOAD, this::addPhoto);
     server.get(API_ENDED_HUNTS, this::getEndedHunts);
-    server.post(API_PHOTO_UPLOAD, this::uploadPhoto);
   }
 }

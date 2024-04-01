@@ -59,6 +59,11 @@ export class HostService {
     return this.httpClient.put<void>(`${this.endHuntUrl}/${id}`, null);
   }
 
+  // This is a get request that gets all the ended StartedHunts
+  getEndedHunts(hostId: string): Observable<StartedHunt[]> {
+    return this.httpClient.get<StartedHunt[]>(`${this.hostUrl}/${hostId}/endedHunts`);
+  }
+
   submitPhoto(taskId: string, photo: File): Observable<void> {
     const formData = new FormData();
     formData.append('photo', photo);

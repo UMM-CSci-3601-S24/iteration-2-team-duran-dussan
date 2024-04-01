@@ -279,7 +279,6 @@ describe('When getHunts() is called', () => {
     }));
   });
 
-<<<<<<< HEAD
   describe('When getEndedHunts() is called', () => {
     it('calls api/hosts/{id}/endedHunts', waitForAsync(() => {
       const hostId = 'testHostId';
@@ -297,10 +296,7 @@ describe('When getHunts() is called', () => {
     }));
   });
 
-  describe('Submiting a photo using `submitPhoto()`', () => {
-=======
   describe('Submitting a photo using `submitPhoto()`', () => {
->>>>>>> 0b5d04d (Added photos array to tasks and fixed tests)
     it('talks to the right endpoint and is called once', waitForAsync(() => {
       const task_id = 'task_id';
       const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });

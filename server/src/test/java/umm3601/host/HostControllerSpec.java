@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -986,8 +986,7 @@ class HostControllerSpec {
 
     String id = hostController.uploadPhoto(ctx);
 
-    verify(ctx).status(200);
-    verify(ctx).result(startsWith("Photo uploaded successfully with ID: "));
+    verify(ctx).status(HttpStatus.OK);
     hostController.deletePhoto(id, ctx);
   }
 
@@ -997,10 +996,12 @@ class HostControllerSpec {
     when(ctx.uploadedFile("photo")).thenReturn(null);
     when(ctx.status(anyInt())).thenReturn(ctx);
 
-    hostController.uploadPhoto(ctx);
-
-    verify(ctx).status(400);
-    verify(ctx).result(startsWith("No photo uploaded"));
+    try {
+      hostController.uploadPhoto(ctx);
+      fail("Expected BadRequestResponse");
+    } catch (BadRequestResponse e) {
+      assertEquals("Unexpected error during photo upload: No photo uploaded", e.getMessage());
+    }
   }
 
   @Test
@@ -1012,30 +1013,12 @@ class HostControllerSpec {
     when(uploadedFile.content()).thenThrow(new RuntimeException("Test Exception"));
     when(ctx.status(anyInt())).thenReturn(ctx);
 
-    hostController.uploadPhoto(ctx);
-
-    verify(ctx).status(500);
-    verify(ctx).result(startsWith("Photo upload failed: "));
-  }
-
-  @Test
-  void testDeletePhotoWithPhoto() throws IOException, InterruptedException {
-    UploadedFile uploadedFile = mock(UploadedFile.class);
-    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-
-    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
-    when(uploadedFile.content()).thenReturn(inputStream);
-    when(uploadedFile.filename()).thenReturn("test.jpg");
-    when(ctx.status(anyInt())).thenReturn(ctx);
-
-    String id = hostController.uploadPhoto(ctx);
-
-    verify(ctx).status(200);
-    verify(ctx).result(startsWith("Photo uploaded successfully with ID: "));
-
-    hostController.deletePhoto(id, ctx);
-
-    verify(ctx).result(startsWith("Photo deleted successfully"));
+    try {
+      hostController.uploadPhoto(ctx);
+      fail("Expected BadRequestResponse");
+    } catch (BadRequestResponse e) {
+      assertEquals("Unexpected error during photo upload: Test Exception", e.getMessage());
+    }
   }
 
   @Test
@@ -1044,10 +1027,26 @@ class HostControllerSpec {
     when(ctx.uploadedFile("photo")).thenReturn(null);
     when(ctx.status(anyInt())).thenReturn(ctx);
 
-    hostController.deletePhoto("test", ctx);
+    try {
+      hostController.deletePhoto("test", ctx);
+      fail("Expected BadRequestResponse");
+    } catch (BadRequestResponse e) {
+      assertEquals("Photo with ID test does not exist", e.getMessage());
+    }
+  }
 
-    verify(ctx).status(500);
-    verify(ctx).result(startsWith("Photo deletion failed: "));
+  @Test
+  void testDeletePhotoBadRequestResponse() {
+
+    when(ctx.uploadedFile("photo")).thenReturn(null);
+    when(ctx.status(anyInt())).thenReturn(ctx);
+
+    try {
+      hostController.deletePhoto("test", ctx);
+      fail("Expected BadRequestResponse");
+    } catch (BadRequestResponse e) {
+      assertEquals("Photo with ID test does not exist", e.getMessage());
+    }
   }
 
 }

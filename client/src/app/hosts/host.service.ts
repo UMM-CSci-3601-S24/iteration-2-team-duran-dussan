@@ -70,4 +70,10 @@ export class HostService {
     return this.httpClient.delete<void>(`${this.endedHuntsUrl}/${id}`);
   }
 
+  submitPhoto(taskId: string, photo: File): Observable<void> {
+    const formData = new FormData();
+    formData.append('photo', photo);
+    return this.httpClient.post<void>(`${this.taskUrl}/${taskId}/photo`, formData);
+  }
+
 }

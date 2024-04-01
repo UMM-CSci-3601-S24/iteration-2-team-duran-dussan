@@ -292,4 +292,23 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('Deleting an ended hunt using `deleteEndedHunt()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const hunt_id = 'hunt_id';
+
+      const mockedMethod = spyOn(httpClient, 'delete')
+        .and
+        .returnValue(of(undefined));
+
+      hostService.deleteEndedHunt(hunt_id).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.endedHuntsUrl}/${hunt_id}`);
+      });
+    }));
+  });
 });

@@ -44,6 +44,9 @@ export class HunterViewComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
       ).subscribe({
         next: startedHunt => {
+          for (const task of startedHunt.completeHunt.tasks) {
+            task.photos = [];
+          }
           this.startedHunt = startedHunt;
           return;
         },

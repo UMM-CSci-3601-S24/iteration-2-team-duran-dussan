@@ -40,19 +40,22 @@ const testTasks: Task[] = [
     _id: "5889",
     huntId: "588",
     name: "Default Task 1",
-    status: false
+    status: false,
+    photos: []
   },
   {
     _id: "5754",
     huntId: "575",
     name: "Default Task 2",
-    status: false
+    status: false,
+    photos: []
   },
   {
     _id: "de7c",
     huntId: "e7c",
     name: "Default Task 3",
-    status: false
+    status: false,
+    photos: []
   },
 ];
 
@@ -293,14 +296,14 @@ describe('When getHunts() is called', () => {
     }));
   });
 
-  describe('Submiting a photo using `submitPhoto()`', () => {
+  describe('Submitting a photo using `submitPhoto()`', () => {
     it('talks to the right endpoint and is called once', waitForAsync(() => {
       const task_id = 'task_id';
       const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });
 
       const mockedMethod = spyOn(httpClient, 'post')
         .and
-        .returnValue(of(undefined));
+        .returnValue(of({id: 'someId'}));
 
       hostService.submitPhoto(task_id, photo).subscribe(() => {
         expect(mockedMethod)
@@ -312,6 +315,33 @@ describe('When getHunts() is called', () => {
         expect(args[0])
         .withContext('talks to the correct endpoint')
         .toEqual(`${hostService.taskUrl}/${task_id}/photo`);
+
+        const formData: FormData = args[1];
+        expect(formData.get('photo')).toEqual(photo);
+      });
+    }));
+  });
+
+  describe('Replacing a photo using `replacePhoto()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const task_id = 'task_id';
+      const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });
+      const photoPath = 'photo.jpg';
+
+      const mockedMethod = spyOn(httpClient, 'put')
+        .and
+        .returnValue(of({id: 'someId'}));
+
+      hostService.replacePhoto(task_id, photoPath ,photo).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        const args = mockedMethod.calls.first().args;
+
+        expect(args[0])
+        .withContext('talks to the correct endpoint')
+        .toEqual(`${hostService.taskUrl}/${task_id}/photo/${photoPath}`);
 
         const formData: FormData = args[1];
         expect(formData.get('photo')).toEqual(photo);

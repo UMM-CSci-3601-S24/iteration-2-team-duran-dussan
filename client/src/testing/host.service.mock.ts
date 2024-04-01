@@ -44,19 +44,22 @@ export class MockHostService extends HostService {
         "_id": "588935f57546a2daea54de8c",
         "huntId": "ann_id",
         "name": "Take a picture of a bird",
-        "status": false
+        "status": false,
+        "photos": []
       },
       {
         "_id": "588935f57546a2daea54de9c",
         "huntId": "ann_id",
         "name": "Take a picture of a dog",
-        "status": false
+        "status": false,
+        "photos": []
       },
       {
         "_id": "588935f57546a3daea54de8c",
         "huntId": "ann_id",
         "name": "Take a picture of a Stop sign",
-        "status": false
+        "status": false,
+        "photos": []
       },]
     },
     {
@@ -65,13 +68,15 @@ export class MockHostService extends HostService {
         "_id": "588935f57556a2daea54de8c",
         "huntId": "fran_id",
         "name": "Take a picture of a restaurant",
-        "status": false
+        "status": false,
+        "photos": []
       },
       {
         "_id": "588935f56536a3daea54de8c",
         "huntId": "fran_id",
         "name": "Take a picture of a cat",
-        "status": false
+        "status": false,
+        "photos": []
       }]
     },
     {
@@ -80,25 +85,29 @@ export class MockHostService extends HostService {
         "_id": "588933f57556a3daea54de8c",
         "huntId": "jan_id",
         "name": "Take a picture of a red car",
-        "status": false
+        "status": false,
+        "photos": []
       },
       {
         "_id": "588535f57556a3daea54de8c",
         "huntId": "jan_id",
         "name": "Take a picture of a slide",
-        "status": false
+        "status": false,
+        "photos": []
       },
       {
         "_id": "583935f57556a3daea54de8c",
         "huntId": "jan_id",
         "name": "Take a picture of a Yield sign",
-        "status": false
+        "status": false,
+        "photos": []
       },
       {
         "_id": "548935f57556a3daea54de8c",
         "huntId": "jan_id",
         "name": "Take a picture of a football field",
-        "status": false
+        "status": false,
+        "photos": []
       }]
     }
   ];
@@ -113,19 +122,22 @@ export class MockHostService extends HostService {
           "_id": "588935f57546a2daea54de8c",
           "huntId": "ann_id",
           "name": "Take a picture of a bird",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "588935f57546a2daea54de9c",
           "huntId": "ann_id",
           "name": "Take a picture of a dog",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "588935f57546a3daea54de8c",
           "huntId": "ann_id",
           "name": "Take a picture of a Stop sign",
-          "status": false
+          "status": false,
+          "photos": []
         }]
       }
     },
@@ -138,13 +150,15 @@ export class MockHostService extends HostService {
             "_id": "588935f57556a2daea54de8c",
             "huntId": "fran_id",
             "name": "Take a picture of a restaurant",
-            "status": false
+            "status": false,
+            "photos": []
           },
           {
             "_id": "588935f56536a3daea54de8c",
             "huntId": "fran_id",
             "name": "Take a picture of a cat",
-            "status": false
+            "status": false,
+            "photos": []
           }]
       }
     },
@@ -157,25 +171,29 @@ export class MockHostService extends HostService {
           "_id": "588933f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a red car",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "588535f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a slide",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "583935f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a Yield sign",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "548935f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a football field",
-          "status": false
+          "status": false,
+          "photos": []
         }]
       }
     },
@@ -188,25 +206,29 @@ export class MockHostService extends HostService {
           "_id": "588933f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a red car",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "588535f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a slide",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "583935f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a Yield sign",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "548935f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a football field",
-          "status": false
+          "status": false,
+          "photos": []
         }]
       }
     }

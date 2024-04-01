@@ -2,6 +2,7 @@ package umm3601.host;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ import io.javalin.validation.ValidationException;
 import io.javalin.validation.Validator;
 
 @SuppressWarnings({ "MagicNumber" })
-public class HostControllerSpec {
+class HostControllerSpec {
   private HostController hostController;
   private ObjectId frysId;
   private ObjectId huntId;
@@ -171,32 +173,38 @@ public class HostControllerSpec {
     taskDocuments.drop();
     List<Document> testTasks = new ArrayList<>();
     testTasks.add(
-        new Document()
-            .append("huntId", huntId.toHexString())
-            .append("name", "Take a picture of a cat")
-            .append("status", false));
+      new Document()
+        .append("huntId", huntId.toHexString())
+        .append("name", "Take a picture of a cat")
+        .append("status", false)
+        .append("photos", new ArrayList<String>()));
     testTasks.add(
-        new Document()
-            .append("huntId", huntId.toHexString())
-            .append("name", "Take a picture of a dog")
-            .append("status", false));
+      new Document()
+        .append("huntId", huntId.toHexString())
+        .append("name", "Take a picture of a dog")
+        .append("status", false)
+        .append("photos", new ArrayList<String>()));
+
     testTasks.add(
         new Document()
             .append("huntId", huntId.toHexString())
             .append("name", "Take a picture of a park")
-            .append("status", true));
+            .append("status", true)
+            .append("photos", new ArrayList<String>()));
     testTasks.add(
         new Document()
             .append("huntId", "differentId")
             .append("name", "Take a picture of a moose")
-            .append("status", true));
+            .append("status", true)
+            .append("photos", new ArrayList<String>()));
 
     taskId = new ObjectId();
     Document task = new Document()
         .append("_id", taskId)
         .append("huntId", "someId")
         .append("name", "Best Task")
-        .append("status", false);
+        .append("status", false)
+        .append("photos", new ArrayList<String>());
 
     taskDocuments.insertMany(testTasks);
     taskDocuments.insertOne(task);
@@ -594,6 +602,7 @@ public class HostControllerSpec {
     assertEquals("New Task", addedTask.get("name"));
     assertEquals("bestHuntId", addedTask.get("huntId"));
     assertEquals(false, addedTask.get("status"));
+    assertEquals(new ArrayList<String>(), addedTask.get("photos"));
   }
 
   @Test
@@ -1047,6 +1056,131 @@ public class HostControllerSpec {
     } catch (BadRequestResponse e) {
       assertEquals("Photo with ID test does not exist", e.getMessage());
     }
+  }
+
+  @Test
+  void testAddPhotoPathToTask() throws IOException {
+    String photoPath = "test.jpg";
+
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhotoPathToTask(ctx, photoPath);
+
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    assertNotNull(updatedTask);
+    assertEquals(1, updatedTask.get("photos", List.class).size());
+  }
+
+  @Test
+  void testAddPhotoPathToTaskErrorHandling() {
+    String id = "588935f56536a3daea54de8c";
+    String photoPath = "photoPath";
+
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    assertThrows(BadRequestResponse.class, () -> hostController.addPhotoPathToTask(ctx, photoPath));
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  void testAddPhoto() {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhoto(ctx);
+
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    String id = updatedTask.get("photos", List.class).get(0).toString();
+
+    verify(ctx).status(HttpStatus.OK);
+    hostController.deletePhoto(id, ctx);
+  }
+
+  @Test
+  void testGetPhotosFromTask() {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhoto(ctx);
+    hostController.addPhoto(ctx);
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    Task task = new Task();
+    task._id = updatedTask.get("_id").toString();
+    task.huntId = updatedTask.get("huntId").toString();
+    task.name = updatedTask.get("name").toString();
+    task.status = updatedTask.getBoolean("status");
+    task.photos = new ArrayList<String>();
+    String id = updatedTask.get("photos", List.class).get(0).toString();
+    String id2 = updatedTask.get("photos", List.class).get(1).toString();
+    task.photos.add(id);
+    task.photos.add(id2);
+
+    List<File> photos = hostController.getPhotosFromTask(task);
+    assertEquals(2, photos.size());
+
+    hostController.deletePhoto(id, ctx);
+    hostController.deletePhoto(id2, ctx);
+  }
+
+  @Test
+  void testRemovePhotoPathFromTask() {
+    String photoPath = "test.jpg";
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhotoPathToTask(ctx, photoPath);
+    hostController.removePhotoPathFromTask(ctx, taskId.toHexString(), photoPath);
+
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    assertNotNull(updatedTask);
+    assertEquals(0, updatedTask.get("photos", List.class).size());
+  }
+
+  @Test
+  void testRemovePhotoPathFromTaskErrorHandling() {
+    String id = "588935f56536a3daea54de8c";
+    String photoPath = "photoPath";
+
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    assertThrows(BadRequestResponse.class, () -> hostController.removePhotoPathFromTask(ctx, id, photoPath));
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  void testReplacePhoto() {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test1.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhoto(ctx);
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    String photoId = updatedTask.get("photos", List.class).get(0).toString();
+    when(ctx.pathParam("photoId")).thenReturn(photoId);
+    hostController.replacePhoto(ctx);
+
+    updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    assertFalse(updatedTask.get("photos", List.class).get(0).toString().equals(photoId));
+    photoId = updatedTask.get("photos", List.class).get(0).toString();
+
+    assertNotNull(updatedTask);
+    hostController.deletePhoto(photoId, ctx);
   }
 
 }

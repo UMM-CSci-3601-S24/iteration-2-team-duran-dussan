@@ -15,7 +15,7 @@ describe('HunterViewComponent', () => {
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
-    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt', 'submitPhoto']);
+    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt', 'submitPhoto', 'replacePhoto']);
     mockRoute = {
       paramMap: new Subject<ParamMap>()
     };
@@ -71,7 +71,8 @@ describe('HunterViewComponent', () => {
             _id: '1',
             huntId: '1',
             name: 'Task 1',
-            status: true
+            status: true,
+            photos: []
           }
         ]
       },
@@ -99,7 +100,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should handle file selected event', () => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -123,7 +124,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should not replace image if user choose cancel', () => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -146,7 +147,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should replace image if user choose ok', () => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -173,7 +174,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should handle error when submitting photo', fakeAsync(() => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [

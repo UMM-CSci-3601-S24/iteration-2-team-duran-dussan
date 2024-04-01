@@ -407,6 +407,17 @@ public class HostController implements Controller {
     }
   }
 
+  public ArrayList<File> getPhotosFromTask(Task task) {
+    ArrayList<File> photos = new ArrayList<>();
+    for (String photoPath : task.photos) {
+      File photo = new File(photoPath);
+      if (photo.exists()) {
+        photos.add(photo);
+      }
+    }
+    return photos;
+  }
+
   @Override
   public void addRoutes(Javalin server) {
     server.get(API_HOST, this::getHunts);

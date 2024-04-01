@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -1097,6 +1098,38 @@ public class HostControllerSpec {
 
     verify(ctx).status(HttpStatus.OK);
     hostController.deletePhoto(id, ctx);
+  }
+
+  @Test
+  public void testGetPhotosFromTask() {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhoto(ctx);
+    hostController.addPhoto(ctx);
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    Task task = new Task();
+    task._id = updatedTask.get("_id").toString();
+    task.huntId = updatedTask.get("huntId").toString();
+    task.name = updatedTask.get("name").toString();
+    task.status = updatedTask.getBoolean("status");
+    task.photos = new ArrayList<String>();
+    String id = updatedTask.get("photos", List.class).get(0).toString();
+    String id2 = updatedTask.get("photos", List.class).get(1).toString();
+    task.photos.add(id);
+    task.photos.add(id2);
+
+    ArrayList<File> photos = hostController.getPhotosFromTask(task);
+    assertEquals(2, photos.size());
+
+    hostController.deletePhoto(id, ctx);
+    hostController.deletePhoto(id2, ctx);
   }
 
 }

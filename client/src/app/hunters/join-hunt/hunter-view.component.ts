@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subject, throwError } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { StartedHunt } from 'src/app/startHunt/startedHunt';
 import { Task } from 'src/app/hunts/task';
@@ -78,12 +78,12 @@ export class HunterViewComponent implements OnInit, OnDestroy {
 
       if (file) {
         this.hostService.submitPhoto(task._id, file).pipe(
-          catchError(error => {
+          catchError((error: Error) => {
             console.error('Error uploading photo', error);
             this.snackBar.open('Error uploading photo. Please try again', 'Close', {
               duration: 3000
             });
-            return throwError(() => error);
+            return of(null);
           })
         ).subscribe(() => {
           task.status = true;

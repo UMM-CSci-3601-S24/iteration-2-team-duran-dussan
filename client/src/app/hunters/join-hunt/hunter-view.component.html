@@ -21,6 +21,6 @@
       />
       <label for="img-{{task._id}}">Upload Image</label>
     </div>
-    <div class="task-list">{{ task.name }}</div>
+    <div class="task-list" [ngClass]="{'task-completed': task.status}">{{ task.name }}</div>
   </div>
 </div>

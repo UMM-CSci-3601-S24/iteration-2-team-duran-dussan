@@ -275,4 +275,47 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('When getEndedHunts() is called', () => {
+    it('calls api/hosts/{id}/endedHunts', waitForAsync(() => {
+      const hostId = 'testHostId';
+      const mockedMethod = spyOn(httpClient, 'get').and.returnValue(of(testStartedHunts));
+
+      hostService.getEndedHunts(hostId).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        expect(mockedMethod)
+          .withContext('talks to the correct endpoint')
+          .toHaveBeenCalledWith(`${hostService.hostUrl}/${hostId}/endedHunts`);
+      });
+    }));
+  });
+
+  describe('Submiting a photo using `submitPhoto()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const task_id = 'task_id';
+      const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });
+
+      const mockedMethod = spyOn(httpClient, 'post')
+        .and
+        .returnValue(of(undefined));
+
+      hostService.submitPhoto(task_id, photo).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        const args = mockedMethod.calls.first().args;
+
+        expect(args[0])
+        .withContext('talks to the correct endpoint')
+        .toEqual(`${hostService.taskUrl}/${task_id}/photo`);
+
+        const formData: FormData = args[1];
+        expect(formData.get('photo')).toEqual(photo);
+      });
+    }));
+  });
 });

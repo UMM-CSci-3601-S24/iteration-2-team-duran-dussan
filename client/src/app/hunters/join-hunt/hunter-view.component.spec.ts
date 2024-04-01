@@ -15,7 +15,7 @@ describe('HunterViewComponent', () => {
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
-    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt']);
+    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt', 'submitPhoto']);
     mockRoute = {
       paramMap: new Subject<ParamMap>()
     };
@@ -103,22 +103,23 @@ describe('HunterViewComponent', () => {
     const event = {
       target: {
         files: [
-          {
-            type: 'image/png',
-            result: 'data:image/png;base64,'
-          }
+          new File([''], 'photo.jpg', { type: 'image/jpeg' })
         ]
       }
     };
-    const reader = jasmine.createSpyObj('FileReader', ['readAsDataURL', 'onload']);
+    const reader = jasmine.createSpyObj('FileReader', ['readAsDataURL']);
+    reader.onload = null;
     spyOn(window, 'FileReader').and.returnValue(reader);
+
+    mockHostService.submitPhoto.and.returnValue(of(undefined));
 
     component.onFileSelected(event, task);
 
     expect(reader.readAsDataURL).toHaveBeenCalledWith(event.target.files[0]);
 
-    reader.onload({ target: { result: event.target.files[0].result } });
-    expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
+    reader.onload({ target: { result: 'data:image/jpeg;base64,' } } as ProgressEvent<FileReader>);
+
+    expect(component.imageUrls[task._id]).toBe('data:image/jpeg;base64,');
   });
 
   it('should not replace image if user choose cancel', () => {
@@ -149,25 +150,26 @@ describe('HunterViewComponent', () => {
     const event = {
       target: {
         files: [
-          {
-            type: 'image/png',
-            result: 'data:image/png;base64,'
-          }
+          new File([''], 'photo.jpg', { type: 'image/jpeg' })
         ]
       }
     };
-    const reader = jasmine.createSpyObj('FileReader', ['readAsDataURL', 'onload']);
+    const reader = jasmine.createSpyObj('FileReader', ['readAsDataURL']);
+    reader.onload = null;
     spyOn(window, 'FileReader').and.returnValue(reader);
 
     component.imageUrls[task._id] = 'data:image/png;base64,';
     spyOn(window, 'confirm').and.returnValue(true);
 
+    mockHostService.submitPhoto.and.returnValue(of(undefined));
+
     component.onFileSelected(event, task);
 
     expect(reader.readAsDataURL).toHaveBeenCalledWith(event.target.files[0]);
 
-    reader.onload({ target: { result: event.target.files[0].result } });
-    expect(component.imageUrls[task._id]).toBe(event.target.files[0].result);
+    reader.onload({ target: { result: 'data:image/jpeg;base64,' } } as ProgressEvent<FileReader>);
+
+    expect(component.imageUrls[task._id]).toBe('data:image/jpeg;base64,');
   });
 });
 

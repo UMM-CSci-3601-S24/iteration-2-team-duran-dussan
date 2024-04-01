@@ -430,7 +430,7 @@ public class HostController implements Controller {
     taskCollection.save(task);
   }
 
-  public ArrayList<File> getPhotosFromTask(Task task) {
+  public List<File> getPhotosFromTask(Task task) {
     ArrayList<File> photos = new ArrayList<>();
     for (String photoPath : task.photos) {
       File photo = new File("photos/" + photoPath);

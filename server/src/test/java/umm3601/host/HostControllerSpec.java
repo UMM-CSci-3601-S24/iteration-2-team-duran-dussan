@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -172,32 +171,38 @@ public class HostControllerSpec {
     taskDocuments.drop();
     List<Document> testTasks = new ArrayList<>();
     testTasks.add(
-        new Document()
-            .append("huntId", huntId.toHexString())
-            .append("name", "Take a picture of a cat")
-            .append("status", false));
+      new Document()
+        .append("huntId", huntId.toHexString())
+        .append("name", "Take a picture of a cat")
+        .append("status", false)
+        .append("photos", new ArrayList<String>()));
     testTasks.add(
-        new Document()
-            .append("huntId", huntId.toHexString())
-            .append("name", "Take a picture of a dog")
-            .append("status", false));
+      new Document()
+        .append("huntId", huntId.toHexString())
+        .append("name", "Take a picture of a dog")
+        .append("status", false)
+        .append("photos", new ArrayList<String>()));
+
     testTasks.add(
         new Document()
             .append("huntId", huntId.toHexString())
             .append("name", "Take a picture of a park")
-            .append("status", true));
+            .append("status", true)
+            .append("photos", new ArrayList<String>()));
     testTasks.add(
         new Document()
             .append("huntId", "differentId")
             .append("name", "Take a picture of a moose")
-            .append("status", true));
+            .append("status", true)
+            .append("photos", new ArrayList<String>()));
 
     taskId = new ObjectId();
     Document task = new Document()
         .append("_id", taskId)
         .append("huntId", "someId")
         .append("name", "Best Task")
-        .append("status", false);
+        .append("status", false)
+        .append("photos", new ArrayList<String>());
 
     taskDocuments.insertMany(testTasks);
     taskDocuments.insertOne(task);
@@ -1047,6 +1052,32 @@ public class HostControllerSpec {
     } catch (BadRequestResponse e) {
       assertEquals("Photo with ID test does not exist", e.getMessage());
     }
+  }
+
+  @Test
+  void testAddPhotoPathToTask() throws IOException {
+    String photoPath = "test.jpg";
+
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhotoPathToTask(ctx, photoPath);
+
+    verify(ctx).status(HttpStatus.OK);
+
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    assertNotNull(updatedTask);
+    assertEquals(1, updatedTask.get("photos", List.class).size());
+  }
+
+  @Test
+  public void testAddPhotoPathToTask_ErrorHandling() {
+    String id = "588935f56536a3daea54de8c";
+    String photoPath = "photoPath";
+
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    assertThrows(BadRequestResponse.class, () -> hostController.addPhotoPathToTask(ctx, photoPath));
+    verify(ctx).status(HttpStatus.NOT_FOUND);
   }
 
 }

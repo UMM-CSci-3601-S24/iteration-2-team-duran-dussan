@@ -371,6 +371,19 @@ public class HostController implements Controller {
     }
   }
 
+  public void addPhotoPathToTask(Context ctx, String photoPath) {
+    String id = ctx.pathParam("id");
+    Task task = taskCollection.find(eq("_id", new ObjectId(id))).first();
+    if (task == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("Task with ID " + id + " does not exist");
+    }
+
+    task.photos.add(photoPath);
+    taskCollection.save(task);
+    ctx.status(HttpStatus.OK);
+  }
+
   public void deletePhoto(String id, Context ctx) {
     Path filePath = Path.of(id);
     if (!Files.exists(filePath)) {

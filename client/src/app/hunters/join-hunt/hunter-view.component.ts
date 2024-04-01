@@ -3,8 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { StartedHunt } from 'src/app/startHunt/startedHunt';
 import { Task } from 'src/app/hunts/task';
 import { HuntCardComponent } from 'src/app/hunts/hunt-card.component';
@@ -63,17 +63,35 @@ export class HunterViewComponent implements OnInit, OnDestroy {
   }
 
   onFileSelected(event, task: Task): void {
-    const fileType = event.target.files[0].type;
+    const file: File = event.target.files[0];
+    const fileType = file.type;
     if (fileType.match(/image\/*/)) {
       if (this.imageUrls[task._id] && !window.confirm('An image has already been uploaded for this task. Are you sure you want to replace it?')) {
         return;
       }
 
       const reader = new FileReader();
-      reader.readAsDataURL(event.target.files[0]);
+      reader.readAsDataURL(file);
       reader.onload = (event: ProgressEvent<FileReader>) => {
         this.imageUrls[task._id] = event.target.result.toString();
       };
+
+      if (file) {
+        this.hostService.submitPhoto(task._id, file).pipe(
+          catchError((error: Error) => {
+            console.error('Error uploading photo', error);
+            this.snackBar.open('Error uploading photo. Please try again', 'Close', {
+              duration: 3000
+            });
+            return of(null);
+          })
+        ).subscribe(() => {
+          task.status = true;
+          this.snackBar.open('Photo uploaded successfully', 'Close', {
+            duration: 3000
+          });
+        });
+      }
     }
   }
 

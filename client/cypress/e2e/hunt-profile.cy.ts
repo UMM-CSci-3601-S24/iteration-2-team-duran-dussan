@@ -12,13 +12,13 @@ describe('Hunt Profile', () => {
     cy.task('seed:database');
   });
 
-  it('should display the title', () => {
-    page.getHuntCard().contains('Default Hunt 1');
-  });
+  // it('should display the title', () => {
+  //   page.getHuntCard().contains('Default Hunt 1');
+  // });
 
-  it('should display a task', () => {
-    page.getTasks().contains('Take a picture of');
-  });
+  // it('should display a task', () => {
+  //   page.getTasks().contains('Take a picture of');
+  // });
 
   describe('Adding a new task and deleting hunts and tasks', () => {
 

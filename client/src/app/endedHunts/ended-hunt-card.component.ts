@@ -18,13 +18,14 @@ import { StartedHunt } from "../startHunt/startedHunt";
 export class EndedHuntCardComponent {
   startedHunt = input.required<StartedHunt>();
   simple = input(true);
+  customConfirm = 'Are you sure you want to delete this hunt?';
 
   constructor(private hostService: HostService, private router: Router) {}
 
   @Output() readonly huntDeleted = new EventEmitter<string>();
 
   deleteEndedHunt(id: string): void {
-    if (window.confirm('Are you sure you want to delete this hunt?')) {
+    if (window.confirm(this.customConfirm)) {
       this.hostService.deleteEndedHunt(id).subscribe(() => {
         this.huntDeleted.emit(id);
       });

@@ -25,3 +25,18 @@
     box-shadow: #00ccff;
   }
 }
+
+.remove-hunt-fab {
+  background-color: transparent;
+  color: red;
+}
+
+.remove-hunt-fab:hover {
+  background-color: red;
+  color: white;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+}

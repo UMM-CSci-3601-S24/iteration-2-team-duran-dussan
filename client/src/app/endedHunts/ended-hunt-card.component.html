@@ -8,7 +8,9 @@
       <div>
         @if (this.simple()) {
           <mat-card-actions>
-            <button mat-button data-test=deleteStartedHuntButton (click)="deleteEndedHunt(startedHunt()._id)" class="profile-button">Delete Hunt</button>
+            <button mat-fab class="remove-hunt-fab" matTooltip="Delete Hunt" matTooltipPosition="left" (click)="deleteEndedHunt(startedHunt()._id)" data-test="deleteStartedHuntButton">
+              <mat-icon class="md-24" aria-label="Delete Hunt">delete</mat-icon>
+            </button>
           </mat-card-actions>
         }
       </div>

@@ -600,6 +600,7 @@ public class HostControllerSpec {
     assertEquals("New Task", addedTask.get("name"));
     assertEquals("bestHuntId", addedTask.get("huntId"));
     assertEquals(false, addedTask.get("status"));
+    assertEquals(new ArrayList<String>(), addedTask.get("photos"));
   }
 
   @Test

@@ -196,6 +196,8 @@ public class HostController implements Controller {
     .check(task -> task.name.length() > 0, "Name must be at least 1 character")
     .get();
 
+    newTask.photos = new ArrayList<String>();
+
     taskCollection.insertOne(newTask);
     increaseTaskCount(newTask.huntId);
     ctx.json(Map.of("id", newTask._id));

@@ -26,7 +26,6 @@ export class EndedHuntCardComponent {
   deleteEndedHunt(id: string): void {
     if (window.confirm('Are you sure you want to delete this hunt?')) {
       this.hostService.deleteEndedHunt(id).subscribe(() => {
-        console.log('Ended hunt deleted successfully');
         this.huntDeleted.emit(id);
       });
     }

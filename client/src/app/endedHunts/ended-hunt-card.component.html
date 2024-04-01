@@ -1,0 +1,8 @@
+@if (this.startedHunt()) {
+  <mat-card class="ended-hunt-card">
+    <mat-card-header>
+      <mat-card-title class="ended-hunt-card-name">{{ this.startedHunt().completeHunt.hunt.name }}</mat-card-title>
+      <mat-card-subtitle class="ended-hunt-card-description">{{ this.startedHunt().completeHunt.hunt.description }}</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+}

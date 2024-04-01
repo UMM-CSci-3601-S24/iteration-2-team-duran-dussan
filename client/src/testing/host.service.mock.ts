@@ -206,25 +206,29 @@ export class MockHostService extends HostService {
           "_id": "588933f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a red car",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "588535f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a slide",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "583935f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a Yield sign",
-          "status": false
+          "status": false,
+          "photos": []
         },
         {
           "_id": "548935f57556a3daea54de8c",
           "huntId": "jan_id",
           "name": "Take a picture of a football field",
-          "status": false
+          "status": false,
+          "photos": []
         }]
       }
     }

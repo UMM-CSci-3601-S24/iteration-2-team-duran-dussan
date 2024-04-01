@@ -4,5 +4,14 @@
       <mat-card-title class="ended-hunt-card-name">{{ this.startedHunt().completeHunt.hunt.name }}</mat-card-title>
       <mat-card-subtitle class="ended-hunt-card-description">{{ this.startedHunt().completeHunt.hunt.description }}</mat-card-subtitle>
     </mat-card-header>
+    <mat-card-actions class="actions-container">
+      <div>
+        @if (this.simple()) {
+          <mat-card-actions>
+            <button mat-button data-test=deleteStartedHuntButton (click)="deleteEndedHunt(startedHunt()._id)" class="profile-button">Delete Hunt</button>
+          </mat-card-actions>
+        }
+      </div>
+    </mat-card-actions>
   </mat-card>
 }

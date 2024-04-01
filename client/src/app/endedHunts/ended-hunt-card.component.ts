@@ -21,4 +21,10 @@ export class EndedHuntCardComponent {
 
   constructor(private hostService: HostService, private router: Router) {}
 
+  deleteEndedHunt(id: string): void {
+    this.hostService.deleteEndedHunt(id).subscribe(() => {
+      console.log('Ended hunt deleted successfully');
+    });
+  }
+
 }

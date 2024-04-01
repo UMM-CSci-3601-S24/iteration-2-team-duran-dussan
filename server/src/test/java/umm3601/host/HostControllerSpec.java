@@ -1071,7 +1071,7 @@ public class HostControllerSpec {
   }
 
   @Test
-  public void testAddPhotoPathToTaskErrorHandling() {
+  void testAddPhotoPathToTaskErrorHandling() {
     String id = "588935f56536a3daea54de8c";
     String photoPath = "photoPath";
 
@@ -1082,7 +1082,7 @@ public class HostControllerSpec {
   }
 
   @Test
-  public void testAddPhoto() {
+  void testAddPhoto() {
     UploadedFile uploadedFile = mock(UploadedFile.class);
     InputStream inputStream = new ByteArrayInputStream(new byte[0]);
 
@@ -1102,7 +1102,7 @@ public class HostControllerSpec {
   }
 
   @Test
-  public void testGetPhotosFromTask() {
+  void testGetPhotosFromTask() {
     UploadedFile uploadedFile = mock(UploadedFile.class);
     InputStream inputStream = new ByteArrayInputStream(new byte[0]);
 
@@ -1131,6 +1131,55 @@ public class HostControllerSpec {
 
     hostController.deletePhoto(id, ctx);
     hostController.deletePhoto(id2, ctx);
+  }
+
+  @Test
+  void testRemovePhotoPathFromTask() {
+    String photoPath = "test.jpg";
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhotoPathToTask(ctx, photoPath);
+    hostController.removePhotoPathFromTask(ctx, taskId.toHexString(), photoPath);
+
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    assertNotNull(updatedTask);
+    assertEquals(0, updatedTask.get("photos", List.class).size());
+  }
+
+  @Test
+  void testRemovePhotoPathFromTaskErrorHandling() {
+    String id = "588935f56536a3daea54de8c";
+    String photoPath = "photoPath";
+
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    assertThrows(BadRequestResponse.class, () -> hostController.removePhotoPathFromTask(ctx, id, photoPath));
+    verify(ctx).status(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  void testReplacePhoto() {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test1.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
+
+    hostController.addPhoto(ctx);
+    Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    String photoId = updatedTask.get("photos", List.class).get(0).toString();
+    when(ctx.pathParam("photoId")).thenReturn(photoId);
+    hostController.replacePhoto(ctx);
+
+    updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    assertTrue(updatedTask.get("photos", List.class).get(0).toString() != photoId);
+    photoId = updatedTask.get("photos", List.class).get(0).toString();
+
+    assertNotNull(updatedTask);
+    hostController.deletePhoto(photoId, ctx);
   }
 
 }

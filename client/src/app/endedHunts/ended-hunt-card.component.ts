@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { Component, EventEmitter, Output, input } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -21,10 +21,13 @@ export class EndedHuntCardComponent {
 
   constructor(private hostService: HostService, private router: Router) {}
 
+  @Output() huntDeleted = new EventEmitter<string>();
+
   deleteEndedHunt(id: string): void {
     if (window.confirm('Are you sure you want to delete this hunt?')) {
       this.hostService.deleteEndedHunt(id).subscribe(() => {
         console.log('Ended hunt deleted successfully');
+        this.huntDeleted.emit(id);
       });
     }
   }

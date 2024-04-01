@@ -21,7 +21,7 @@ export class EndedHuntCardComponent {
 
   constructor(private hostService: HostService, private router: Router) {}
 
-  @Output() huntDeleted = new EventEmitter<string>();
+  @Output() readonly huntDeleted = new EventEmitter<string>();
 
   deleteEndedHunt(id: string): void {
     if (window.confirm('Are you sure you want to delete this hunt?')) {

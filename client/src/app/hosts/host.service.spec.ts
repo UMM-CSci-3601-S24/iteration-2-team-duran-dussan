@@ -321,4 +321,31 @@ describe('When getHunts() is called', () => {
       });
     }));
   });
+
+  describe('Replacing a photo using `replacePhoto()`', () => {
+    it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const task_id = 'task_id';
+      const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });
+      const photoPath = 'photo.jpg';
+
+      const mockedMethod = spyOn(httpClient, 'put')
+        .and
+        .returnValue(of({id: 'someId'}));
+
+      hostService.replacePhoto(task_id, photoPath ,photo).subscribe(() => {
+        expect(mockedMethod)
+          .withContext('one call')
+          .toHaveBeenCalledTimes(1);
+
+        const args = mockedMethod.calls.first().args;
+
+        expect(args[0])
+        .withContext('talks to the correct endpoint')
+        .toEqual(`${hostService.taskUrl}/${task_id}/photo/${photoPath}`);
+
+        const formData: FormData = args[1];
+        expect(formData.get('photo')).toEqual(photo);
+      });
+    }));
+  });
 });

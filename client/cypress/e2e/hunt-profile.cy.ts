@@ -12,9 +12,9 @@ describe('Hunt Profile', () => {
     cy.task('seed:database');
   });
 
-  // it('should display the title', () => {
-  //   page.getHuntCard().contains('Default Hunt 1');
-  // });
+  it('should display the title', () => {
+    page.getHuntCard().contains('Default Hunt');
+  });
 
   // it('should display a task', () => {
   //   page.getTasks().contains('Take a picture of');

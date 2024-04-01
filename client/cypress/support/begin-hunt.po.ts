@@ -4,6 +4,8 @@ export class BeginHuntPage {
   private readonly hostCardSelector = '.hunt-cards-container app-hunt-card';
   private readonly profileButtonSelector = '[data-test=viewProfileButton]';
   private readonly huntAccessCode = '.access-code-number';
+  private readonly SecondBeginHuntButton = '.begin-hunt-button';
+  private readonly endHuntButton = '.end-hunt-button';
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -38,5 +40,23 @@ export class BeginHuntPage {
    */
   getAccessCode() {
     return cy.get(this.huntAccessCode).invoke('text').as('accessCode');
+  }
+
+  /**
+   * Click the second begin hunt button that start the hunt
+   *
+   * @returns the second begin hunt button
+   */
+  clickSecondBeginHuntButton() {
+    return cy.get(this.SecondBeginHuntButton).click();
+  }
+
+  /**
+   * Click the end hunt button that end the hunt
+   *
+   * @return the end hunt button
+   */
+  clickEndHuntButton() {
+    return cy.get(this.endHuntButton).click();
   }
 }

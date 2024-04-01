@@ -14,6 +14,7 @@ describe('Begin Hunt', () => {
   it('should click the begin hunt and navigate to the right access code page', () => {
     page.beginHuntButton().should('exist');
     page.beginHuntButton().click();
+    cy.wait(2000);
     page.getAccessCode().then((accessCode) => {
       cy.wait(2000);
       cy.url().should('eq', `http://localhost:4200/startedHunts/${accessCode}`);
@@ -21,6 +22,30 @@ describe('Begin Hunt', () => {
   })
 
   it('should click the Begin Hunt button again to start the hunt', () => {
+    page.beginHuntButton().should('exist');
+    page.beginHuntButton().click();
+    cy.wait(2000);
+    page.getAccessCode().then((accessCode) => {
+      cy.wait(1000);
+      cy.url().should('eq', `http://localhost:4200/startedHunts/${accessCode}`);
+    });
+    page.clickSecondBeginHuntButton();
+  })
 
+  it('should click End Hunt, navigate to the host page and show message', () => {
+    page.beginHuntButton().should('exist');
+    page.beginHuntButton().click();
+    cy.wait(2000);
+    page.getAccessCode().then((accessCode) => {
+      cy.wait(1000);
+      cy.url().should('eq', `http://localhost:4200/startedHunts/${accessCode}`);
+    });
+    page.clickSecondBeginHuntButton();
+
+    // start the hunt before end it
+
+    page.clickEndHuntButton();
+    cy.url().should('eq', 'http://localhost:4200/hosts');
+    cy.on('window:confirm', () => true);
   })
 })

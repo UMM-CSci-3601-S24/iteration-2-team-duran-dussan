@@ -18,6 +18,7 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
+    cy.wait(2000);
     page.getAccessCode();
 
     // Those above will navigate to the Hunt, begin it
@@ -36,6 +37,7 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
+    cy.wait(2000);
     page.getAccessCode();
 
     // Those above will navigate to the Hunt, begin it
@@ -46,9 +48,10 @@ describe('Hunter View', () => {
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    });
-    cy.wait(2000);
-    page.clickJoinHuntButton();
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
     // navigate to the hunter view page with access code.
 
@@ -63,6 +66,7 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
+    cy.wait(2000);
     page.getAccessCode();
 
     // Those above will navigate to the Hunt, begin it
@@ -73,9 +77,10 @@ describe('Hunter View', () => {
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    });
-    cy.wait(2000);
-    page.clickJoinHuntButton();
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
     // navigate to the hunter view page with access code.
 
@@ -91,6 +96,7 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
+    cy.wait(2000);
     page.getAccessCode();
 
     // Those above will navigate to the Hunt, begin it
@@ -101,9 +107,10 @@ describe('Hunter View', () => {
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    });
-    cy.wait(2000);
-    page.clickJoinHuntButton();
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
     // navigate to the hunter view page with access code.
 
@@ -118,6 +125,7 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
+    cy.wait(2000);
     page.getAccessCode();
 
     // Those above will navigate to the Hunt, begin it
@@ -128,9 +136,10 @@ describe('Hunter View', () => {
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    });
-    cy.wait(2000);
-    page.clickJoinHuntButton();
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
     // navigate to the hunter view page with access code.
 
@@ -145,6 +154,7 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
+    cy.wait(2000);
     page.getAccessCode();
 
     // Those above will navigate to the Hunt, begin it
@@ -155,9 +165,10 @@ describe('Hunter View', () => {
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    });
-    cy.wait(2000);
-    page.clickJoinHuntButton();
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
     // navigate to the hunter view page with access code.
 

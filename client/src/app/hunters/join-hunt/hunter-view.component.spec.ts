@@ -1,4 +1,4 @@
-import { defer, of, Subject, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TestBed, ComponentFixture, tick, fakeAsync } from '@angular/core/testing';

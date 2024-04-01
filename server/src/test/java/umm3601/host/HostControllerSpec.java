@@ -900,6 +900,7 @@ public class HostControllerSpec {
       assertEquals(false, startedHunt.status);
     }
   }
+
   @Test
   void endStartedHunt() throws IOException {
     when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());

@@ -343,6 +343,8 @@ public class HostController implements Controller {
   public void addPhoto(Context ctx) {
     String id = uploadPhoto(ctx);
     addPhotoPathToTask(ctx, id);
+    ctx.status(HttpStatus.CREATED);
+    ctx.json(Map.of("id", id));
   }
 
   public String getFileExtension(String filename) {

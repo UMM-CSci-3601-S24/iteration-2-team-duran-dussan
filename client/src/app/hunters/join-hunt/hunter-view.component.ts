@@ -94,9 +94,4 @@ export class HunterViewComponent implements OnInit, OnDestroy {
       }
     }
   }
-
-  completeTask(task: Task) {
-    task.status = true;
-  }
-
 }

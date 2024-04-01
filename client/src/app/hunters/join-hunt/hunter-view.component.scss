@@ -130,3 +130,16 @@ label {
 .hunt mat-icon {
   margin-right: 5px;
 }
+
+.task-completed {
+  position: relative;
+  color: green;
+
+  &::before {
+    content: '✔'; // or '✓'
+    display: block;
+    color: green;
+    font-size: 40px; // Adjust as needed
+    text-align: right;
+  }
+}

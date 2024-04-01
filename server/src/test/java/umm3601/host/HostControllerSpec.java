@@ -2,6 +2,7 @@ package umm3601.host;
 
 import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -1175,7 +1176,7 @@ class HostControllerSpec {
     hostController.replacePhoto(ctx);
 
     updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
-    assertTrue(updatedTask.get("photos", List.class).get(0).toString() != photoId);
+    assertFalse(updatedTask.get("photos", List.class).get(0).toString().equals(photoId));
     photoId = updatedTask.get("photos", List.class).get(0).toString();
 
     assertNotNull(updatedTask);

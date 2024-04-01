@@ -26,6 +26,10 @@ export class HuntCardComponent {
       this.router.navigate(['/startedHunts/', accessCode]);
     });
   }
+
+  estHours(minutes: number): number {
+    return Math.floor(minutes / 60);
+  }
 }
 
 

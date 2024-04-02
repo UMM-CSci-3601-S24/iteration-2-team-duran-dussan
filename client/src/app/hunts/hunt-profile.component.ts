@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
@@ -28,7 +27,7 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService, private router: Router, public dialog: MatDialog) { }
+  constructor(private route: ActivatedRoute, private hostService: HostService, private router: Router, public dialog: MatDialog) { }
 
   ngOnInit(): void {
 

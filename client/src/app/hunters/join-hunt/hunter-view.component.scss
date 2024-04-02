@@ -18,8 +18,8 @@
   padding: 10px;
   white-space: normal;
   overflow: auto;
-  color: aqua;
-  background-color: darkslategray;
+  color: #00ccff;
+  background-color: rgb(80,80,80);
 }
 
 .image-upload {
@@ -46,8 +46,8 @@
   text-overflow: ellipsis;
   white-space: normal;
   overflow: auto;
-  color: aqua;
-  background-color: darkslategray;
+  color: #00ccff;
+  background-color: rgb(80,80,80);
 }
 
 .task-list {
@@ -96,7 +96,7 @@ label {
 
 .hunt-title {
   font-size: 40px;
-  color: aqua;
+  color: #00ccff;
   font-weight: bold;
   text-align: center;
   justify-content: center;
@@ -107,7 +107,7 @@ label {
 
 .hunt {
   font-size: 20px;
-  color: aqua;
+  color: #00ccff;
   font-weight: bold;
   display: flex;
   justify-content: flex-end;

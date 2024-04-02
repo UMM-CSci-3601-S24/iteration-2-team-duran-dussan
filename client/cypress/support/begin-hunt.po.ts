@@ -6,6 +6,10 @@ export class BeginHuntPage {
   private readonly huntAccessCode = '.access-code-number';
   private readonly SecondBeginHuntButton = '.begin-hunt-button';
   private readonly endHuntButton = '.end-hunt-button';
+  private readonly huntTaskList = '.task-list';
+  private readonly tableTaskTitle = '.flex-1';
+  private readonly progressTeamTile = '.flex-2';
+  private readonly teamCard = '.team-card';
 
   navigateTo() {
     return cy.visit(this.baseUrl);
@@ -58,5 +62,41 @@ export class BeginHuntPage {
    */
   clickEndHuntButton() {
     return cy.get(this.endHuntButton).click();
+  }
+
+  /**
+   * Get the task list of the hunt as hunter-view.
+   *
+   * @return the value of the element with the class `.task-list`
+   */
+  getHuntTaskList() {
+    return cy.get(this.huntTaskList);
+  }
+
+  /**
+   * Get the task title from the table
+   *
+   * @return the value of the element with the class `.flex-1`
+   */
+  getTableTaskTitle() {
+    return cy.get(this.tableTaskTitle);
+  }
+
+  /**
+   * Get the progress team tile from the table
+   *
+   * @return the value of the element with the class `.flex-2`
+   */
+  getProgressTeamTile() {
+    return cy.get(this.progressTeamTile);
+  }
+
+  /**
+   * Get the team card
+   *
+   * @return the value of the element with the class `.team-card`
+   */
+  getTeamCard() {
+    return cy.get(this.teamCard);
   }
 }

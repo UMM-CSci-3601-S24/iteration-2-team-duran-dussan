@@ -1270,7 +1270,7 @@ class HostControllerSpec {
 
   @Test
   void testGetStartedHuntByIdValidId() {
-    when(ctx.pathParam("finishedHuntId")).thenReturn(startedHuntId.toHexString());
+    when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());
 
     StartedHunt startedHunt = hostController.getStartedHuntById(ctx);
 
@@ -1282,7 +1282,7 @@ class HostControllerSpec {
   void testGetStartedHuntByIdInvalidId() {
     String id = "invalid_id";
 
-    when(ctx.pathParam("finishedHuntId")).thenReturn(id);
+    when(ctx.pathParam("id")).thenReturn(id);
 
     assertThrows(BadRequestResponse.class, () -> hostController.getStartedHuntById(ctx));
   }
@@ -1291,7 +1291,7 @@ class HostControllerSpec {
   void testGetStartedHuntByIdNotFound() {
     String id = new ObjectId().toHexString();
 
-    when(ctx.pathParam("finishedHuntId")).thenReturn(id);
+    when(ctx.pathParam("id")).thenReturn(id);
 
     assertThrows(NotFoundResponse.class, () -> hostController.getStartedHuntById(ctx));
   }
@@ -1323,7 +1323,7 @@ class HostControllerSpec {
     ArrayList<Document> taskDocuments = db.getCollection("tasks").find(eq("huntId", huntId.toHexString()))
         .into(new ArrayList<>());
 
-    when(ctx.pathParam("finishedHuntId")).thenReturn(startedHuntId.toHexString());
+    when(ctx.pathParam("id")).thenReturn(startedHuntId.toHexString());
 
     hostController.getEndedHunt(ctx);
 

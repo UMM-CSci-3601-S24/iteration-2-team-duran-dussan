@@ -45,7 +45,7 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
-  private static final String API_ENDED_HUNT = "/api/hunts/{id}/finishedHunts/{finishedHuntId}";
+  private static final String API_ENDED_HUNT = "/api/finishedHunts/{id}";
   private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
   private static final String API_DELETE_HUNT = "/api/endedHunts/{id}";
   private static final String API_PHOTO_UPLOAD = "/api/startedHunt/{startedHuntId}/tasks/{taskId}/photo";
@@ -462,7 +462,7 @@ public class HostController implements Controller {
   }
 
   public StartedHunt getStartedHuntById(Context ctx) {
-    String id = ctx.pathParam("finishedHuntId");
+    String id = ctx.pathParam("id");
     StartedHunt startedHunt;
 
     try {

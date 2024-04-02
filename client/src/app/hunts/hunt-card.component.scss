@@ -142,8 +142,12 @@
   .hunt-card-description {
     margin-right: 60px;
     color: #0056b3;
-    max-width: 160px;
+    //max-width: 400px;
     word-wrap: break-word;
+  }
+
+  .hunt-card-description.host-profile {
+    max-width: 160px;
   }
 
   .hunt-card-name {

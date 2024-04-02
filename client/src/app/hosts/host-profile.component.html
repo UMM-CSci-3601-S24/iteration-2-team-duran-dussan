@@ -15,8 +15,7 @@
       <div>
         <div class="hunt-cards-container">
           @for (hunt of serverHunts; track hunt._id) {
-            <app-hunt-card [simple]="true" class="hunt-card" [hunt]="hunt" ></app-hunt-card>
-          }
+            <app-hunt-card [context]="'host-profile'" [hunt]="hunt"></app-hunt-card>          }
           </div>
       </div>
     </div>

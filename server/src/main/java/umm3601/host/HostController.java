@@ -393,7 +393,7 @@ public class HostController implements Controller {
     StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(startedHuntId))).first();
     if (startedHunt == null) {
       ctx.status(HttpStatus.NOT_FOUND);
-      throw new BadRequestResponse("StartedHunt with ID " + startedHunt + " does not exist");
+      throw new BadRequestResponse("StartedHunt with ID " + startedHuntId + " does not exist");
     }
 
     Task task = startedHunt.completeHunt.tasks.stream().filter(t -> t._id.equals(taskId)).findFirst().orElse(null);
@@ -496,7 +496,7 @@ public class HostController implements Controller {
       if (photo.exists()) {
         try {
           byte[] bytes = Files.readAllBytes(Paths.get(photo.getPath()));
-          String encoded = Base64.getEncoder().encodeToString(bytes);
+          String encoded = "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
           encodedPhotos.add(encoded);
         } catch (IOException e) {
           e.printStackTrace();

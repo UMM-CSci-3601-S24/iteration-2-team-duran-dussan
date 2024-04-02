@@ -17,8 +17,9 @@
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    cy.wait(2000);
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 //     // and capture the access code.
@@ -35,20 +36,21 @@
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 //     // and capture the access code.
 
-//     cy.get('@accessCode').then((accessCode) => {
-//       cy.visit(`/hunters/`);
-//       for (let i = 0; i < accessCode.length; i++) {
-//         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-//       }
-//     });
-//     cy.wait(5000);
-//     page.clickJoinHuntButton();
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
 //     // navigate to the hunter view page with access code.
 
@@ -62,20 +64,20 @@
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 //     // and capture the access code.
 
-//     cy.get('@accessCode').then((accessCode) => {
-//       cy.visit(`/hunters/`);
-//       for (let i = 0; i < accessCode.length; i++) {
-//         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-//       }
-//     });
-//     cy.wait(5000);
-//     page.clickJoinHuntButton();
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
 //     // navigate to the hunter view page with access code.
 
@@ -90,20 +92,22 @@
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    cy.wait(2000);
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 //     // and capture the access code.
 
-//     cy.get('@accessCode').then((accessCode) => {
-//       cy.visit(`/hunters/`);
-//       for (let i = 0; i < accessCode.length; i++) {
-//         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-//       }
-//     });
-//     cy.wait(5000);
-//     page.clickJoinHuntButton();
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
 //     // navigate to the hunter view page with access code.
 
@@ -117,20 +121,22 @@
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    cy.wait(2000);
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 //     // and capture the access code.
 
-//     cy.get('@accessCode').then((accessCode) => {
-//       cy.visit(`/hunters/`);
-//       for (let i = 0; i < accessCode.length; i++) {
-//         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-//       }
-//     });
-//     cy.wait(5000);
-//     page.clickJoinHuntButton();
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    }).then(() => {
+      cy.wait(1000);
+      page.clickJoinHuntButton();
+    })
 
 //     // navigate to the hunter view page with access code.
 
@@ -144,20 +150,20 @@
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 //     // and capture the access code.
 
-//     cy.get('@accessCode').then((accessCode) => {
-//       cy.visit(`/hunters/`);
-//       for (let i = 0; i < accessCode.length; i++) {
-//         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-//       }
-//     });
-//     cy.wait(5000);
-//     page.clickJoinHuntButton();
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
 //     // navigate to the hunter view page with access code.
 

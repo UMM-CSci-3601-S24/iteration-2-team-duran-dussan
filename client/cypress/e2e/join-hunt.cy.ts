@@ -42,21 +42,21 @@ describe('Join Hunt', () => {
   //     cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
   //   });
 
-  //   page.clickBeginHunt();
-  //   page.getAccessCode();
+    page.clickBeginHunt();
+    cy.wait(2000);
+    page.getAccessCode();
 
   //   // Those above will navigate to the Hunt, begin it
 
-  //   cy.get('@accessCode').then((accessCode) => {
-  //     cy.visit(`/hunters/`);
-  //     for (let i = 0; i < accessCode.length; i++) {
-  //       page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-  //     }
-  //   });
-  //   cy.wait(1000);
-  //   page.getJoinHuntButton().should('not.have.class', 'mat-mdc-button-disabled');
-  //   // This will check if the JoinHuntButton is enabled if valid access code (6 digit) is entered.
-  // });
+    cy.get('@accessCode').then((accessCode) => {
+      cy.visit(`/hunters/`);
+      for (let i = 0; i < accessCode.length; i++) {
+        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
+      }
+    });
+    page.getJoinHuntButton().should('not.have.class', 'mat-mdc-button-disabled');
+    // This will check if the JoinHuntButton is enabled if valid access code (6 digit) is entered.
+  });
 
   // it('should not allowed letter in the access code input field', () => {
   //   // page.getAccessCodeInputField().should('exist');
@@ -92,8 +92,9 @@ describe('Join Hunt', () => {
 //       cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
 //     });
 
-//     page.clickBeginHunt();
-//     page.getAccessCode();
+    page.clickBeginHunt();
+    cy.wait(2000);
+    page.getAccessCode();
 
 //     // Those above will navigate to the Hunt, begin it
 

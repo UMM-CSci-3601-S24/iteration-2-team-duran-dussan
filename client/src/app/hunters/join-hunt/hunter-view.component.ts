@@ -3,8 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subject, of } from 'rxjs';
-import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { StartedHunt } from 'src/app/startHunt/startedHunt';
 import { Task } from 'src/app/hunts/task';
 import { HuntCardComponent } from 'src/app/hunts/hunt-card.component';
@@ -44,6 +44,9 @@ export class HunterViewComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
       ).subscribe({
         next: startedHunt => {
+          for (const task of startedHunt.completeHunt.tasks) {
+            task.photos = [];
+          }
           this.startedHunt = startedHunt;
           return;
         },
@@ -77,21 +80,48 @@ export class HunterViewComponent implements OnInit, OnDestroy {
       };
 
       if (file) {
-        this.hostService.submitPhoto(task._id, file).pipe(
-          catchError((error: Error) => {
-            console.error('Error uploading photo', error);
-            this.snackBar.open('Error uploading photo. Please try again', 'Close', {
-              duration: 3000
-            });
-            return of(null);
-          })
-        ).subscribe(() => {
-          task.status = true;
-          this.snackBar.open('Photo uploaded successfully', 'Close', {
-            duration: 3000
-          });
-        });
+        if (task.photos.length > 0) {
+          this.replacePhoto(file, task);
+        }
+        else {
+          this.submitPhoto(file, task);
+        }
       }
     }
+  }
+
+  submitPhoto(file: File, task: Task): void {
+    this.hostService.submitPhoto(task._id, file).subscribe({
+      next: (photoId: string) => {
+        task.status = true;
+        task.photos.push(photoId);
+        this.snackBar.open('Photo uploaded successfully', 'Close', {
+          duration: 3000
+        });
+      },
+      error: (error: Error) => {
+        console.error('Error uploading photo', error);
+        this.snackBar.open('Error uploading photo. Please try again', 'Close', {
+          duration: 3000
+        });
+      },
+    });
+  }
+
+  replacePhoto(file: File, task: Task): void {
+    this.hostService.replacePhoto(task._id, task.photos[0], file).subscribe({
+      next: (photoId: string) => {
+        task.photos[0] = photoId;
+        this.snackBar.open('Photo replaced successfully', 'Close', {
+          duration: 3000
+        });
+      },
+      error: (error: Error) => {
+        console.error('Error replacing photo', error);
+        this.snackBar.open('Error replacing photo. Please try again', 'Close', {
+          duration: 3000
+        });
+      },
+    });
   }
 }

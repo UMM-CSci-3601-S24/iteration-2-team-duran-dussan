@@ -70,10 +70,16 @@ export class HostService {
     return this.httpClient.delete<void>(`${this.endedHuntsUrl}/${id}`);
   }
 
-  submitPhoto(taskId: string, photo: File): Observable<void> {
+  submitPhoto(taskId: string, photo: File): Observable<string> {
     const formData = new FormData();
     formData.append('photo', photo);
-    return this.httpClient.post<void>(`${this.taskUrl}/${taskId}/photo`, formData);
+    return this.httpClient.post<{id: string}>(`${this.taskUrl}/${taskId}/photo`, formData).pipe(map(result => result.id));
+  }
+
+  replacePhoto(taskId: string, photoPath: string, photo: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('photo', photo);
+    return this.httpClient.put<{id: string}>(`${this.taskUrl}/${taskId}/photo/${photoPath}`, formData).pipe(map(result => result.id));
   }
 
 }

@@ -15,7 +15,7 @@ describe('HunterViewComponent', () => {
   let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
-    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt', 'submitPhoto']);
+    mockHostService = jasmine.createSpyObj('HostService', ['getStartedHunt', 'submitPhoto', 'replacePhoto']);
     mockRoute = {
       paramMap: new Subject<ParamMap>()
     };
@@ -71,7 +71,8 @@ describe('HunterViewComponent', () => {
             _id: '1',
             huntId: '1',
             name: 'Task 1',
-            status: true
+            status: true,
+            photos: []
           }
         ]
       },
@@ -99,7 +100,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should handle file selected event', () => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -123,7 +124,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should not replace image if user choose cancel', () => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -146,7 +147,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should replace image if user choose ok', () => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -173,7 +174,7 @@ describe('HunterViewComponent', () => {
   });
 
   it('should handle error when submitting photo', fakeAsync(() => {
-    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true };
+    const task: Task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
     const event = {
       target: {
         files: [
@@ -199,5 +200,57 @@ describe('HunterViewComponent', () => {
       duration: 3000
     });
   }));
+
+  describe('submitPhoto and replacePhoto', () => {
+    let task: Task;
+    let file: File;
+
+    beforeEach(() => {
+      task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: ['photoId']};
+      file = new File([''], 'photo.jpg', { type: 'image/jpeg' });
+    });
+
+    it('should call replacePhoto when task has photos', () => {
+      task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: ['photoId']};
+      spyOn(component, 'replacePhoto');
+      component.onFileSelected({ target: { files: [file] } }, task);
+      expect(component.replacePhoto).toHaveBeenCalledWith(file, task);
+    });
+
+    it('should call submitPhoto when task does not have photos', () => {
+      task = { _id: '1', huntId: '1', name: 'Task 1', status: true, photos: []};
+      spyOn(component, 'submitPhoto');
+      component.onFileSelected({ target: { files: [file] } }, task);
+      expect(component.submitPhoto).toHaveBeenCalledWith(file, task);
+    });
+
+    it('should display success message and update task when photo is uploaded successfully', () => {
+      const newPhotoId = 'newPhotoId';
+      mockHostService.submitPhoto.and.returnValue(of(newPhotoId));
+      component.submitPhoto(file, task);
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Photo uploaded successfully', 'Close', { duration: 3000 });
+      expect(task.status).toBeTrue();
+      expect(task.photos).toContain(newPhotoId);
+    });
+
+    it('should display error message when photo upload fails', () => {
+      mockHostService.submitPhoto.and.returnValue(throwError('Error message'));
+      component.submitPhoto(file, task);
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Error uploading photo. Please try again', 'Close', { duration: 3000 });
+    });
+
+    it('should display success message when photo is replaced successfully', () => {
+      mockHostService.replacePhoto.and.returnValue(of('newPhotoId'));
+      component.replacePhoto(file, task);
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Photo replaced successfully', 'Close', { duration: 3000 });
+      expect(task.photos[0]).toEqual('newPhotoId');
+    });
+
+    it('should display error message when photo replacement fails', () => {
+      mockHostService.replacePhoto.and.returnValue(throwError('Error message'));
+      component.replacePhoto(file, task);
+      expect(mockSnackBar.open).toHaveBeenCalledWith('Error replacing photo. Please try again', 'Close', { duration: 3000 });
+    });
+  });
 });
 

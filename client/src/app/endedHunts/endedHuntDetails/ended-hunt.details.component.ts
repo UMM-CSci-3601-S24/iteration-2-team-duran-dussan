@@ -52,6 +52,10 @@ export class EndedHuntDetailsComponent implements OnInit, OnDestroy{
     });
   }
 
+  getTaskName(taskId: string): string {
+    return this.endedHunt.startedHunt.completeHunt.tasks.find(task => task._id === taskId).name;
+  }
+
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

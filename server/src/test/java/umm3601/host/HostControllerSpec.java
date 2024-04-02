@@ -1106,6 +1106,7 @@ class HostControllerSpec {
     hostController.deletePhoto(id, ctx);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void testGetPhotosFromTask() throws IOException {
     // Create a Task with the paths of the temporary files
@@ -1226,7 +1227,7 @@ class HostControllerSpec {
     String id = huntId.toHexString();
     when(ctx.pathParam("id")).thenReturn(id);
 
-    ArrayList<FinishedTask> tasks = hostController.getFinishedTasks(ctx);
+    List<FinishedTask> tasks = hostController.getFinishedTasks(ctx);
 
     assertEquals(3, tasks.size());
   }

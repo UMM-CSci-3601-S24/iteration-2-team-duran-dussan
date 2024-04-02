@@ -460,7 +460,7 @@ public class HostController implements Controller {
     }
   }
 
-  public ArrayList<FinishedTask> getFinishedTasks(Context ctx) {
+  public List<FinishedTask> getFinishedTasks(Context ctx) {
     ArrayList<Task> matchingTasks = getTasks(ctx);
     ArrayList<FinishedTask> finishedTasks = new ArrayList<>();
     FinishedTask finishedTask;

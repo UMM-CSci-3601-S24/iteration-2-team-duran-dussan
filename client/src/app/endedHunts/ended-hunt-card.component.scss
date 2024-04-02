@@ -6,8 +6,9 @@
 }
 
 .ended-hunt-card {
+  position:relative;
   width: 100%;
-  height: 100%;
+  height: 200px;
   margin: 8px;
   display: flex;
   gap: 8px;
@@ -27,6 +28,9 @@
 }
 
 .remove-hunt-fab {
+  position:absolute;
+  bottom: 20px;
+  right: 20px;
   background-color: transparent;
   color: red;
 }
@@ -51,6 +55,9 @@
 
 .ended-hunt-card-description {
   color: #0056b3;
+  max-width: 160px;
+  word-wrap: break-word;
+
 
   @media (prefers-color-scheme: dark) {
     color: #0056b3;

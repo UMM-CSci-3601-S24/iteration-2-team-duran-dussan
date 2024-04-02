@@ -93,7 +93,7 @@ class HostControllerSpec {
   private ArgumentCaptor<ArrayList<StartedHunt>> startedHuntArrayListCaptor;
 
   @Captor
-  private ArgumentCaptor<FinishedHunt> finishedHuntCaptor;
+  private ArgumentCaptor<EndedHunt> finishedHuntCaptor;
 
   @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
@@ -1243,7 +1243,7 @@ class HostControllerSpec {
     verify(ctx).status(HttpStatus.OK);
     verify(ctx).json(finishedHuntCaptor.capture());
 
-    FinishedHunt finishedHunt = finishedHuntCaptor.getValue();
+    EndedHunt finishedHunt = finishedHuntCaptor.getValue();
     assertNotNull(finishedHunt.startedHunt);
     assertEquals(finishedTasks, finishedHunt.finishedTasks);
   }

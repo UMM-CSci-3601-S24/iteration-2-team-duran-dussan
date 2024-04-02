@@ -436,7 +436,7 @@ public class HostController implements Controller {
   }
 
   public void getFinishedHunt(Context ctx) {
-    FinishedHunt finishedHunt = new FinishedHunt();
+    EndedHunt finishedHunt = new EndedHunt();
     finishedHunt.startedHunt = getStartedHuntById(ctx);
     finishedHunt.finishedTasks = getFinishedTasks(ctx);
 

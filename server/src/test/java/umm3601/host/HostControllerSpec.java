@@ -1179,7 +1179,7 @@ class HostControllerSpec {
 
     // Check that the returned list contains the correct encoded photos
     byte[] bytes1 = Files.readAllBytes(addedFile.toPath());
-    String expectedEncoded1 = Base64.getEncoder().encodeToString(bytes1);
+    String expectedEncoded1 = "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes1);
     assertEquals(expectedEncoded1, encodedPhotos.get(0));
 
     hostController.deletePhoto(task.photos.get(0), ctx);

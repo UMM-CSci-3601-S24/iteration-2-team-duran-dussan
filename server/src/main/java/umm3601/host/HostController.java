@@ -45,10 +45,10 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
-  private static final String API_FINISHED_HUNT = "/api/hunts/{id}/finishedHunts/{finishedHuntId}";
+  private static final String API_ENDED_HUNT = "/api/hunts/{id}/finishedHunts/{finishedHuntId}";
   private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
   private static final String API_DELETE_HUNT = "/api/endedHunts/{id}";
-  private static final String API_PHOTO_UPLOAD = "/api/tasks/{id}/photo";
+  private static final String API_PHOTO_UPLOAD = "/api/startedHunt/{startedHuntId}/tasks/{taskId}/photo";
   private static final String API_PHOTO_REPLACE = "/api/tasks/{id}/photo/{photoId}";
 
   static final String HOST_KEY = "hostId";
@@ -388,15 +388,24 @@ public class HostController implements Controller {
   }
 
   public void addPhotoPathToTask(Context ctx, String photoPath) {
-    String id = ctx.pathParam("id");
-    Task task = taskCollection.find(eq("_id", new ObjectId(id))).first();
+    String taskId = ctx.pathParam("taskId");
+    String startedHuntId = ctx.pathParam("startedHuntId");
+    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(startedHuntId))).first();
+    if (startedHunt == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("StartedHunt with ID " + startedHunt + " does not exist");
+    }
+
+    Task task = startedHunt.completeHunt.tasks.stream().filter(t -> t._id.equals(taskId)).findFirst().orElse(null);
+
     if (task == null) {
       ctx.status(HttpStatus.NOT_FOUND);
-      throw new BadRequestResponse("Task with ID " + id + " does not exist");
+      throw new BadRequestResponse("Task with ID " + taskId + " does not exist");
     }
 
     task.photos.add(photoPath);
-    taskCollection.save(task);
+    startedHunt.completeHunt.tasks.set(startedHunt.completeHunt.tasks.indexOf(task), task);
+    startedHuntCollection.save(startedHunt);
   }
 
   public void replacePhoto(Context ctx) {
@@ -435,10 +444,10 @@ public class HostController implements Controller {
     taskCollection.save(task);
   }
 
-  public void getFinishedHunt(Context ctx) {
+  public void getEndedHunt(Context ctx) {
     EndedHunt finishedHunt = new EndedHunt();
     finishedHunt.startedHunt = getStartedHuntById(ctx);
-    finishedHunt.finishedTasks = getFinishedTasks(ctx);
+    finishedHunt.finishedTasks = getFinishedTasks(finishedHunt.startedHunt.completeHunt.tasks);
 
     ctx.json(finishedHunt);
     ctx.status(HttpStatus.OK);
@@ -460,11 +469,10 @@ public class HostController implements Controller {
     }
   }
 
-  public List<FinishedTask> getFinishedTasks(Context ctx) {
-    ArrayList<Task> matchingTasks = getTasks(ctx);
+  public List<FinishedTask> getFinishedTasks(List<Task> tasks) {
     ArrayList<FinishedTask> finishedTasks = new ArrayList<>();
     FinishedTask finishedTask;
-    for (Task task : matchingTasks) {
+    for (Task task : tasks) {
       finishedTask = new FinishedTask();
       finishedTask.taskId = task._id;
       finishedTask.photos = getPhotosFromTask(task);
@@ -504,7 +512,7 @@ public class HostController implements Controller {
     server.put(API_END_HUNT, this::endStartedHunt);
     server.post(API_PHOTO_UPLOAD, this::addPhoto);
     server.put(API_PHOTO_REPLACE, this::replacePhoto);
-    server.get(API_FINISHED_HUNT, this::getFinishedHunt);
+    server.get(API_ENDED_HUNT, this::getEndedHunt);
     server.get(API_ENDED_HUNTS, this::getEndedHunts);
     server.delete(API_DELETE_HUNT, this::deleteStartedHunt);
   }

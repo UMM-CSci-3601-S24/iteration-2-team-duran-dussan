@@ -38,9 +38,9 @@ export class AddTaskComponent {
 
   readonly addTaskValidationMessages = {
     name: [
-      { type: 'required', message: 'Task description is required' },
-      { type: 'minlength', message: 'Task description must be at least 2 characters long' },
-      { type: 'maxlength', message: 'Task description cannot be more than 50 characters long' },
+      { type: 'required', message: 'Task name is required' },
+      { type: 'minlength', message: 'Task name must be at least 2 characters long' },
+      { type: 'maxlength', message: 'Task name cannot be more than 50 characters long' },
     ],
   };
 

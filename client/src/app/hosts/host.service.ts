@@ -17,6 +17,7 @@ export class HostService {
   readonly startHuntUrl: string = `${environment.apiUrl}startHunt`;
   readonly startedHuntUrl: string = `${environment.apiUrl}startedHunts`;
   readonly endHuntUrl: string = `${environment.apiUrl}endHunt`;
+  readonly endedHuntsUrl: string = `${environment.apiUrl}endedHunts`;
 
   constructor(private httpClient: HttpClient){
   }
@@ -62,6 +63,11 @@ export class HostService {
   // This is a get request that gets all the ended StartedHunts
   getEndedHunts(hostId: string): Observable<StartedHunt[]> {
     return this.httpClient.get<StartedHunt[]>(`${this.hostUrl}/${hostId}/endedHunts`);
+  }
+
+  // This is a delete request that deletes the ended StartedHunt
+  deleteEndedHunt(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`${this.endedHuntsUrl}/${id}`);
   }
 
   submitPhoto(taskId: string, photo: File): Observable<string> {

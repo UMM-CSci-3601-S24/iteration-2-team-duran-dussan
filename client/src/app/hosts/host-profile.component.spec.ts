@@ -21,6 +21,7 @@ import { HostService } from "./host.service";
 import { MockHostService } from "src/testing/host.service.mock";
 import { throwError } from "rxjs";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { Router } from "@angular/router";
 
 const COMMON_IMPORTS: unknown[] = [
   FormsModule,
@@ -180,6 +181,30 @@ describe('Misbehaving Ended Hunt List', () => {
 
     expect(component.errMsg).toBe(`Problem contacting the server – Error Code: ${error.status}\nMessage: ${error.message}`);
     expect(snackBar.open).toHaveBeenCalledWith(component.errMsg, 'OK', { duration: 6000 });
+  });
+});
+
+describe('When onHuntDeleted() is called', () => {
+  let component: HostProfileComponent;
+  let mockHostService: jasmine.SpyObj<HostService>;
+  let mockSnackBar: jasmine.SpyObj<MatSnackBar>;
+  let mockRouter: jasmine.SpyObj<Router>;
+
+  beforeEach(() => {
+    mockHostService = jasmine.createSpyObj('HostService', ['getHunts', 'getEndedHunts']);
+    mockSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+
+    component = new HostProfileComponent(mockHostService, mockSnackBar, mockRouter);
+    component.serverEndedHunts = MockHostService.testStartedHunts;
+  });
+
+  it('should remove the hunt with the given id from serverEndedHunts when onHuntDeleted is called', () => {
+    const huntIdToDelete = 'ann_id';
+
+    component.onHuntDeleted(huntIdToDelete);
+
+    expect(component.serverEndedHunts).toEqual(MockHostService.testStartedHunts.filter(hunt => hunt._id !== huntIdToDelete));
   });
 });
 

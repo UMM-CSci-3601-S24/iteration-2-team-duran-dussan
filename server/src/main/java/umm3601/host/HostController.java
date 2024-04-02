@@ -47,6 +47,7 @@ public class HostController implements Controller {
   private static final String API_END_HUNT = "/api/endHunt/{id}";
   private static final String API_FINISHED_HUNT = "/api/hunts/{id}/finishedHunts/{finishedHuntId}";
   private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
+  private static final String API_DELETE_HUNT = "/api/endedHunts/{id}";
   private static final String API_PHOTO_UPLOAD = "/api/tasks/{id}/photo";
   private static final String API_PHOTO_REPLACE = "/api/tasks/{id}/photo/{photoId}";
 
@@ -505,5 +506,6 @@ public class HostController implements Controller {
     server.put(API_PHOTO_REPLACE, this::replacePhoto);
     server.get(API_FINISHED_HUNT, this::getFinishedHunt);
     server.get(API_ENDED_HUNTS, this::getEndedHunts);
+    server.delete(API_DELETE_HUNT, this::deleteStartedHunt);
   }
 }

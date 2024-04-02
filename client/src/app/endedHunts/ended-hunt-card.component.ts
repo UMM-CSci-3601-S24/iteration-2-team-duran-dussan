@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { Component, EventEmitter, Output, input } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
@@ -18,7 +18,17 @@ import { StartedHunt } from "../startHunt/startedHunt";
 export class EndedHuntCardComponent {
   startedHunt = input.required<StartedHunt>();
   simple = input(true);
+  customConfirm = 'Are you sure you want to delete this hunt?';
 
   constructor(private hostService: HostService, private router: Router) {}
 
+  @Output() readonly huntDeleted = new EventEmitter<string>();
+
+  deleteEndedHunt(id: string): void {
+    if (window.confirm(this.customConfirm)) {
+      this.hostService.deleteEndedHunt(id).subscribe(() => {
+        this.huntDeleted.emit(id);
+      });
+    }
+  }
 }

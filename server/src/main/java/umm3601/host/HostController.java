@@ -43,6 +43,7 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
+  private static final String API_FINISHED_HUNT = "/api/hunts/{id}/finishedHunts/{finishedHuntId}";
   private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
   private static final String API_PHOTO_UPLOAD = "/api/tasks/{id}/photo";
   private static final String API_PHOTO_REPLACE = "/api/tasks/{id}/photo/{photoId}";
@@ -287,7 +288,7 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.CREATED);
   }
 
-  public void getStartedHunt(Context ctx) {
+  public StartedHunt getStartedHunt(Context ctx) {
     String accessCode = ctx.pathParam("accessCode");
     StartedHunt startedHunt;
 
@@ -305,6 +306,7 @@ public class HostController implements Controller {
     } else {
       ctx.json(startedHunt);
       ctx.status(HttpStatus.OK);
+      return startedHunt;
     }
   }
 
@@ -430,6 +432,44 @@ public class HostController implements Controller {
     taskCollection.save(task);
   }
 
+  public void getFinishedHunt(Context ctx) {
+    FinishedHunt finishedHunt = new FinishedHunt();
+    finishedHunt.startedHunt = getStartedHuntById(ctx);
+    finishedHunt.tasks = getFinishedTasks(ctx);
+
+    ctx.json(finishedHunt);
+    ctx.status(HttpStatus.OK);
+  }
+
+  public StartedHunt getStartedHuntById(Context ctx) {
+    String id = ctx.pathParam("finishedHuntId");
+    StartedHunt startedHunt;
+
+    try {
+      startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(id))).first();
+    } catch (IllegalArgumentException e) {
+      throw new BadRequestResponse("The requested started hunt id wasn't a legal Mongo Object ID.");
+    }
+    if (startedHunt == null) {
+      throw new NotFoundResponse("The requested started hunt was not found");
+    } else {
+      return startedHunt;
+    }
+  }
+
+  public ArrayList<FinishedTask> getFinishedTasks(Context ctx) {
+    ArrayList<Task> matchingTasks = getTasks(ctx);
+    ArrayList<FinishedTask> finishedTasks = new ArrayList<>();
+    FinishedTask finishedTask;
+    for (Task task : matchingTasks) {
+      finishedTask = new FinishedTask();
+      finishedTask.task = task;
+      finishedTask.photos = (ArrayList<File>) getPhotosFromTask(task);
+      finishedTasks.add(finishedTask);
+    }
+    return finishedTasks;
+  }
+
   public List<File> getPhotosFromTask(Task task) {
     ArrayList<File> photos = new ArrayList<>();
     for (String photoPath : task.photos) {
@@ -455,6 +495,7 @@ public class HostController implements Controller {
     server.put(API_END_HUNT, this::endStartedHunt);
     server.post(API_PHOTO_UPLOAD, this::addPhoto);
     server.put(API_PHOTO_REPLACE, this::replacePhoto);
+    server.get(API_FINISHED_HUNT, this::getFinishedHunt);
     server.get(API_ENDED_HUNTS, this::getEndedHunts);
   }
 }

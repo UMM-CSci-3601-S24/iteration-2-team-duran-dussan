@@ -91,6 +91,9 @@ class HostControllerSpec {
   private ArgumentCaptor<ArrayList<StartedHunt>> startedHuntArrayListCaptor;
 
   @Captor
+  private ArgumentCaptor<FinishedHunt> finishedHuntCaptor;
+
+  @Captor
   private ArgumentCaptor<Map<String, String>> mapCaptor;
 
   @BeforeAll
@@ -544,7 +547,6 @@ class HostControllerSpec {
 
   @Test
   void getTasksByHuntId() throws IOException {
-
     String id = huntId.toHexString();
     when(ctx.pathParam("id")).thenReturn(id);
 
@@ -1181,6 +1183,60 @@ class HostControllerSpec {
 
     assertNotNull(updatedTask);
     hostController.deletePhoto(photoId, ctx);
+  }
+
+  @Test
+  void testGetStartedHuntByIdValidId() {
+    when(ctx.pathParam("finishedHuntId")).thenReturn(startedHuntId.toHexString());
+
+    StartedHunt startedHunt = hostController.getStartedHuntById(ctx);
+
+    assertEquals("123456", startedHunt.accessCode);
+    assertEquals(true, startedHunt.status);
+  }
+
+  @Test
+  void testGetStartedHuntByIdInvalidId() {
+    String id = "invalid_id";
+
+    when(ctx.pathParam("finishedHuntId")).thenReturn(id);
+
+    assertThrows(BadRequestResponse.class, () -> hostController.getStartedHuntById(ctx));
+  }
+
+  @Test
+  void testGetStartedHuntByIdNotFound() {
+    String id = new ObjectId().toHexString();
+
+    when(ctx.pathParam("finishedHuntId")).thenReturn(id);
+
+    assertThrows(NotFoundResponse.class, () -> hostController.getStartedHuntById(ctx));
+  }
+
+  @Test
+  void testGetFinishedTasks() {
+    String id = huntId.toHexString();
+    when(ctx.pathParam("id")).thenReturn(id);
+
+    ArrayList<FinishedTask> tasks = hostController.getFinishedTasks(ctx);
+
+    assertEquals(3, tasks.size());
+  }
+
+  @Test
+  void testGetFinishedHunt() {
+    ArrayList<FinishedTask> finishedTasks = new ArrayList<>();
+
+    when(ctx.pathParam("finishedHuntId")).thenReturn(startedHuntId.toHexString());
+
+    hostController.getFinishedHunt(ctx);
+
+    verify(ctx).status(HttpStatus.OK);
+    verify(ctx).json(finishedHuntCaptor.capture());
+
+    FinishedHunt finishedHunt = finishedHuntCaptor.getValue();
+    assertNotNull(finishedHunt.startedHunt);
+    assertEquals(finishedTasks, finishedHunt.tasks);
   }
 
 }

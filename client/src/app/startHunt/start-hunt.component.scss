@@ -4,6 +4,10 @@
   justify-content: space-between;
   align-items: center;
   height: 60vh;
+  background-color: white;
+  @media (prefers-color-scheme: dark) {
+    background-color: white;
+  }
 }
 
 .access-content {
@@ -18,11 +22,21 @@
 .access-code-title {
   font-size: 5em;
   line-height: 1.0;
+  color: #0056b3;
+
+    @media (prefers-color-scheme: dark) {
+      color: #00ccff;
+    }
 }
 
 .access-code-number {
   font-size: 4em;
   margin-top: 40px;
+  color: #0056b3;
+
+    @media (prefers-color-scheme: dark) {
+      color: #00ccff;
+    }
 }
 
 .begin-hunt-button {
@@ -54,6 +68,10 @@
   justify-content: space-between;
   align-items: center;
   height: 50vh;
+  background-color: white;
+  @media (prefers-color-scheme: dark) {
+    background-color: white;
+  }
 }
 
 .running-hunt-content {

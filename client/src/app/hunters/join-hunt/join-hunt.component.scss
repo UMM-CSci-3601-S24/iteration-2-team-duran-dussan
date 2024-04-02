@@ -58,7 +58,7 @@
   }
 }
 
-::ng-deep .mat-raised-button:not([disabled]) {
+/* ::ng-deep .mat-raised-button:not([disabled]) {
   background-color: #00ccff !important;
   color: black !important;
 }
@@ -66,4 +66,11 @@
 ::ng-deep .mat-raised-button[disabled] {
   background-color: gray !important;
   color: black !important;
+} */
+
+.join-button-enabled {
+  background-color: #00ccff !important;
+  color: black !important;
+
+  // Don't remove the !important, it's necessary to override the default color.
 }

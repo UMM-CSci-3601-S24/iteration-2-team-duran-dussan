@@ -6,6 +6,10 @@ import { Subject, map, switchMap, takeUntil } from "rxjs";
 import { HostService } from "../hosts/host.service";
 import { StartedHunt } from "./startedHunt";
 import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card";
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 
 @Component({
   selector: 'app-start-hunt-component',
@@ -13,7 +17,7 @@ import { MatCard, MatCardActions, MatCardContent } from "@angular/material/card"
   styleUrls: ['./start-hunt.component.scss'],
   providers: [],
   standalone: true,
-  imports: [MatCard, MatCardContent, MatCardActions]
+  imports: [MatCard, MatCardContent, MatCardActions, MatIconModule, CommonModule, MatProgressBarModule]
 })
 
 export class StartHuntComponent implements OnInit, OnDestroy {
@@ -36,7 +40,11 @@ export class StartHuntComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
     ).subscribe({
       next: startedHunt => {
+        for (const task of startedHunt.completeHunt.tasks) {
+          task.photos = [];
+        }
         this.startedHunt = startedHunt;
+        console.log(this.startedHunt);
         return ;
       },
       error: _err => {

@@ -40,3 +40,19 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.ended-hunt-card-name {
+  color: #0056b3;
+
+  @media (prefers-color-scheme: dark) {
+    color: #0056b3;
+  }
+}
+
+.ended-hunt-card-description {
+  color: #0056b3;
+
+  @media (prefers-color-scheme: dark) {
+    color: #0056b3;
+  }
+}

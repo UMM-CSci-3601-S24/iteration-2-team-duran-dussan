@@ -85,6 +85,9 @@ export class HostProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  onHuntDeleted(deletedHuntId: string) {
+    this.serverEndedHunts = this.serverEndedHunts.filter(hunt => hunt._id !== deletedHuntId);
+  }
 
   ngOnInit(): void {
     this.getHuntsFromServer();

@@ -21,8 +21,8 @@ describe('Hunter View', () => {
     cy.wait(2000);
     page.getAccessCode();
 
-    // Those above will navigate to the Hunt, begin it
-    // and capture the access code.
+//     // Those above will navigate to the Hunt, begin it
+//     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
       cy.visit(`/hunter-view/${accessCode}`);
@@ -37,11 +37,10 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
-    cy.wait(2000);
     page.getAccessCode();
 
-    // Those above will navigate to the Hunt, begin it
-    // and capture the access code.
+//     // Those above will navigate to the Hunt, begin it
+//     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
       cy.visit(`/hunters/`);
@@ -53,7 +52,7 @@ describe('Hunter View', () => {
       page.clickJoinHuntButton();
     })
 
-    // navigate to the hunter view page with access code.
+//     // navigate to the hunter view page with access code.
 
     page.getHunterViewTitle().contains('You are in');
   });
@@ -66,23 +65,21 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
-    cy.wait(2000);
     page.getAccessCode();
 
-    // Those above will navigate to the Hunt, begin it
-    // and capture the access code.
+//     // Those above will navigate to the Hunt, begin it
+//     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
       cy.visit(`/hunters/`);
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    }).then(() => {
-      cy.wait(1000);
-      page.clickJoinHuntButton();
-    })
+    });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
-    // navigate to the hunter view page with access code.
+//     // navigate to the hunter view page with access code.
 
     page.getHuntTimer().contains('min');
     page.getHuntNofTasks().contains('tasks');
@@ -99,8 +96,8 @@ describe('Hunter View', () => {
     cy.wait(2000);
     page.getAccessCode();
 
-    // Those above will navigate to the Hunt, begin it
-    // and capture the access code.
+//     // Those above will navigate to the Hunt, begin it
+//     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
       cy.visit(`/hunters/`);
@@ -112,7 +109,7 @@ describe('Hunter View', () => {
       page.clickJoinHuntButton();
     })
 
-    // navigate to the hunter view page with access code.
+//     // navigate to the hunter view page with access code.
 
     page.getHuntTaskList().should('exist');
   });
@@ -128,8 +125,8 @@ describe('Hunter View', () => {
     cy.wait(2000);
     page.getAccessCode();
 
-    // Those above will navigate to the Hunt, begin it
-    // and capture the access code.
+//     // Those above will navigate to the Hunt, begin it
+//     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
       cy.visit(`/hunters/`);
@@ -141,7 +138,7 @@ describe('Hunter View', () => {
       page.clickJoinHuntButton();
     })
 
-    // navigate to the hunter view page with access code.
+//     // navigate to the hunter view page with access code.
 
     page.getHunterUploadImage().should('exist');
   });
@@ -154,23 +151,21 @@ describe('Hunter View', () => {
     });
 
     page.clickBeginHunt();
-    cy.wait(2000);
     page.getAccessCode();
 
-    // Those above will navigate to the Hunt, begin it
-    // and capture the access code.
+//     // Those above will navigate to the Hunt, begin it
+//     // and capture the access code.
 
     cy.get('@accessCode').then((accessCode) => {
       cy.visit(`/hunters/`);
       for (let i = 0; i < accessCode.length; i++) {
         page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
       }
-    }).then(() => {
-      cy.wait(1000);
-      page.clickJoinHuntButton();
-    })
+    });
+    cy.wait(2000);
+    page.clickJoinHuntButton();
 
-    // navigate to the hunter view page with access code.
+//     // navigate to the hunter view page with access code.
 
     page.clickUploadImage();
   })

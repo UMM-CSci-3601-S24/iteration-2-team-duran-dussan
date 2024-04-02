@@ -49,7 +49,7 @@
       <div>
         <div class="hunt-cards-container">
           @for (startedHunt of serverEndedHunts; track startedHunt._id) {
-            <app-ended-hunt-card [simple]="true" class="hunt-card" [startedHunt]="startedHunt" ></app-ended-hunt-card>
+            <app-ended-hunt-card [simple]="true" class="hunt-card" [startedHunt]="startedHunt" (huntDeleted)="onHuntDeleted($event)"></app-ended-hunt-card>
           }
         </div>
       </div>

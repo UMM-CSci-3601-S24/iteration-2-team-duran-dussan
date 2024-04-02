@@ -6,6 +6,7 @@ import { Hunt } from '../hunts/hunt';
 import { Task } from '../hunts/task';
 import { CompleteHunt } from '../hunts/completeHunt';
 import { StartedHunt } from '../startHunt/startedHunt';
+import { EndedHunt } from '../endedHunts/endedHunt';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class HostService {
   readonly startedHuntUrl: string = `${environment.apiUrl}startedHunts`;
   readonly endHuntUrl: string = `${environment.apiUrl}endHunt`;
   readonly endedHuntsUrl: string = `${environment.apiUrl}endedHunts`;
+  readonly endedHuntUrl: string = `${environment.apiUrl}startedHunt`;
 
   constructor(private httpClient: HttpClient){
   }
@@ -70,16 +72,20 @@ export class HostService {
     return this.httpClient.delete<void>(`${this.endedHuntsUrl}/${id}`);
   }
 
-  submitPhoto(taskId: string, photo: File): Observable<string> {
+  submitPhoto(startedHuntId: string, taskId: string, photo: File): Observable<string> {
     const formData = new FormData();
     formData.append('photo', photo);
-    return this.httpClient.post<{id: string}>(`${this.taskUrl}/${taskId}/photo`, formData).pipe(map(result => result.id));
+    return this.httpClient.post<{id: string}>(`${this.endedHuntUrl}/${startedHuntId}/tasks/${taskId}/photo`, formData).pipe(map(result => result.id));
   }
 
-  replacePhoto(taskId: string, photoPath: string, photo: File): Observable<string> {
+  replacePhoto(startedHuntId: string, taskId: string, photoPath: string, photo: File): Observable<string> {
     const formData = new FormData();
     formData.append('photo', photo);
-    return this.httpClient.put<{id: string}>(`${this.taskUrl}/${taskId}/photo/${photoPath}`, formData).pipe(map(result => result.id));
+    return this.httpClient.put<{id: string}>(`${this.endedHuntUrl}/${startedHuntId}/tasks/${taskId}/photo/${photoPath}`, formData).pipe(map(result => result.id));
+  }
+
+  getEndedHuntById(id: string): Observable<EndedHunt> {
+    return this.httpClient.get<EndedHunt>(`${this.endedHuntsUrl}/${id}`);
   }
 
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.mongojack.JacksonMongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.DeleteResult;
+import java.util.Base64;
 
 public class HostController implements Controller {
 
@@ -43,10 +45,11 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
+  private static final String API_ENDED_HUNT = "/api/endedHunts/{id}";
   private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
   private static final String API_DELETE_HUNT = "/api/endedHunts/{id}";
-  private static final String API_PHOTO_UPLOAD = "/api/tasks/{id}/photo";
-  private static final String API_PHOTO_REPLACE = "/api/tasks/{id}/photo/{photoId}";
+  private static final String API_PHOTO_UPLOAD = "/api/startedHunt/{startedHuntId}/tasks/{taskId}/photo";
+  private static final String API_PHOTO_REPLACE = "/api/startedHunt/{startedHuntId}/tasks/{taskId}/photo/{photoId}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -288,7 +291,7 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.CREATED);
   }
 
-  public void getStartedHunt(Context ctx) {
+  public StartedHunt getStartedHunt(Context ctx) {
     String accessCode = ctx.pathParam("accessCode");
     StartedHunt startedHunt;
 
@@ -306,6 +309,7 @@ public class HostController implements Controller {
     } else {
       ctx.json(startedHunt);
       ctx.status(HttpStatus.OK);
+      return startedHunt;
     }
   }
 
@@ -384,22 +388,32 @@ public class HostController implements Controller {
   }
 
   public void addPhotoPathToTask(Context ctx, String photoPath) {
-    String id = ctx.pathParam("id");
-    Task task = taskCollection.find(eq("_id", new ObjectId(id))).first();
+    String taskId = ctx.pathParam("taskId");
+    String startedHuntId = ctx.pathParam("startedHuntId");
+    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(startedHuntId))).first();
+    if (startedHunt == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("StartedHunt with ID " + startedHuntId + " does not exist");
+    }
+
+    Task task = startedHunt.completeHunt.tasks.stream().filter(t -> t._id.equals(taskId)).findFirst().orElse(null);
+
     if (task == null) {
       ctx.status(HttpStatus.NOT_FOUND);
-      throw new BadRequestResponse("Task with ID " + id + " does not exist");
+      throw new BadRequestResponse("Task with ID " + taskId + " does not exist");
     }
 
     task.photos.add(photoPath);
-    taskCollection.save(task);
+    startedHunt.completeHunt.tasks.set(startedHunt.completeHunt.tasks.indexOf(task), task);
+    startedHuntCollection.save(startedHunt);
   }
 
   public void replacePhoto(Context ctx) {
-    String id = ctx.pathParam("id");
+    String startedHuntId = ctx.pathParam("startedHuntId");
+    String taskId = ctx.pathParam("taskId");
     String photoId = ctx.pathParam("photoId");
     deletePhoto(photoId, ctx);
-    removePhotoPathFromTask(ctx, id, photoId);
+    removePhotoPathFromTask(ctx, taskId, startedHuntId, photoId);
     addPhoto(ctx);
   }
 
@@ -420,26 +434,76 @@ public class HostController implements Controller {
     }
   }
 
-  public void removePhotoPathFromTask(Context ctx, String taskId, String photoId) {
-    Task task = taskCollection.find(eq("_id", new ObjectId(taskId))).first();
+  public void removePhotoPathFromTask(Context ctx, String taskId, String startedHuntId, String photoId) {
+    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(startedHuntId))).first();
+    if (startedHunt == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("StartedHunt with ID " + startedHuntId + " does not exist");
+    }
+
+    Task task = startedHunt.completeHunt.tasks.stream().filter(t -> t._id.equals(taskId)).findFirst().orElse(null);
     if (task == null) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new BadRequestResponse("Task with ID " + taskId + " does not exist");
     }
 
     task.photos.remove(photoId);
-    taskCollection.save(task);
+    startedHunt.completeHunt.tasks.set(startedHunt.completeHunt.tasks.indexOf(task), task);
+    startedHuntCollection.save(startedHunt);
   }
 
-  public List<File> getPhotosFromTask(Task task) {
-    ArrayList<File> photos = new ArrayList<>();
+  public void getEndedHunt(Context ctx) {
+    EndedHunt finishedHunt = new EndedHunt();
+    finishedHunt.startedHunt = getStartedHuntById(ctx);
+    finishedHunt.finishedTasks = getFinishedTasks(finishedHunt.startedHunt.completeHunt.tasks);
+
+    ctx.json(finishedHunt);
+    ctx.status(HttpStatus.OK);
+  }
+
+  public StartedHunt getStartedHuntById(Context ctx) {
+    String id = ctx.pathParam("id");
+    StartedHunt startedHunt;
+
+    try {
+      startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(id))).first();
+    } catch (IllegalArgumentException e) {
+      throw new BadRequestResponse("The requested started hunt id wasn't a legal Mongo Object ID.");
+    }
+    if (startedHunt == null) {
+      throw new NotFoundResponse("The requested started hunt was not found");
+    } else {
+      return startedHunt;
+    }
+  }
+
+  public List<FinishedTask> getFinishedTasks(List<Task> tasks) {
+    ArrayList<FinishedTask> finishedTasks = new ArrayList<>();
+    FinishedTask finishedTask;
+    for (Task task : tasks) {
+      finishedTask = new FinishedTask();
+      finishedTask.taskId = task._id;
+      finishedTask.photos = getPhotosFromTask(task);
+      finishedTasks.add(finishedTask);
+    }
+    return finishedTasks;
+  }
+
+  public List<String> getPhotosFromTask(Task task) {
+    List<String> encodedPhotos = new ArrayList<>();
     for (String photoPath : task.photos) {
       File photo = new File("photos/" + photoPath);
       if (photo.exists()) {
-        photos.add(photo);
+        try {
+          byte[] bytes = Files.readAllBytes(Paths.get(photo.getPath()));
+          String encoded = "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
+          encodedPhotos.add(encoded);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
-    return photos;
+    return encodedPhotos;
   }
 
   @Override
@@ -456,6 +520,7 @@ public class HostController implements Controller {
     server.put(API_END_HUNT, this::endStartedHunt);
     server.post(API_PHOTO_UPLOAD, this::addPhoto);
     server.put(API_PHOTO_REPLACE, this::replacePhoto);
+    server.get(API_ENDED_HUNT, this::getEndedHunt);
     server.get(API_ENDED_HUNTS, this::getEndedHunts);
     server.delete(API_DELETE_HUNT, this::deleteStartedHunt);
   }

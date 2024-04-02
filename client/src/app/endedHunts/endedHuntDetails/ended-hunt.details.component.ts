@@ -9,7 +9,6 @@ import { EndedHuntCardComponent } from "../ended-hunt-card.component";
 import { EndedHunt } from "../endedHunt";
 import { Subject, map, switchMap, takeUntil } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { HostService } from "src/app/hosts/host.service";
 
@@ -27,9 +26,10 @@ export class EndedHuntDetailsComponent implements OnInit, OnDestroy{
 
   private ngUnsubscribe = new Subject<void>();
 
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private hostService: HostService, private router: Router, public dialog: MatDialog) { }
+  constructor(private route: ActivatedRoute, private hostService: HostService, private router: Router, public dialog: MatDialog) { }
 
   ngOnInit(): void {
+
     this.route.paramMap.pipe(
 
       map((paramMap: ParamMap) => paramMap.get('id')),

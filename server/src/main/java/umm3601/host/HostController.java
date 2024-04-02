@@ -43,6 +43,10 @@ public class HostController implements Controller {
   private static final String API_START_HUNT = "/api/startHunt/{id}";
   private static final String API_STARTED_HUNT = "/api/startedHunts/{accessCode}";
   private static final String API_END_HUNT = "/api/endHunt/{id}";
+  private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
+  private static final String API_DELETE_HUNT = "/api/endedHunts/{id}";
+  private static final String API_PHOTO_UPLOAD = "/api/tasks/{id}/photo";
+  private static final String API_PHOTO_REPLACE = "/api/tasks/{id}/photo/{photoId}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -195,6 +199,8 @@ public class HostController implements Controller {
     .check(task -> task.name.length() > 0, "Name must be at least 1 character")
     .get();
 
+    newTask.photos = new ArrayList<String>();
+
     taskCollection.insertOne(newTask);
     increaseTaskCount(newTask.huntId);
     ctx.json(Map.of("id", newTask._id));
@@ -336,6 +342,13 @@ public class HostController implements Controller {
     ctx.status(HttpStatus.OK);
   }
 
+  public void addPhoto(Context ctx) {
+    String id = uploadPhoto(ctx);
+    addPhotoPathToTask(ctx, id);
+    ctx.status(HttpStatus.CREATED);
+    ctx.json(Map.of("id", id));
+  }
+
   public String getFileExtension(String filename) {
     int dotIndex = filename.lastIndexOf('.');
     if (dotIndex >= 0) {
@@ -345,51 +358,89 @@ public class HostController implements Controller {
     }
   }
 
-  private static final int STATUS_OK = 200;
-  private static final int STATUS_BAD_REQUEST = 400;
-  private static final int STATUS_INTERNAL_SERVER_ERROR = 500;
-
   public String uploadPhoto(Context ctx) {
-  try {
-    var uploadedFile = ctx.uploadedFile("photo");
-    if (uploadedFile != null) {
-      try (InputStream in = uploadedFile.content()) {
+    try {
+      var uploadedFile = ctx.uploadedFile("photo");
+      if (uploadedFile != null) {
+        try (InputStream in = uploadedFile.content()) {
 
-        String id = UUID.randomUUID().toString();
+          String id = UUID.randomUUID().toString();
 
-        String extension = getFileExtension(uploadedFile.filename());
-        File file = Path.of("photos", id + "." + extension).toFile();
+          String extension = getFileExtension(uploadedFile.filename());
+          File file = Path.of("photos", id + "." + extension).toFile();
 
-        Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        ctx.status(STATUS_OK).result("Photo uploaded successfully with ID: " + id);
-        return file.toPath().toString();
+          Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+          ctx.status(HttpStatus.OK);
+          return id + "." + extension;
+        } catch (IOException e) {
+          throw new BadRequestResponse("Error handling the uploaded file: " + e.getMessage());
+        }
+      } else {
+        throw new BadRequestResponse("No photo uploaded");
       }
-    } else {
-      ctx.status(STATUS_BAD_REQUEST).result("No photo uploaded");
+    } catch (Exception e) {
+      throw new BadRequestResponse("Unexpected error during photo upload: " + e.getMessage());
     }
-  } catch (Exception e) {
-    e.printStackTrace();
-    ctx.status(STATUS_INTERNAL_SERVER_ERROR).result("Photo upload failed: " + e.getMessage());
   }
-  return null;
-}
 
-public void deletePhoto(String id, Context ctx) {
-  try {
-    // Construct the file path. This assumes that the ID is the filename without the extension.
-    Path filePath = Path.of(id);
+  public void addPhotoPathToTask(Context ctx, String photoPath) {
+    String id = ctx.pathParam("id");
+    Task task = taskCollection.find(eq("_id", new ObjectId(id))).first();
+    if (task == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("Task with ID " + id + " does not exist");
+    }
 
-    // Delete the file
-    Files.delete(filePath);
-
-    // Respond with a success message
-    ctx.status(STATUS_OK).result("Photo deleted successfully");
-  } catch (IOException e) {
-    // If an exception occurs, print the stack trace and respond with an error message
-    e.printStackTrace();
-    ctx.status(STATUS_INTERNAL_SERVER_ERROR).result("Photo deletion failed: " + e.getMessage());
+    task.photos.add(photoPath);
+    taskCollection.save(task);
   }
-}
+
+  public void replacePhoto(Context ctx) {
+    String id = ctx.pathParam("id");
+    String photoId = ctx.pathParam("photoId");
+    deletePhoto(photoId, ctx);
+    removePhotoPathFromTask(ctx, id, photoId);
+    addPhoto(ctx);
+  }
+
+  public void deletePhoto(String id, Context ctx) {
+    Path filePath = Path.of("photos/" + id);
+    if (!Files.exists(filePath)) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("Photo with ID " + id + " does not exist");
+  }
+
+    try {
+      Files.delete(filePath);
+
+      ctx.status(HttpStatus.OK);
+    } catch (IOException e) {
+      ctx.status(HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new BadRequestResponse("Error deleting the photo: " + e.getMessage());
+    }
+  }
+
+  public void removePhotoPathFromTask(Context ctx, String taskId, String photoId) {
+    Task task = taskCollection.find(eq("_id", new ObjectId(taskId))).first();
+    if (task == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("Task with ID " + taskId + " does not exist");
+    }
+
+    task.photos.remove(photoId);
+    taskCollection.save(task);
+  }
+
+  public List<File> getPhotosFromTask(Task task) {
+    ArrayList<File> photos = new ArrayList<>();
+    for (String photoPath : task.photos) {
+      File photo = new File("photos/" + photoPath);
+      if (photo.exists()) {
+        photos.add(photo);
+      }
+    }
+    return photos;
+  }
 
   @Override
   public void addRoutes(Javalin server) {
@@ -403,5 +454,9 @@ public void deletePhoto(String id, Context ctx) {
     server.get(API_START_HUNT, this::startHunt);
     server.get(API_STARTED_HUNT, this::getStartedHunt);
     server.put(API_END_HUNT, this::endStartedHunt);
+    server.post(API_PHOTO_UPLOAD, this::addPhoto);
+    server.put(API_PHOTO_REPLACE, this::replacePhoto);
+    server.get(API_ENDED_HUNTS, this::getEndedHunts);
+    server.delete(API_DELETE_HUNT, this::deleteStartedHunt);
   }
 }

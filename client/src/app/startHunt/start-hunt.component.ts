@@ -40,9 +40,6 @@ export class StartHuntComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
     ).subscribe({
       next: startedHunt => {
-        for (const task of startedHunt.completeHunt.tasks) {
-          task.photos = [];
-        }
         this.startedHunt = startedHunt;
         console.log(this.startedHunt);
         return ;

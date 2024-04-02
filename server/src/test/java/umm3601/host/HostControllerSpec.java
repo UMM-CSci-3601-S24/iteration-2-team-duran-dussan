@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+//import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -227,6 +228,7 @@ class HostControllerSpec {
                 .append("hunt", testHunts.get(1))
                 .append("tasks", testTasks.subList(2, 3)))
             .append("status", false));
+
 
     startedHunts.add(
         new Document()
@@ -911,17 +913,19 @@ class HostControllerSpec {
     hostController.getStartedHunt(ctx);
     verify(ctx).json(startedHuntCaptor.capture());
     assertEquals(true, startedHuntCaptor.getValue().status);
+    assertNull(startedHuntCaptor.getValue().endDate); // Check that endDate is initially null
 
     // End the hunt
     hostController.endStartedHunt(ctx);
     verify(ctx, times(2)).status(HttpStatus.OK);
 
-    // Check the status after ending the hunt
+    // Check the status and endDate after ending the hunt
     hostController.getEndedHunts(ctx);
     verify(ctx).json(startedHuntArrayListCaptor.capture());
     for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {
       if (startedHunt._id.equals("123456")) {
         assertEquals(false, startedHunt.status);
+        assertNotNull(startedHunt.endDate); // Check that endDate is set
       }
     }
   }

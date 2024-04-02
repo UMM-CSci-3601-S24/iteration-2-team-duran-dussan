@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.mongojack.JacksonMongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.DeleteResult;
+import java.util.Base64;
 
 public class HostController implements Controller {
 
@@ -435,7 +437,7 @@ public class HostController implements Controller {
   public void getFinishedHunt(Context ctx) {
     FinishedHunt finishedHunt = new FinishedHunt();
     finishedHunt.startedHunt = getStartedHuntById(ctx);
-    finishedHunt.tasks = getFinishedTasks(ctx);
+    finishedHunt.finishedTasks = getFinishedTasks(ctx);
 
     ctx.json(finishedHunt);
     ctx.status(HttpStatus.OK);
@@ -463,22 +465,28 @@ public class HostController implements Controller {
     FinishedTask finishedTask;
     for (Task task : matchingTasks) {
       finishedTask = new FinishedTask();
-      finishedTask.task = task;
-      finishedTask.photos = (ArrayList<File>) getPhotosFromTask(task);
+      finishedTask.taskId = task._id;
+      finishedTask.photos = (List<String>) getPhotosFromTask(task);
       finishedTasks.add(finishedTask);
     }
     return finishedTasks;
   }
 
-  public List<File> getPhotosFromTask(Task task) {
-    ArrayList<File> photos = new ArrayList<>();
+  public List<String> getPhotosFromTask(Task task) {
+    ArrayList<String> encodedPhotos = new ArrayList<>();
     for (String photoPath : task.photos) {
       File photo = new File("photos/" + photoPath);
       if (photo.exists()) {
-        photos.add(photo);
+        try {
+          byte[] bytes = Files.readAllBytes(Paths.get(photo.getPath()));
+          String encoded = Base64.getEncoder().encodeToString(bytes);
+          encodedPhotos.add(encoded);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
-    return photos;
+    return encodedPhotos;
   }
 
   @Override

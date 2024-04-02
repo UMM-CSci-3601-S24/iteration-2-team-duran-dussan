@@ -1,9 +1,9 @@
 package umm3601.host;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
+@SuppressWarnings({"VisibilityModifier"})
 public class FinishedTask {
-  Task task;
-  ArrayList<File> photos;
+  public String taskId;
+  public List<String> photos;
 }

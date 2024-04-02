@@ -49,7 +49,7 @@ public class HostController implements Controller {
   private static final String API_ENDED_HUNTS = "/api/hosts/{id}/endedHunts";
   private static final String API_DELETE_HUNT = "/api/endedHunts/{id}";
   private static final String API_PHOTO_UPLOAD = "/api/startedHunt/{startedHuntId}/tasks/{taskId}/photo";
-  private static final String API_PHOTO_REPLACE = "/api/tasks/{id}/photo/{photoId}";
+  private static final String API_PHOTO_REPLACE = "/api/startedHunt/{startedHuntId}/tasks/{taskId}/photo/{photoId}";
 
   static final String HOST_KEY = "hostId";
   static final String HUNT_KEY = "huntId";
@@ -409,10 +409,11 @@ public class HostController implements Controller {
   }
 
   public void replacePhoto(Context ctx) {
-    String id = ctx.pathParam("id");
+    String startedHuntId = ctx.pathParam("startedHuntId");
+    String taskId = ctx.pathParam("taskId");
     String photoId = ctx.pathParam("photoId");
     deletePhoto(photoId, ctx);
-    removePhotoPathFromTask(ctx, id, photoId);
+    removePhotoPathFromTask(ctx, taskId, startedHuntId, photoId);
     addPhoto(ctx);
   }
 
@@ -433,15 +434,22 @@ public class HostController implements Controller {
     }
   }
 
-  public void removePhotoPathFromTask(Context ctx, String taskId, String photoId) {
-    Task task = taskCollection.find(eq("_id", new ObjectId(taskId))).first();
+  public void removePhotoPathFromTask(Context ctx, String taskId, String startedHuntId, String photoId) {
+    StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(startedHuntId))).first();
+    if (startedHunt == null) {
+      ctx.status(HttpStatus.NOT_FOUND);
+      throw new BadRequestResponse("StartedHunt with ID " + startedHuntId + " does not exist");
+    }
+
+    Task task = startedHunt.completeHunt.tasks.stream().filter(t -> t._id.equals(taskId)).findFirst().orElse(null);
     if (task == null) {
       ctx.status(HttpStatus.NOT_FOUND);
       throw new BadRequestResponse("Task with ID " + taskId + " does not exist");
     }
 
     task.photos.remove(photoId);
-    taskCollection.save(task);
+    startedHunt.completeHunt.tasks.set(startedHunt.completeHunt.tasks.indexOf(task), task);
+    startedHuntCollection.save(startedHunt);
   }
 
   public void getEndedHunt(Context ctx) {

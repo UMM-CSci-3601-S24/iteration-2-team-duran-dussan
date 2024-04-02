@@ -20,8 +20,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.Map;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -1105,7 +1108,8 @@ class HostControllerSpec {
   }
 
   @Test
-  void testGetPhotosFromTask() {
+  void testGetPhotosFromTask() throws IOException {
+    // Create a Task with the paths of the temporary files
     UploadedFile uploadedFile = mock(UploadedFile.class);
     InputStream inputStream = new ByteArrayInputStream(new byte[0]);
 
@@ -1116,24 +1120,29 @@ class HostControllerSpec {
     when(ctx.pathParam("id")).thenReturn(taskId.toHexString());
 
     hostController.addPhoto(ctx);
-    hostController.addPhoto(ctx);
+
     Document updatedTask = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
     Task task = new Task();
-    task._id = updatedTask.get("_id").toString();
-    task.huntId = updatedTask.get("huntId").toString();
-    task.name = updatedTask.get("name").toString();
+    task.photos = updatedTask.get("photos", List.class);
+    task.huntId = updatedTask.getString("huntId");
+    task.name = updatedTask.getString("name");
     task.status = updatedTask.getBoolean("status");
-    task.photos = new ArrayList<String>();
-    String id = updatedTask.get("photos", List.class).get(0).toString();
-    String id2 = updatedTask.get("photos", List.class).get(1).toString();
-    task.photos.add(id);
-    task.photos.add(id2);
+    task._id = updatedTask.getObjectId("_id").toHexString();
 
-    List<File> photos = hostController.getPhotosFromTask(task);
-    assertEquals(2, photos.size());
+    File addedFile = new File("photos/" + task.photos.get(0));
 
-    hostController.deletePhoto(id, ctx);
-    hostController.deletePhoto(id2, ctx);
+    // Call the method under test
+    List<String> encodedPhotos = hostController.getPhotosFromTask(task);
+
+    // Check that the returned list has the correct size
+    assertEquals(1, encodedPhotos.size());
+
+    // Check that the returned list contains the correct encoded photos
+    byte[] bytes1 = Files.readAllBytes(addedFile.toPath());
+    String expectedEncoded1 = Base64.getEncoder().encodeToString(bytes1);
+    assertEquals(expectedEncoded1, encodedPhotos.get(0));
+
+    hostController.deletePhoto(task.photos.get(0), ctx);
   }
 
   @Test
@@ -1236,7 +1245,7 @@ class HostControllerSpec {
 
     FinishedHunt finishedHunt = finishedHuntCaptor.getValue();
     assertNotNull(finishedHunt.startedHunt);
-    assertEquals(finishedTasks, finishedHunt.tasks);
+    assertEquals(finishedTasks, finishedHunt.finishedTasks);
   }
 
 }

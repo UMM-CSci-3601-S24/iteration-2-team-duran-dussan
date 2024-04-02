@@ -467,14 +467,14 @@ public class HostController implements Controller {
     for (Task task : matchingTasks) {
       finishedTask = new FinishedTask();
       finishedTask.taskId = task._id;
-      finishedTask.photos = (List<String>) getPhotosFromTask(task);
+      finishedTask.photos = getPhotosFromTask(task);
       finishedTasks.add(finishedTask);
     }
     return finishedTasks;
   }
 
   public List<String> getPhotosFromTask(Task task) {
-    ArrayList<String> encodedPhotos = new ArrayList<>();
+    List<String> encodedPhotos = new ArrayList<>();
     for (String photoPath : task.photos) {
       File photo = new File("photos/" + photoPath);
       if (photo.exists()) {

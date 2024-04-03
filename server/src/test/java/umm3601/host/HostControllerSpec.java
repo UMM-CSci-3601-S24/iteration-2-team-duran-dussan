@@ -949,18 +949,49 @@ class HostControllerSpec {
     });
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void deleteFoundStartedHunt() throws IOException {
+    UploadedFile uploadedFile = mock(UploadedFile.class);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+    Document startedHuntDocument = db.getCollection("startedHunts")
+        .find(eq("_id", new ObjectId(startedHuntId.toHexString()))).first();
+    Document taskDocument = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
+    startedHuntDocument.get("completeHunt", Document.class).get("tasks", List.class).add(taskDocument);
+    db.getCollection("startedHunts").replaceOne(eq("_id", new ObjectId(startedHuntId.toHexString())), startedHuntDocument);
+
+    when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
+    when(uploadedFile.content()).thenReturn(inputStream);
+    when(uploadedFile.filename()).thenReturn("test.jpg");
+    when(ctx.status(anyInt())).thenReturn(ctx);
+    when(ctx.pathParam("taskId")).thenReturn(taskId.toHexString());
+    when(ctx.pathParam("startedHuntId")).thenReturn(startedHuntId.toHexString());
+
+    hostController.addPhoto(ctx);
+
     String testID = startedHuntId.toHexString();
-    when(ctx.pathParam("id")).thenReturn(testID);
+    when(ctx.pathParam("accessCode")).thenReturn("123456");
 
     assertEquals(1, db.getCollection("startedHunts").countDocuments(eq("_id", new ObjectId(testID))));
+    StartedHunt startedHuntToDelete = hostController.getStartedHunt(ctx);
 
-    hostController.deleteStartedHunt(ctx);
+    when(ctx.pathParam("id")).thenReturn(testID);
 
-    verify(ctx).status(HttpStatus.OK);
+    // Create a spy of the hostController to verify the calls
+    HostController spyHostController = Mockito.spy(hostController);
+
+    spyHostController.deleteStartedHunt(ctx);
 
     assertEquals(0, db.getCollection("startedHunts").countDocuments(eq("_id", new ObjectId(testID))));
+
+    // Verify that deletePhoto is called
+
+    for (Task task : startedHuntToDelete.completeHunt.tasks) {
+      for (String photo : task.photos) {
+        verify(spyHostController).deletePhoto(photo, ctx);
+      }
+    }
   }
 
   @Test

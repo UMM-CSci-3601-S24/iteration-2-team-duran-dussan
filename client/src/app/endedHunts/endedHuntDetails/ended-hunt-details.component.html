@@ -4,7 +4,7 @@
     @if (endedHunt) {
       <app-ended-hunt-card class="hunt-card" [startedHunt]="this.endedHunt.startedHunt" [simple]="false">
       </app-ended-hunt-card>
-      <mat-card-title class="tasks-title">Tasks</mat-card-title>
+      <mat-card-title class="tasks-title">Tasks and Photos</mat-card-title>
       <div class="task-photos-container">
         @for (task of this.endedHunt.finishedTasks; track task.taskId) {
           <mat-card-title class="task-list-name"> {{ this.getTaskName(task.taskId) }} </mat-card-title>

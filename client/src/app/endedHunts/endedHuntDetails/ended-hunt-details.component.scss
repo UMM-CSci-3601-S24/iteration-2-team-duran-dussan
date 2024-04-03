@@ -26,7 +26,7 @@
 .tasks-title {
   font-size: 36px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #0056b3
 }
 
@@ -35,4 +35,23 @@
   text-align: center;
   margin-bottom: 20px;
   color: #0056b3
+}
+
+.hunt-name {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  color: white;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+}
+
+.top-name-card {
+  background-color: #0056b3;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }

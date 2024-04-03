@@ -11,13 +11,14 @@ import { Subject, map, switchMap, takeUntil } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { HostService } from "src/app/hosts/host.service";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-ended-hunt-details',
   templateUrl: './ended-hunt-details.component.html',
   styleUrls: ['./ended-hunt-details.component.scss'],
   standalone: true,
-  imports: [EndedHuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule]
+  imports: [EndedHuntCardComponent, MatCardModule, AddTaskComponent, MatDivider, MatIconButton, MatIcon, HttpClientModule, CommonModule]
 })
 export class EndedHuntDetailsComponent implements OnInit, OnDestroy{
   confirmDeleteHunt: boolean = false;

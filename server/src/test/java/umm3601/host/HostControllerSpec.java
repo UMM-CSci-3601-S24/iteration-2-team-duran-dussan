@@ -20,9 +20,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -216,13 +218,17 @@ class HostControllerSpec {
     MongoCollection<Document> startedHuntsDocuments = db.getCollection("startedHunts");
     startedHuntsDocuments.drop();
     List<Document> startedHunts = new ArrayList<>();
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(2024, Calendar.MAY, 2, 12, 0, 0);
+    Date date = calendar.getTime();
     startedHunts.add(
         new Document()
             .append("accessCode", "123456")
             .append("completeHunt", new Document()
                 .append("hunt", testHunts.get(0))
                 .append("tasks", testTasks.subList(0, 2)))
-            .append("status", true));
+            .append("status", true)
+            .append("endDate", null));
 
     startedHunts.add(
         new Document()
@@ -230,7 +236,9 @@ class HostControllerSpec {
             .append("completeHunt", new Document()
                 .append("hunt", testHunts.get(1))
                 .append("tasks", testTasks.subList(2, 3)))
-            .append("status", false));
+            .append("status", false)
+            .append("endDate", date));
+
 
     startedHunts.add(
         new Document()
@@ -238,16 +246,18 @@ class HostControllerSpec {
             .append("completeHunt", new Document()
                 .append("hunt", testHunts.get(2))
                 .append("tasks", testTasks.subList(0, 3)))
-            .append("status", true));
+            .append("status", true)
+            .append("endDate", null));
 
     startedHuntId = new ObjectId();
     Document startedHunt = new Document()
         .append("_id", startedHuntId)
         .append("accessCode", "123456")
         .append("completeHunt", new Document()
-            .append("hunt", testHunts.get(2))
-            .append("tasks", testTasks.subList(0, 3)))
-        .append("status", true);
+                .append("hunt", testHunts.get(2))
+                .append("tasks", testTasks.subList(0, 3)))
+        .append("status", true)
+        .append("endDate", null);
 
     startedHuntsDocuments.insertMany(startedHunts);
     startedHuntsDocuments.insertOne(startedHunt);
@@ -914,12 +924,13 @@ class HostControllerSpec {
     hostController.getStartedHunt(ctx);
     verify(ctx).json(startedHuntCaptor.capture());
     assertEquals(true, startedHuntCaptor.getValue().status);
+    assertNull(startedHuntCaptor.getValue().endDate); // Check that the endDate is null
 
     // End the hunt
     hostController.endStartedHunt(ctx);
     verify(ctx, times(2)).status(HttpStatus.OK);
 
-    // Check the status after ending the hunt
+    // Check the status and endDate after ending the hunt
     hostController.getEndedHunts(ctx);
     verify(ctx).json(startedHuntArrayListCaptor.capture());
     for (StartedHunt startedHunt : startedHuntArrayListCaptor.getValue()) {

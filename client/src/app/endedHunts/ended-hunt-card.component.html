@@ -3,6 +3,7 @@
     <mat-card-header>
       <mat-card-title class="ended-hunt-card-name">{{ this.startedHunt().completeHunt.hunt.name }}</mat-card-title>
       <mat-card-subtitle class="ended-hunt-card-description">{{ this.startedHunt().completeHunt.hunt.description }}</mat-card-subtitle>
+      <mat-card-subtitle class="ended-hunt-card-endDate">{{ this.startedHunt().endDate | date:'medium' }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-actions class="actions-container">
       <div>

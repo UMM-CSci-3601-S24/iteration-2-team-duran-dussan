@@ -338,11 +338,6 @@ public class HostController implements Controller {
   public void deleteStartedHunt(Context ctx) {
     String id = ctx.pathParam("id");
     StartedHunt startedHunt = startedHuntCollection.find(eq("_id", new ObjectId(id))).first();
-    for (Task task : startedHunt.completeHunt.tasks) {
-      for (String photo : task.photos) {
-        deletePhoto(photo, ctx);
-      }
-    }
     DeleteResult deleteResult = startedHuntCollection.deleteOne(eq("_id", new ObjectId(id)));
     if (deleteResult.getDeletedCount() != 1) {
       ctx.status(HttpStatus.NOT_FOUND);
@@ -352,6 +347,12 @@ public class HostController implements Controller {
               + "; perhaps illegal ID or an ID for an item not in the system?");
      }
     ctx.status(HttpStatus.OK);
+
+    for (Task task : startedHunt.completeHunt.tasks) {
+      for (String photo : task.photos) {
+        deletePhoto(photo, ctx);
+      }
+    }
   }
 
   public void addPhoto(Context ctx) {

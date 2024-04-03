@@ -28,6 +28,18 @@
   }
 }
 
+.profile-button {
+  position: absolute;
+  bottom: 10px;
+  left: 30px;
+  background-color: #0056b3;
+  @media (prefers-color-scheme: dark) {
+    background-color: #00ccff;
+  }
+}
+
+
+
 .remove-hunt-fab {
   position:absolute;
   bottom: 20px;

@@ -94,6 +94,14 @@ public class HostController implements Controller {
         "startedHunts",
         StartedHunt.class,
         UuidRepresentation.STANDARD);
+
+    File directory = new File("photos");
+    if (! directory.exists()) {
+        directory.mkdir();
+    }
+        // If you require it to make the entire directory path including parents,
+        // use directory.mkdirs(); here instead.
+
   }
 
   public void getHost(Context ctx) {
@@ -374,11 +382,13 @@ public class HostController implements Controller {
 
           String extension = getFileExtension(uploadedFile.filename());
           File file = Path.of("photos", id + "." + extension).toFile();
+          System.err.println("The path was " + file.toPath());
 
           Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
           ctx.status(HttpStatus.OK);
           return id + "." + extension;
         } catch (IOException e) {
+          System.err.println("Error copying the uploaded file: " + e);
           throw new BadRequestResponse("Error handling the uploaded file: " + e.getMessage());
         }
       } else {

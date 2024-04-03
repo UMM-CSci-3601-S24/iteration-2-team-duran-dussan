@@ -28,11 +28,19 @@
   }
 }
 
-.profile-button {
+.ended-profile-button {
+  background-color: #007bff7c;
   position: absolute;
   bottom: 10px;
   left: 30px;
-  background-color: #0056b3;
+  transition: background-color 0.3s ease;
+  @media (prefers-color-scheme: dark) {
+    background-color: #00ccff;
+  }
+}
+.ended-profile-button:hover {
+  background-color: #007bff7c;
+
   @media (prefers-color-scheme: dark) {
     background-color: #00ccff;
   }

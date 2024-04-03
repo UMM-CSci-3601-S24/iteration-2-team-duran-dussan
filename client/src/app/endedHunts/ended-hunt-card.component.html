@@ -12,7 +12,7 @@
             <button mat-fab class="remove-hunt-fab" matTooltip="Delete Hunt" matTooltipPosition="left" (click)="deleteEndedHunt(startedHunt()._id)" data-test="deleteStartedHuntButton">
               <mat-icon class="md-24" aria-label="Delete Hunt">delete</mat-icon>
             </button>
-            <button mat-raised-button data-test=viewProfileButton [routerLink]="['/endedHunts', this.startedHunt()._id]" class="profile-button">Hunt Details</button>
+            <button mat-raised-button data-test=viewProfileButton [routerLink]="['/endedHunts', this.startedHunt()._id]" class="ended-profile-button">Hunt Details</button>
           </mat-card-actions>
         }
       </div>

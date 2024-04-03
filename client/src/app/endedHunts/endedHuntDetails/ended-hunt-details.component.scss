@@ -1,12 +1,14 @@
 .task-photos-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .task-photo {
-  width: calc(50% - 10px);
-  height: 100%;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
@@ -19,4 +21,37 @@
   @media (prefers-color-scheme: dark) {
     background-color: white;
   }
+}
+
+.tasks-title {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #0056b3
+}
+
+.end-date {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.hunt-name {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  color: white;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+}
+
+.top-name-card {
+  background-color: #0056b3;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }

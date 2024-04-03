@@ -11,15 +11,9 @@
 } @else {
   <mat-card class="running-hunt-card">
     <mat-card-content class="running-hunt-content">
-      <h2 class="running-hunt-title">Hunt Is Starting</h2>
+      <h2 class="running-hunt-title">Hunt Is Started</h2>
       <h3 class="tracking-hunt-title">Access Code</h3>
       <h5 class="tracked-access-code-number">{{ startedHunt?.accessCode }}</h5>
-    </mat-card-content>
-
-    <mat-card-content class="hunt-timer"> <mat-icon matListItemIcon>av_timer</mat-icon> {{ startedHunt?.completeHunt?.hunt?.est }} min
-    </mat-card-content>
-
-    <mat-card-content class="hunt-Nof-tasks"> <mat-icon matListItemIcon>checklist</mat-icon> {{ startedHunt?.completeHunt?.hunt?.numberOfTasks }} tasks
     </mat-card-content>
 
     <div class="task-table">

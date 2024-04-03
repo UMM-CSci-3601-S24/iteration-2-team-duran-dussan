@@ -336,6 +336,7 @@ describe('When getHunts() is called', () => {
 
   describe('Submitting a photo using `submitPhoto()`', () => {
     it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const startedHuntId = 'startedHunt_id';
       const task_id = 'task_id';
       const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });
 
@@ -343,7 +344,7 @@ describe('When getHunts() is called', () => {
         .and
         .returnValue(of({id: 'someId'}));
 
-      hostService.submitPhoto(task_id, photo).subscribe(() => {
+      hostService.submitPhoto(startedHuntId, task_id, photo).subscribe(() => {
         expect(mockedMethod)
           .withContext('one call')
           .toHaveBeenCalledTimes(1);
@@ -352,7 +353,7 @@ describe('When getHunts() is called', () => {
 
         expect(args[0])
         .withContext('talks to the correct endpoint')
-        .toEqual(`${hostService.taskUrl}/${task_id}/photo`);
+        .toEqual(`${hostService.endedHuntUrl}/${startedHuntId}/tasks/${task_id}/photo`);
 
         const formData: FormData = args[1];
         expect(formData.get('photo')).toEqual(photo);
@@ -362,6 +363,7 @@ describe('When getHunts() is called', () => {
 
   describe('Replacing a photo using `replacePhoto()`', () => {
     it('talks to the right endpoint and is called once', waitForAsync(() => {
+      const startedHuntId = 'startedHunt_id';
       const task_id = 'task_id';
       const photo = new File([''], 'photo.jpg', { type: 'image/jpeg' });
       const photoPath = 'photo.jpg';
@@ -370,7 +372,7 @@ describe('When getHunts() is called', () => {
         .and
         .returnValue(of({id: 'someId'}));
 
-      hostService.replacePhoto(task_id, photoPath ,photo).subscribe(() => {
+      hostService.replacePhoto(startedHuntId, task_id, photoPath ,photo).subscribe(() => {
         expect(mockedMethod)
           .withContext('one call')
           .toHaveBeenCalledTimes(1);
@@ -379,7 +381,7 @@ describe('When getHunts() is called', () => {
 
         expect(args[0])
         .withContext('talks to the correct endpoint')
-        .toEqual(`${hostService.taskUrl}/${task_id}/photo/${photoPath}`);
+        .toEqual(`${hostService.endedHuntUrl}/${startedHuntId}/tasks/${task_id}/photo/${photoPath}`);
 
         const formData: FormData = args[1];
         expect(formData.get('photo')).toEqual(photo);

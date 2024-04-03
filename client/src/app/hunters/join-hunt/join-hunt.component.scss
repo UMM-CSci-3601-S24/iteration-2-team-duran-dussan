@@ -6,6 +6,12 @@
   padding: 20px;
   height: wrap-content;
   width: 400px;
+  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25); // Adjust the last two values to increase the shadow darkness and size
+
+  background-color: gray;
+    @media (prefers-color-scheme: dark) {
+      background-color: gray;
+    }
 }
 
 .center-button {
@@ -32,15 +38,9 @@
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: aquamarine;
+  color: #0056b3;
 }
 
-.join-button-enabled {
-  background-color: aqua !important;
-  color: black !important;
-
-  // Don't remove the !important, it's necessary to override the default color.
-}
 
 .input-container {
   display: flex;
@@ -56,4 +56,21 @@
     }
     margin-bottom: 20px;
   }
+}
+
+/* ::ng-deep .mat-raised-button:not([disabled]) {
+  background-color: #00ccff !important;
+  color: black !important;
+}
+
+::ng-deep .mat-raised-button[disabled] {
+  background-color: gray !important;
+  color: black !important;
+} */
+
+.join-button-enabled {
+  background-color: #00ccff !important;
+  color: black !important;
+
+  // Don't remove the !important, it's necessary to override the default color.
 }

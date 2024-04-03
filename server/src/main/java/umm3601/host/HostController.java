@@ -96,7 +96,7 @@ public class HostController implements Controller {
         UuidRepresentation.STANDARD);
 
     File directory = new File("photos");
-    if (! directory.exists()) {
+    if (!directory.exists()) {
         directory.mkdir();
     }
         // If you require it to make the entire directory path including parents,

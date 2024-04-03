@@ -4,9 +4,9 @@
       @if (endedHunt) {
         <mat-card class= "top-name-card">
           <mat-card-title class="hunt-name">{{ this.endedHunt.startedHunt.completeHunt.hunt.name }}</mat-card-title>
+          <mat-card-subtitle class="end-date">Ended on: {{ this.endedHunt.startedHunt.endDate | date: 'medium' }}</mat-card-subtitle>
         </mat-card>
         <mat-card-title class="tasks-title">Tasks and Photos</mat-card-title>
-        <mat-card-subtitle class="end-date">Ended on: {{ this.endedHunt.startedHunt.endDate | date: 'medium' }}</mat-card-subtitle>
         <div class="task-photos-container">
           @for (task of this.endedHunt.finishedTasks; track task.taskId) {
             <mat-card-title class="task-list-name"> {{ this.getTaskName(task.taskId) }} </mat-card-title>

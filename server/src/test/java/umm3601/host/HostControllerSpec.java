@@ -239,7 +239,6 @@ class HostControllerSpec {
             .append("status", false)
             .append("endDate", date));
 
-
     startedHunts.add(
         new Document()
             .append("accessCode", "123459")
@@ -254,8 +253,8 @@ class HostControllerSpec {
         .append("_id", startedHuntId)
         .append("accessCode", "123456")
         .append("completeHunt", new Document()
-                .append("hunt", testHunts.get(2))
-                .append("tasks", testTasks.subList(0, 3)))
+            .append("hunt", testHunts.get(2))
+            .append("tasks", testTasks.subList(0, 3)))
         .append("status", true)
         .append("endDate", null);
 
@@ -959,7 +958,8 @@ class HostControllerSpec {
         .find(eq("_id", new ObjectId(startedHuntId.toHexString()))).first();
     Document taskDocument = db.getCollection("tasks").find(eq("_id", new ObjectId(taskId.toHexString()))).first();
     startedHuntDocument.get("completeHunt", Document.class).get("tasks", List.class).add(taskDocument);
-    db.getCollection("startedHunts").replaceOne(eq("_id", new ObjectId(startedHuntId.toHexString())), startedHuntDocument);
+    db.getCollection("startedHunts").replaceOne(eq("_id", new ObjectId(startedHuntId.toHexString())),
+        startedHuntDocument);
 
     when(ctx.uploadedFile("photo")).thenReturn(uploadedFile);
     when(uploadedFile.content()).thenReturn(inputStream);

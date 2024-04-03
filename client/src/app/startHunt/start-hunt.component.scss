@@ -89,6 +89,11 @@
 .running-hunt-title {
   font-size: 5em;
   line-height: 1.0;
+  color: #00ccff;
+}
+
+.hunt-timer, .hunt-Nof-tasks {
+  margin-left: auto;
 }
 
 .end-hunt-button {
@@ -113,3 +118,140 @@
     background-color: #00ccff;
   }
 }
+
+.task-table {
+  width: 100%;
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 3;
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  padding: 10px;
+  white-space: normal;
+  overflow: auto;
+  color: aqua;
+  background-color: darkslategray;
+  line-height: 1.5;
+}
+
+.task-list {
+  flex: 5;
+  font-size: 30px;
+  border: 1px solid black;
+  padding: 10px;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: auto;
+  line-height: 1.5;
+  word-wrap: break-word;
+  color: white;
+}
+
+.tracked-access-code-number {
+  font-size: 2em;
+  margin-top: 10px;
+  color: #00ccff;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.tracking-hunt-title {
+  font-size: 3em;
+  color: #00ccff;
+  line-height: 1.5;
+}
+
+.hunt-timer {
+  font-size: 20px;
+  color: aqua;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  line-height: 1.0;
+}
+
+.hunt-Nof-tasks {
+  font-size: 20px;
+  color: aqua;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  line-height: 1.0;
+}
+
+.flex-2 {
+  flex: 3;
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  padding: 10px;
+  white-space: normal;
+  overflow: auto;
+  color: aqua;
+  background-color: darkslategray;
+  line-height: 1.5;
+}
+
+.team-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.team-card {
+  flex: 1 0 auto;
+  margin: 10px;
+  background-color: white;
+  border: thick solid black;
+
+  /* Apply these rules when the viewport is less than 600px wide */
+  @media (max-width: 600px) {
+    .team-card {
+      flex-basis: 100%; /* Make the items take up the full width */
+    }
+  }
+}
+
+.team-one {
+  text-align: center;
+  font-size: 35px;
+  color: #00ccff;
+  font-weight: bold;
+}
+
+.team-two {
+  text-align: center;
+  font-size: 35px;
+  color: #00ccff;
+  font-weight: bold;
+}
+
+.progress-hunt-bar {
+  background-color: white;
+  border: 2px solid black;
+}
+
+.hunter-progress {
+  font-size: 30px;
+  text-decoration: underline;
+}
+
+

@@ -81,17 +81,17 @@ export class HunterViewComponent implements OnInit, OnDestroy {
 
       if (file) {
         if (task.photos.length > 0) {
-          this.replacePhoto(file, task);
+          this.replacePhoto(file, task, this.startedHunt._id);
         }
         else {
-          this.submitPhoto(file, task);
+          this.submitPhoto(file, task, this.startedHunt._id);
         }
       }
     }
   }
 
-  submitPhoto(file: File, task: Task): void {
-    this.hostService.submitPhoto(task._id, file).subscribe({
+  submitPhoto(file: File, task: Task, startedHuntId: string): void {
+    this.hostService.submitPhoto(startedHuntId, task._id, file).subscribe({
       next: (photoId: string) => {
         task.status = true;
         task.photos.push(photoId);
@@ -108,8 +108,8 @@ export class HunterViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  replacePhoto(file: File, task: Task): void {
-    this.hostService.replacePhoto(task._id, task.photos[0], file).subscribe({
+  replacePhoto(file: File, task: Task, startedHuntId: string): void {
+    this.hostService.replacePhoto(startedHuntId, task._id, task.photos[0], file).subscribe({
       next: (photoId: string) => {
         task.photos[0] = photoId;
         this.snackBar.open('Photo replaced successfully', 'Close', {

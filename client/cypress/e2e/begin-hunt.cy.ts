@@ -32,6 +32,22 @@ describe('Begin Hunt', () => {
     page.clickSecondBeginHuntButton();
   })
 
+  it('should start hunt with the correct hunt information/end hunt page', () => {
+    page.beginHuntButton().should('exist');
+    page.beginHuntButton().click();
+    cy.wait(2000);
+    page.getAccessCode().then((accessCode) => {
+      cy.wait(1000);
+      cy.url().should('eq', `http://localhost:4200/startedHunts/${accessCode}`);
+    });
+    page.clickSecondBeginHuntButton();
+
+    page.getHuntTaskList().should('exist');
+    page.getTableTaskTitle().should('exist');
+    page.getProgressTeamTile().should('exist');
+    page.getTeamCard().should('exist');
+  })
+
   it('should click End Hunt, navigate to the host page and show message', () => {
     page.beginHuntButton().should('exist');
     page.beginHuntButton().click();

@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -283,7 +284,7 @@ public class HostController implements Controller {
     startedHunt.accessCode = String.format("%06d", accessCode); // Convert the number to a string
     startedHunt.completeHunt = completeHunt; // Assign the completeHunt to the startedHunt
     startedHunt.status = true; // true means the hunt is active
-
+    startedHunt.endDate = null; // null endDate until the hunt is ended
     // Insert the StartedHunt into the startedHunt collection
     startedHuntCollection.insertOne(startedHunt);
 
@@ -328,6 +329,7 @@ public class HostController implements Controller {
     } else {
       startedHunt.status = false;
       startedHunt.accessCode = "1";
+      startedHunt.endDate = new Date();
       startedHuntCollection.save(startedHunt);
       ctx.status(HttpStatus.OK);
     }

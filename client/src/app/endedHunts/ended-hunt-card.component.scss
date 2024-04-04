@@ -39,7 +39,8 @@
   }
 }
 .ended-profile-button:hover {
-  background-color: #007bff7c;
+  background-color: #007bff;
+  color: white;
 
   @media (prefers-color-scheme: dark) {
     background-color: #00ccff;

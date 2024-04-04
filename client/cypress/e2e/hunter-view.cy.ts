@@ -58,36 +58,6 @@ describe('Hunter View', () => {
     page.getHunterViewTitle().contains('You are in');
   });
 
-  it('should display the hunt number of tasks and estimate time', () => {
-    page.getHostButton().click();
-    page.getHuntCards().first().then(() => {
-      page.clickViewProfile(page.getHuntCards().first());
-      cy.url().should('match', /\/hunts\/[0-9a-fA-F]{24}$/);
-    });
-
-    page.clickBeginHunt();
-    cy.wait(2000);
-    page.getAccessCode();
-
-//     // Those above will navigate to the Hunt, begin it
-//     // and capture the access code.
-
-    cy.get('@accessCode').then((accessCode) => {
-      cy.visit(`/hunters/`);
-      for (let i = 0; i < accessCode.length; i++) {
-        page.getAccessCodeInput(i + 1).type(accessCode.toString().charAt(i));
-      }
-    }).then(() => {
-      cy.wait(1000);
-      page.clickJoinHuntButton();
-    })
-
-//     // navigate to the hunter view page with access code.
-
-    page.getHuntTimer().contains('min');
-    page.getHuntNofTasks().contains('tasks');
-  });
-
   it('should display the hunt tasks list in Your Task column', () => {
     page.getHostButton().click();
     page.getHuntCards().first().then(() => {

@@ -6,9 +6,8 @@
   padding: 20px;
   height: wrap-content;
   width: 400px;
-  box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.25); // Adjust the last two values to increase the shadow darkness and size
 
-  background-color: gray;
+  background-color: rgba(108, 108, 108, 0.532);
     @media (prefers-color-scheme: dark) {
       background-color: gray;
     }
@@ -38,7 +37,7 @@
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #0056b3;
+  color: #0355fa;
 }
 
 

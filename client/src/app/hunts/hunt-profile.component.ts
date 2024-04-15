@@ -65,15 +65,9 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
         },
       });
   }
+
   knowledgeSharing3(): void {
 
-  }
-  deleteHunt(id: string): void {
-    console.log('Deleting hunt with ID:', id);
-    this.hostService.deleteHunt(id).subscribe(() => {
-      console.log('Hunt deleted successfully.');
-      this.router.navigate(['/hosts']);
-    });
   }
 
   onHuntDeleteClick(event: Event, huntId: string) {
@@ -83,16 +77,10 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteTask(id: string): void {
-    this.hostService.deleteTask(id).subscribe(() => {
-      this.completeHunt.tasks = this.completeHunt.tasks.filter(
-        (task) => task._id !== id
-      );
-    });
-  }
   knowledgeSharing2(): void {
 
   }
+
   onTaskDeleteClick(event: Event, taskId: string) {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to delete this task?')) {
@@ -102,6 +90,23 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
   knowledgeSharing(): void {
 
   }
+
+  deleteHunt(id: string): void {
+    console.log('Deleting hunt with ID:', id);
+    this.hostService.deleteHunt(id).subscribe(() => {
+      console.log('Hunt deleted successfully.');
+      this.router.navigate(['/hosts']);
+    });
+  }
+
+  deleteTask(id: string): void {
+    this.hostService.deleteTask(id).subscribe(() => {
+      this.completeHunt.tasks = this.completeHunt.tasks.filter(
+        (task) => task._id !== id
+      );
+    });
+  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

@@ -65,11 +65,9 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
         },
       });
   }
-
   knowledgeSharing3(): void {
 
   }
-
   deleteHunt(id: string): void {
     console.log('Deleting hunt with ID:', id);
     this.hostService.deleteHunt(id).subscribe(() => {
@@ -92,22 +90,18 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
       );
     });
   }
-
   knowledgeSharing2(): void {
 
   }
-
   onTaskDeleteClick(event: Event, taskId: string) {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to delete this task?')) {
       this.deleteTask(taskId);
     }
   }
-
   knowledgeSharing(): void {
 
   }
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

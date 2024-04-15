@@ -81,6 +81,14 @@ export class HuntProfileComponent implements OnInit, OnDestroy {
 
   }
 
+  deleteHunt2(id: string): void {
+    console.log('Deleting hunt with ID:', id);
+    this.hostService.deleteHunt(id).subscribe(() => {
+      console.log('Hunt deleted successfully.');
+      this.router.navigate(['/hosts']);
+    });
+  }
+
   onTaskDeleteClick(event: Event, taskId: string) {
     event.stopPropagation();
     if (window.confirm('Are you sure you want to delete this task?')) {
